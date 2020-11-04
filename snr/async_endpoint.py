@@ -5,13 +5,13 @@ AsyncEndpoint: Generate and process data for Nodes
 Relay: Server data to other nodes
 """
 
-from snr.utils.utils import no_op
+from threading import Thread
 from typing import Callable, Dict, List
 
-from threading import Thread
-from snr.context import Context
 from snr.endpoint import Endpoint
+from snr.node import Node
 from snr.task import TaskHandler, TaskSource
+from snr.utils.utils import no_op
 
 DEFAULT_TICK_RATE = 24
 DAEMON_THREADS = False
@@ -26,15 +26,16 @@ class AsyncEndpoint(Endpoint):
     tick_rate (Hz).
     """
 
-    def __init__(self, parent_context: Context,
+    def __init__(self,
+                 parent: Node,
                  name: str,
-                 loop_handler: Callable,
+                 loop_handler: Callable[[], None],
                  setup_handler: Callable[[], None] = no_op,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  task_producers: List[TaskSource] = [],
                  task_handlers: Dict[str, TaskHandler] = {}
-                 ):
-        super().__init__(parent_context, name, task_producers, task_handlers)
+                 ) -> None:
+        super().__init__(parent, name, task_producers, task_handlers)
         self.setup = setup_handler
         self.loop_handler = loop_handler
         self.terminate_flag = False
@@ -71,17 +72,12 @@ class AsyncEndpoint(Endpoint):
                     self.loop_handler()
                 else:
                     self.profiler.time(self.name, self.loop_handler)
-
-                    # self.dbg("profiling_endpoint",
-                    #       "Ran {} task in {:6.3f} us",
-                    #       [self.name, runtime * 1000000])
                 self.tick()
-        except KeyboardInterrupt as e:
+        except KeyboardInterrupt:
             pass
 
         self.dbg("Async endpoint {} exited loop", [self.name])
         self.terminate()
-        # print_exit("Endpoint thread exited by termination")
 
     def get_name(self):
         return self.name
