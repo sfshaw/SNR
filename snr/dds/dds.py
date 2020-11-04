@@ -63,7 +63,7 @@ class DDS(Context):
         self.rx_consumer.catch_up()
         self.tx_consumer.catch_up()
         time_waited -= time()
-        self.info("Waited {} seconds for DDS to catch up", [time_waited])
+        self.info("Waited {} ms for DDS to catch up", [time_waited * 1000])
 
     def dump_data(self) -> None:
         for (k, v) in self.data_dict.items():
