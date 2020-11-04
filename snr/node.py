@@ -109,7 +109,7 @@ class Node(Context):
 
     def set_terminate_flag(self, reason: str):
         self.info("Exit reason: {}", [reason])
-        self.datastore.store("node_exit_reason", reason)
+        self.datastore.store("node_exit_reason", reason, False)
         self.terminate_flag = True
         for e in self.endpoints:
             e.set_terminate_flag(f"node: {reason}")
@@ -162,8 +162,8 @@ class Node(Context):
                 self.info("{} added {}", [factory, endpoint])
         return endpoints, task_producers
 
-    def store_data(self, key: str, data: Any) -> None:
-        self.datastore.store(key, data)
+    def store_data(self, key: str, data: Any, process: bool = True) -> None:
+        self.datastore.store(key, data, process)
 
     def get_data(self, key: str) -> Union[Any, None]:
         return self.datastore.get(key)

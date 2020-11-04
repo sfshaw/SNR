@@ -41,9 +41,9 @@ class DDS(Context):
         self.info("Initialized with {} connections",
                   [len(self.connections)])
 
-    def store(self, key: str, value: Any) -> None:
+    def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
-        page = Page(key, value, self.parent_name, created_at)
+        page = Page(key, value, self.parent_name, created_at, process)
         self.inbound_store(page)
         self.tx_consumer.put(page)
 
@@ -72,7 +72,8 @@ class DDS(Context):
 
     def write(self, page: Page):
         self.data_dict[page.key] = page
-        self.schedule_task(Task(f"process_{page.key}"))
+        if page.process:
+            self.schedule_task(Task(f"process_{page.key}"))
 
     def send(self, page: Page):
         for connection in self.connections:
