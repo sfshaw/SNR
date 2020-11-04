@@ -2,10 +2,8 @@
 Attempts to document propper usage of such functions
 """
 
-import os
 import sys
-import time
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, Dict, List, Optional
 
 
 def print_usage() -> None:
@@ -20,18 +18,14 @@ def print_exit(reason: str) -> None:
     sys.stdout.flush()
     sys.stderr.flush()
     print("\nExiting: " + reason.__repr__())
-    try:
-        sys.exit(0)
-    except SystemExit:
-        os._exit(0)
-    # This point should be unreachable, just die already
+    sys.exit(0)
 
 
-def no_op(*args):
+def no_op(*args: Any) -> None:
     pass
 
 
-def get_all(*args):
+def get_all(*args: Any):
     factories = args[0]
     all = []
     for f in factories:
@@ -48,7 +42,7 @@ def format_message(context_name: str,
     return "[{}:\t{}]\t{}".format(context_name, level, message)
 
 
-def init_dict(keys: List[str], val: Any) -> dict:
+def init_dict(keys: List[str], val: Any) -> Dict[str, Any]:
     d = {}
     for k in keys:
         d[k] = val
@@ -57,7 +51,7 @@ def init_dict(keys: List[str], val: Any) -> dict:
 
 def attempt(action: Callable[[], bool],
             tries: int,
-            fail_once: Callable,
+            fail_once: Callable[[], None],
             failure: Callable[[int], None]
             ) -> None:
     """Wrapper for trying to complete and action with a number of tries
