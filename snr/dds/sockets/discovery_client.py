@@ -1,9 +1,8 @@
 import socket
 from typing import List, Tuple
 
-from snr.dds.sockets.discovery_server import DiscoveryServer
-from snr.debug import Debugger
 from snr.context import Context
+from snr.dds.sockets.discovery_server import DiscoveryServer
 
 TIMEOUT = 2
 
@@ -38,7 +37,10 @@ class DiscoveryClient(Context):
         discovery_server.terminate()
         self.log("Discovered self to be '{}', removeing from hosts: {}",
                  [local_host, hosts])
-        hosts.remove(local_host)
+        if local_host:
+            hosts.remove(local_host)
+        else:
+            local_host = "localhost"
         return (local_host, hosts)
 
     def ping(self, target_host_tuple: Tuple[str, int]) -> str:
@@ -46,6 +48,7 @@ class DiscoveryClient(Context):
         Returns a node name if the node discovery server responds,
         or None on timeout or error
         """
+        data: str = ""
         try:
             s = socket.create_connection(target_host_tuple,
                                          self.settings.SOCKETS_CLIENT_TIMEOUT)
@@ -59,6 +62,5 @@ class DiscoveryClient(Context):
         except (Exception, socket.timeout) as e:
             self.warn("Did not find node at {}:{}: {}",
                       [target_host_tuple[0], target_host_tuple[1], e])
-            data = None
-
+            data = ""
         return data

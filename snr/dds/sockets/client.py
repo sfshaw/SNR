@@ -1,10 +1,11 @@
-"""Sockets client which communicates to a sockets server
+"""Sockets client which communicates to a sockets server for DDS
 """
 
-import json
-from snr.context import Context
+import pickle
 import socket
 
+from snr.context import Context
+from snr.dds.page import Page
 from snr.dds.sockets.config import SocketsConfig
 from snr.utils.utils import attempt, print_exit
 
@@ -18,13 +19,12 @@ class SocketsClient(Context):
 
         self.create_connection()
 
-    def send_data(self, data):
-        if data is None:
-            self.warn(
-                "Data is none for {}",
-                [self.data_name])
-        encoded_data = json.dumps(data).encode()
-        self.conn.sendall(encoded_data)
+    def send_data(self, page: Page):
+        # if data is None:
+        #     self.warn("Data is none for {}",
+        #               [self.data_name])
+        data = pickle.dumps(page)
+        self.conn.sendall(data)
         self.info("Data sent")
 
     def create_connection(self) -> None:
@@ -55,9 +55,8 @@ class SocketsClient(Context):
 
         def failure(tries: int) -> None:
             if(self.config.required):
-                self.critical(
-                    "Couldn't connect to server at {}:{} after {} tries.",
-                    [self.config.ip, str(self.config.port), tries])
+                self.err("Couldn't connect to server at {}:{} after {} tries.",
+                         [self.config.ip, str(self.config.port), tries])
                 print_exit("Start required sockets connection")
             else:
                 self.err(

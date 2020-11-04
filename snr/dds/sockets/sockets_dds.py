@@ -1,15 +1,14 @@
-from snr.dds.dds import DDS
-from typing import Callable, List
+from typing import List
 
-from snr.dds.dds_connection import DDSConnection
-from snr.dds.sockets.config import SocketsConfig
-from snr.dds.page import Page
-from snr.dds.sockets.server import SocketsServer
-from snr.dds.sockets.client import SocketsClient
-from snr.dds.factory import DDSFactory
-from snr.utils.utils import no_op
-from snr.dds.sockets.discovery_client import DiscoveryClient
 from snr.context import Context
+from snr.dds.dds import DDS
+from snr.dds.dds_connection import DDSConnection
+from snr.dds.factory import DDSFactory
+from snr.dds.page import InboundStoreFn, Page
+from snr.dds.sockets.client import SocketsClient
+from snr.dds.sockets.config import SocketsConfig
+from snr.dds.sockets.discovery_client import DiscoveryClient
+from snr.dds.sockets.server import SocketsServer
 from snr.node import Node
 
 """
@@ -31,13 +30,20 @@ class SocketsDDSFactory(DDSFactory):
         self.hosts = hosts
         self.port = port
 
-    def get(self, parent_node, parent_dds: DDS) -> List[DDSConnection]:
+    def get(self,
+            parent_node: Node,
+            parent_dds: DDS
+            ) -> List[DDSConnection]:
         if parent_node:
             local_ip, hosts = DiscoveryClient(
                 parent_node).find_me(
                 parent_node.role,
                 self.hosts)
-            parent_dds.inbound_store(Page("node_ip_address", local_ip))
+            parent_dds.inbound_store(
+                Page("node_ip_address",
+                     local_ip, 
+                     parent_node.name,
+                     parent_dds.timer.current()))
             parent_node.info("Assigned {} node ip: {}",
                              [parent_node.name, local_ip])
             return [SocketsDDS(parent_dds,
@@ -57,17 +63,15 @@ class SocketsDDS(DDSConnection):
                  parent_context: Context,
                  parent_node: Node,
                  config: SocketsConfig,
-                 inbound_store: Callable):
+                 inbound_store: InboundStoreFn):
         super().__init__("Sockets DDS Connection",
                          parent_context,
                          inbound_store)
 
         self.server = SocketsServer(self,
                                     config,
-                                    callback=self.inbound_store)
-        # start receive thread
+                                    inbound_store)
         self.client = SocketsClient(parent_node, config)
-        # setup sending thread
 
     def send(self, data: Page):
         self.client.send_data(data)

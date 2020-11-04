@@ -1,12 +1,14 @@
 """ Sockets server for DDS
 """
-from snr.context import Context
+import pickle
 import socket
-from typing import Union, Callable
+from socket import socket as Socket
+from typing import Optional
 
 from snr.async_endpoint import AsyncEndpoint
+from snr.context import Context
+from snr.dds.page import InboundStoreFn, Page
 from snr.dds.sockets.config import SocketsConfig
-from snr.utils.utils import no_op
 
 
 class SocketsServer(AsyncEndpoint):
@@ -16,34 +18,34 @@ class SocketsServer(AsyncEndpoint):
     def __init__(self,
                  parent_context: Context,
                  config: SocketsConfig,
-                 callback: Callable):
+                 inbound_store: InboundStoreFn
+                 ) -> None:
         super().__init__(parent_context,
                          name="dds_sockets_server",
-                         setup_handler=no_op, loop_handler=self.receive_data,
+                         loop_handler=self.receive_data,
                          tick_rate_hz=0)
-        self.config = config
-        self.callback = callback
+        self.config: SocketsConfig = config
+        self.inbound_store: InboundStoreFn = inbound_store
 
-        self.s = None
-        self.ready = False
-        self.connected = False
+        self.s: Optional[Socket] = None
+        self.ready: bool = False
+        self.connected: bool = False
+
         # Async endpoint thread loop
         self.start_loop()
 
-    def receive_data(self) -> Union[bytes, None]:
+    def receive_data(self) -> None:
         self.diagnose()
-        self.info(
-            "Waiting to receive data")
+        self.info("Waiting to receive data")
         try:
+            assert isinstance(self.s, Socket)
             data = self.s.recv(self.settings.MAX_SOCKET_SIZE)
-            self.info("{} received data", [self.data_name])
             self.dbg("Received data: {}", [data])
-            self.callback(data)
-            # return data
+            page: Page = pickle.loads(data)
+            self.inbound_store(page)
         except (ConnectionResetError, Exception) as error:
             self.err("Lost {} sockets connection: {}",
                      [self.name, error.__repr__()])
-            return None
 
     def diagnose(self):
         if (not self.s) or (not self.ready):
@@ -66,7 +68,7 @@ class SocketsServer(AsyncEndpoint):
             self.s.bind(host_tuple)
             self.info("Socket bound to {}", [host_tuple])
         except socket.error as socket_error:
-            self.critical("Bind failed: {}", [socket_error])
+            self.fatal("Bind failed: {}", [socket_error])
             self.s.close()
             self.sleep(self.settings.SOCKETS_RETRY_WAIT)
         # Listen for connections
@@ -84,6 +86,7 @@ class SocketsServer(AsyncEndpoint):
     def __connect(self):
         # Create connection to the client
         try:
+            assert isinstance(self.s, Socket)
             # Blocking call waiting for the client to connect
             self.info("Blocking on accept_connection for {}",
                       [self.name])
@@ -101,7 +104,8 @@ class SocketsServer(AsyncEndpoint):
         # if not settings.USE_SOCKETS:
         #     return
         try:
-            self.s.close()
+            if isinstance(self.s, Socket):
+                self.s.close()
             self.s = None
             self.ready = False
             self.connected = False

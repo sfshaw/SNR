@@ -1,5 +1,7 @@
 from threading import Thread
 import socket
+from socket import socket as Socket
+from typing import Optional
 
 from snr.context import Context
 
@@ -13,7 +15,7 @@ class DiscoveryServer(Context):
         self.role = role
         self.port = port
         self.host_tuple = (LOCALHOST, port)
-        self.s = None
+        self.s: Optional[Socket] = None
         self.__init_socket()
         self.terminate_flag = self.s is None
         self.thread = Thread(target=self.loop,
@@ -40,10 +42,10 @@ class DiscoveryServer(Context):
 
     def __init_socket(self):
         if self.s is not None:
-            self.__close()
+            self.s.close()
 
         # Create socket
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s = Socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # self.s.settimeout(settings.SOCKETS_SERVER_TIMEOUT)
 
@@ -53,7 +55,7 @@ class DiscoveryServer(Context):
             self.info("Server socket bound to {}:{}",
                       [self.host_tuple[0], self.host_tuple[1]])
         except socket.error as socket_error:
-            self.critical("Bind failed: {}", [socket_error])
+            self.err("Bind failed: {}", [socket_error])
             self.__shutdown()
             # sleep(settings.SOCKETS_RETRY_WAIT)
         # Listen for connections
@@ -69,6 +71,7 @@ class DiscoveryServer(Context):
     def __handle_connection(self):
         # Create connection to the client
         try:
+            assert isinstance(self.s, Socket)
             # Blocking call waiting for the client to connect
             self.info("Blocking on accept_connection")
             conn, addr = self.s.accept()
