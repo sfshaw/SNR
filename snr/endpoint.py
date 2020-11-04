@@ -1,16 +1,19 @@
-from typing import Callable, Dict, List
+from typing import Any, Dict, List
+
 from snr.context import Context
 from snr.factory import Factory
+from snr.task import TaskHandler, TaskSource
 
 
 class Endpoint(Context):
     def __init__(self,
-                 parent_context: Context,
+                 parent_node: Any,
                  name: str,
-                 task_producers: List[Callable] = [],
+                 task_producers: List[TaskSource] = [],
                  task_handlers: Dict[str, TaskHandler] = {}
-                 ):
-        super().__init__(name, parent_context)
+                 ) -> None:
+        super().__init__(name, parent_node)
+        self.parent_node = parent_node
         self.task_producers = task_producers
         self.task_handlers = task_handlers
 
@@ -18,7 +21,7 @@ class Endpoint(Context):
         # Stub for synchronous endpoints
         pass
 
-    def terminate(self):
+    def terminate(self) -> None:
         self.warn("{} does not implement terminate()",
                   [self.name])
         raise NotImplementedError
