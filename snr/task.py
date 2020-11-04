@@ -2,7 +2,7 @@
 """
 
 from enum import Enum
-from typing import Callable, List, Union
+from typing import Any, Callable, List, Union
 
 
 class TaskPriority(Enum):
@@ -14,24 +14,24 @@ class TaskPriority(Enum):
 class Task:
     """The task class and associated code for using and passing tasks
 
-    The Task object is one that defines a action or event on the robot
-    raspberry pi or the surface unit raspberry pi
+    The Task object is one that defines a action or event
     """
 
-    def __init__(self, task_type: str,
+    def __init__(self,
+                 task_type: str,
                  priority: TaskPriority = TaskPriority.normal,
-                 val_list: List = []):
+                 val_list: List[Any] = []
+                 ) -> None:
         self.task_type = task_type
         self.priority = priority
         self.val_list = val_list
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any):
         return (
             (self.__class__ == other.__class__) and
             (self.task_type == other.task_type) and
             (self.priority == other.priority) and
-            (self.val_list == other.val_list)
-        )
+            (self.val_list == other.val_list))
 
     def __repr__(self):
         return "Task: type: {}, priority: {}, val_list: {}".format(
