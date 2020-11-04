@@ -5,9 +5,10 @@ import socket
 from socket import socket as Socket
 from typing import Optional
 
-from snr.endpoint.async_endpoint import AsyncEndpoint
 from snr.dds.page import InboundStoreFn, Page
 from snr.dds.sockets.config import SocketsConfig
+from snr.endpoint.async_endpoint import AsyncEndpoint
+from snr.node import Node
 
 
 class SocketsServer(AsyncEndpoint):
@@ -15,11 +16,11 @@ class SocketsServer(AsyncEndpoint):
     """
 
     def __init__(self,
-                 parent_context: Context,
+                 parent: Node,
                  config: SocketsConfig,
                  inbound_store: InboundStoreFn
                  ) -> None:
-        super().__init__(parent_context,
+        super().__init__(parent,
                          name="dds_sockets_server",
                          loop_handler=self.receive_data,
                          tick_rate_hz=0)

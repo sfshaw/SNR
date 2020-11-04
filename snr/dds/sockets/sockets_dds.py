@@ -68,7 +68,7 @@ class SocketsDDS(DDSConnection):
                          inbound_store)
 
         # Start up child thread
-        self.server = SocketsServer(self, config, inbound_store)
+        self.server = SocketsServer(parent_node, config, inbound_store)
         self.client = SocketsClient(self, config)
 
     def send(self, data: Page):
