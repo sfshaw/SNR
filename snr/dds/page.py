@@ -24,3 +24,5 @@ class Page:
             self.origin,
             self.created_at)
 
+
+InboundStoreFn = Callable[[Page], None]
