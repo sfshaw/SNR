@@ -1,5 +1,3 @@
-
-# from multiprocessing import Queue as Queue
 from queue import Queue
 from typing import List, Union
 
@@ -13,7 +11,7 @@ class TaskQueue(Context):
                  task_source: TaskSource):
         super().__init__("task_queue", parent_context)
         self.get_new_tasks = task_source
-        self.queue = Queue()
+        self.queue: "Queue[Task]" = Queue()
 
     def schedule(self, t: SomeTasks) -> None:
         """ Adds a Task or a list of Tasks to the node's queue
