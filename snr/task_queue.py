@@ -8,7 +8,8 @@ from snr.task import SomeTasks, Task, TaskSource
 class TaskQueue(Context):
     def __init__(self,
                  parent_context: Context,
-                 task_source: TaskSource):
+                 task_source: TaskSource
+                 ) -> None:
         super().__init__("task_queue", parent_context)
         self.get_new_tasks = task_source
         self.queue: "Queue[Task]" = Queue()
