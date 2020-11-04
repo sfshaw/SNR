@@ -4,15 +4,12 @@ Node: Task queue driven host for data and endpoints
 AsyncEndpoint: Generate and process data for Nodes
 Relay: Server data to other nodes
 """
-import signal
-from time import time
+# import signal
 from typing import Callable
 from multiprocessing import Process
 
 from snr.endpoint import Endpoint
 from snr.node import Node
-from snr.utils.utils import sleep
-from snr.profiler import Timer
 
 JOIN_TIMEOUT = 0.5
 
@@ -26,9 +23,13 @@ class ProcEndpoint(Endpoint):
     tick_rate (Hz).
     """
 
-    def __init__(self, parent: Node, name: str,
-                 setup_handler: Callable, loop_handler: Callable,
-                 tick_rate_hz: float):
+    def __init__(self,
+                 parent: Node,
+                 name: str,
+                 setup_handler: Callable[[], None],
+                 loop_handler: Callable[[], None],
+                 tick_rate_hz: float
+                 ) -> None:
         super().__init__(parent, name)
         self.setup = setup_handler
         self.loop_handler = loop_handler
@@ -89,12 +90,12 @@ class ProcEndpoint(Endpoint):
             self.warn("Proc_endpoint {} does not sleep (max tick rate)",
                       [self.name])
         else:
-            sleep(self.delay)
+            self.sleep(self.delay)
 
     def set_terminate_flag(self, reason: str):
         self.terminate_flag = True
         self.info("Preparing to terminate proc_endpoint {} for {}",
                   [self.name, reason])
 
-    def terminate(self):
+    def terminate(self) -> None:
         raise NotImplementedError
