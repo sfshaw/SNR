@@ -4,7 +4,8 @@ from snr.config import Mode, Role
 from snr.context import Context
 from snr.dds.dds import DDS
 from snr.dds.factory import DDSFactory
-from snr.endpoint import Endpoint, EndpointFactory
+from snr.endpoint.endpoint import Endpoint
+from snr.endpoint.factory import EndpointFactory
 from snr.factory import Factory
 from snr.task import SomeTasks, Task, TaskHandler, TaskSource
 from snr.task_queue import TaskQueue

@@ -8,7 +8,7 @@ Relay: Server data to other nodes
 from typing import Callable
 from multiprocessing import Process
 
-from snr.endpoint import Endpoint
+from snr.endpoint.endpoint import Endpoint
 from snr.node import Node
 
 JOIN_TIMEOUT = 0.5

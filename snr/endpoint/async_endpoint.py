@@ -8,7 +8,7 @@ Relay: Server data to other nodes
 from threading import Thread
 from typing import Callable, Dict, List
 
-from snr.endpoint import Endpoint
+from snr.endpoint.endpoint import Endpoint
 from snr.node import Node
 from snr.task import TaskHandler, TaskSource
 from snr.utils.utils import no_op

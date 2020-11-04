@@ -1,7 +1,6 @@
 from typing import Any, Dict, List
 
 from snr.context import Context
-from snr.factory import Factory
 from snr.task import TaskHandler, TaskSource
 
 
@@ -32,27 +31,3 @@ class Endpoint(Context):
 
     def __repr__(self) -> str:
         return self.name
-
-
-class EndpointFactory(Factory):
-    def __init__(self):
-        pass
-
-    def get(self, parent_node: Any) -> List[Endpoint]:
-        return self.get_endpoints(parent_node)
-
-    def get_endpoints(self, parent_node: Any = None) -> List[Endpoint]:
-        raise NotImplementedError
-
-
-"""Example factory that might be implemented for an endpoint
-"""
-# class FactoryTemplate(Factory):
-#     def __init__(self, stuff: str):
-#         super().__init__()
-#         self.stuff = stuff
-
-#     def get(self
-#             ...
-#             ) -> List[Endpoint]:
-#         return [Endpoint(stuff)]

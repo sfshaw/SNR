@@ -5,8 +5,7 @@ import socket
 from socket import socket as Socket
 from typing import Optional
 
-from snr.async_endpoint import AsyncEndpoint
-from snr.context import Context
+from snr.endpoint.async_endpoint import AsyncEndpoint
 from snr.dds.page import InboundStoreFn, Page
 from snr.dds.sockets.config import SocketsConfig
 
