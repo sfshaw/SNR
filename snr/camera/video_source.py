@@ -2,14 +2,13 @@
 https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
 """
 
-import socket
 import pickle
+import socket
 import struct
-import cv2
-from cv2 import VideoCapture, destroyAllWindows
 
-from snr.proc_endpoint import ProcEndpoint
+import cv2
 from snr.node import Node
+from snr.proc_endpoint import ProcEndpoint
 
 # IP Address of the computer (Find using $ifconfig)
 # IP_ADDRESS = "10.155.115.129"
@@ -52,26 +51,21 @@ class VideoSource(ProcEndpoint):
                 self.client_socket.connect((self.receiver_ip,
                                             self.receiver_port))
             except Exception as e:
-                self.dbg("camera_error",
-                         "Failed to connect to receiver: {}",
-                         [e])
+                self.err(f"Failed to connect to receiver: {e}")
         else:
-            self.dbg("camera",
-                     "Not setting up sockets")
+            self.dbg("Not setting up sockets")
         try:
             # Create a VideoCapture object and read from input file
-            self.camera = VideoCapture(self.camera_num)
+            self.camera: cv2.VideoCapture = cv2.VideoCapture(self.camera_num)
         except Exception as e:
-            self.dbg("camera_error", "Failed to open camera: {}", [e])
+            self.err("Failed to open camera: {}", [e])
 
         # Check if camera opened successfully
         if (not self.camera.isOpened()):
-            self.dbg("camera_error",
-                     "Error opening camera #{}",
+            self.dbg("Error opening camera #{}",
                      [self.camera_num])
         else:
-            self.dbg("camera_open",
-                     "Camera {}, {}: opened successfully",
+            self.dbg("Camera {}, {}: opened successfully",
                      [self.camera_num, self.name])
 
     def send_frame(self):
@@ -89,12 +83,11 @@ class VideoSource(ProcEndpoint):
                 data = pickle.dumps(frame)
                 size = len(data)
                 message_size = struct.pack("=L", size)
-                self.dbg("camera_verbose",
-                         "{}: Sending frame data of size: {}",
+                self.dbg("{}: Sending frame data of size: {}",
                          [self.name, size])
                 self.client_socket.sendall(message_size + data)
             self.frame_count += 1
-        except Exception as e:
+        except (Exception, KeyboardInterrupt) as e:
             if isinstance(e, KeyboardInterrupt):
                 raise e
             self.set_terminate_flag(f"Exception: {e}")
@@ -108,8 +101,8 @@ class VideoSource(ProcEndpoint):
         self.dbg(f"{self.name}_source",
                  "Dump sent frames: {}",
                  [self.frame_count])
-        self.parent.datastore.store(f"{self.name}_sent_frames",
-                                    self.frame_count)
+        self.parent.store_data(f"{self.name}_sent_frames",
+                               self.frame_count)
 
         self.dbg("camera_event",
                  "Closed video source (camera {})",

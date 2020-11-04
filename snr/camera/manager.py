@@ -1,34 +1,21 @@
-from enum import Enum
-from snr.utils.utils import no_op
-from typing import List
+from typing import Any, Dict
 
+from snr.camera.config import CameraConfig, ManagerRole
 from snr.endpoint import Endpoint
-from snr.async_endpoint import AsyncEndpoint
 from snr.node import Node
-from snr.camera.config import CameraConfig
-
+from snr.utils.utils import no_op
 
 INITIAL_PORT = 8000
 CAMERA_MANAGER_TICK_HZ = 1
 
 
-class ManagerRole(Enum):
-    Source = 0
-    Receiver = 1
-
-    def as_str(self):
-        if (self is ManagerRole.Source):
-            return "source"
-        else:
-            return "receiver"
-
-
 class CameraManager(Endpoint):
-    def __init__(self, parent: Node, name: str,
-                 role: ManagerRole, camera_map: dict):
-
-        self.task_producers = []
-        self.task_handlers = {}
+    def __init__(self,
+                 parent: Node,
+                 name: str,
+                 role: ManagerRole,
+                 camera_map: Dict[str, int]
+                 ) -> None:
         super().__init__(parent, name)  # ,
         #  self.setup_handler, self.loop_handler,
         #  CAMERA_MANAGER_TICK_HZ)
@@ -55,8 +42,8 @@ class CameraManager(Endpoint):
         self.setup_handler()
 
     def setup_handler(self):
-        from snr.camera.factory import VideoSourceFactory, VideoReceiverFactory
-        fac = no_op
+        from snr.camera.factory import VideoReceiverFactory, VideoSourceFactory
+        fac: Any = no_op
         if self.role is ManagerRole.Source:
             fac = VideoSourceFactory
         elif self.role is ManagerRole.Receiver:
@@ -68,9 +55,9 @@ class CameraManager(Endpoint):
                                   self.next_port(),
                                   self.camera_map[camera_name])
             f = fac(config)
-            cam = f.get(self.parent)
+            cam = f.get(self, self.parent_node)
             self.cameras.append(cam)
-            self.dbg("camera_manager", "Created camera {}", [cam])
+            self.dbg("Created camera {}", [cam])
 
     def loop_handler(self):
         pass
@@ -92,8 +79,7 @@ class CameraManager(Endpoint):
         val = self.port
         self.port += 2
         self.cam_num += 1
-        self.dbg("camera_event",
-                 "Allocating port {} for camera {}",
+        self.dbg("Allocating port {} for camera {}",
                  [val, self.cam_num])
         return val
 
