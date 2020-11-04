@@ -1,11 +1,11 @@
 from collections import deque
-from snr.utils.debug.debugger import Debugger
-from snr.utils.consumer import Consumer
-from time import sleep, time
-from typing import Callable, Deque, Dict, Tuple
+from time import time
+from typing import Any, Callable, Deque, Dict, Tuple
 
-from snr.utils.debug.debug import DEBUG_CHANNEL, DUMP_CHANNEL, PROFILING_CHANNEL
 from snr.settings import Settings
+from snr.utils.consumer import Consumer
+from snr.utils.debug.channels import *
+from snr.utils.debug.debugger import Debugger
 
 DAEMON_THREAD = False
 SLEEP_TIME_S = 0.01
@@ -27,13 +27,13 @@ class Profiler(Consumer):
         super().__init__("profiler",
                          self.store_task,
                          SLEEP_TIME_S,
-                         debugger=debugger)
+                         debugger.debug)
         self.debugger = debugger
         self.settings = settings
         self.time_dict: Dict[str, Deque[float]] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
 
-    def time(self, name: str, handler: Callable):
+    def time(self, name: str, handler: Callable[[], Any]) -> Any:
         time = Timer()
         result = handler()
         self.log_task(name, time.end())
@@ -50,7 +50,9 @@ class Profiler(Consumer):
         if self.time_dict.get(task_type) is None:
             self.init_task_type(task_type)
         self.time_dict[task_type].append(runtime)
-        self.debugger.debug("profiling_avg", PROFILING_CHANNEL, "Task {} has average runtime {}",
+        self.debugger.debug("profiling_avg",
+                            PROFILING_CHANNEL,
+                            "Task {} has average runtime {}",
                             [task_type, self.avg_time(task_type)])
 
     def init_task_type(self, task_type: str):
@@ -59,9 +61,9 @@ class Profiler(Consumer):
     def dump(self):
         self.debugger.debug("profiling", DUMP_CHANNEL,
                             "Task/Loop type:\t\tAvg runtime: ")
-        for (k, q) in self.time_dict.items():
+        for k in self.time_dict.keys():
             self.debugger.debug("profiling_dump", DUMP_CHANNEL, "{}:\t\t{}", [
-                                k, self.avg_time(q)])
+                                k, self.avg_time(k)])
 
     def avg_time(self, key: str) -> str:
         q = self.time_dict[key]
