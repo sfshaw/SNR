@@ -1,13 +1,14 @@
-from snr.test.expector import Expector
 import unittest
 from time import time
-from typing import Dict, List
+from typing import List
 
 from snr.config import Config
-from snr.endpoint import Endpoint, EndpointFactory
+from snr.endpoint.endpoint import Endpoint
+from snr.endpoint.factory import EndpointFactory
 from snr.node import TASK_TYPE_TERMINATE, Node
 from snr.runner.test_runner import SynchronusTestRunner
 from snr.task import SomeTasks, Task, TaskPriority
+from snr.test.expector import Expector
 
 
 class PingTestEndpoint(Endpoint):
@@ -35,15 +36,14 @@ class PingTestEndpoint(Endpoint):
         return None
 
     def handle_ping_test(self, t: Task) -> SomeTasks:
-        self.expector.call("handle_ping_test")
+        self.expector.call("ping_test")
         self.parent_node.store_data("ping_test", time())
         return None
 
     def handle_recv_ping(self, t: Task) -> SomeTasks:
-        self.expector.call("handle_recv_ping")
+        self.expector.call("process_ping_test")
         start = self.parent_node.get_data("ping_test")
-        latency: float = time() - float(start)
-        self.info("DDS ping latency: {}", [latency])
+        self.info("DDS ping latency: {} ms", [(time() - float(start)) * 1000])
         return Task(TASK_TYPE_TERMINATE, TaskPriority.high, ["all"])
 
 
@@ -64,8 +64,8 @@ class TestInternalDDSPing(unittest.TestCase):
 
     def test_internal_dds_ping(self):
         expector = Expector({"produce_task": 2,
-                             "handle_ping_test": 1,
-                             "handle_recv_ping": 1, })
+                             "ping_test": 1,
+                             "process_ping_test": 1, })
         runner = SynchronusTestRunner(Config(
             factories={
                 "test": [PingTestFactory(expector)]
