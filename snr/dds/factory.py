@@ -1,8 +1,7 @@
-
-from snr.factory import Factory
-from typing import List
+from typing import Any, List
 
 from snr.dds.dds_connection import DDSConnection
+from snr.factory import Factory
 
 
 class DDSFactory(Factory):
@@ -10,7 +9,7 @@ class DDSFactory(Factory):
         pass
 
     def get(self,
-            parent_node,
-            parent_dds
+            parent_node: Any,
+            parent_dds: Any
             ) -> List[DDSConnection]:
         raise NotImplementedError

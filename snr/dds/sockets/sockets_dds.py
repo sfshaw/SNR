@@ -35,13 +35,12 @@ class SocketsDDSFactory(DDSFactory):
             parent_dds: DDS
             ) -> List[DDSConnection]:
         if parent_node:
-            local_ip, hosts = DiscoveryClient(
-                parent_node).find_me(
-                parent_node.role,
-                self.hosts)
+            discoveryClient = DiscoveryClient(parent_node)
+            local_ip, hosts = discoveryClient.find_me(parent_node.role,
+                                                      self.hosts)
             parent_dds.inbound_store(
                 Page("node_ip_address",
-                     local_ip, 
+                     local_ip,
                      parent_node.name,
                      parent_dds.timer.current()))
             parent_node.info("Assigned {} node ip: {}",
@@ -68,10 +67,9 @@ class SocketsDDS(DDSConnection):
                          parent_context,
                          inbound_store)
 
-        self.server = SocketsServer(self,
-                                    config,
-                                    inbound_store)
-        self.client = SocketsClient(parent_node, config)
+        # Start up child thread
+        self.server = SocketsServer(self, config, inbound_store)
+        self.client = SocketsClient(self, config)
 
     def send(self, data: Page):
         self.client.send_data(data)
