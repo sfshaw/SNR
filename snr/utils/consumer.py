@@ -10,24 +10,27 @@ Duplicate implementations already exist in dds.py and debug.py
 """
 from multiprocessing import Queue
 from queue import Empty
-import threading
-from snr.utils.debug.debug import CRITICAL_CHANNEL, DEBUG_CHANNEL, ERROR_CHANNEL, INFO_CHANNEL, WARNING_CHANNEL
-from snr.utils.utils import format_message
-from time import sleep
 from threading import Thread
-from typing import Any, Callable, List, Union
+from time import sleep
+from typing import Any, Callable, List, Optional, Union
+
+from snr.utils.debug.channels import *
+from snr.utils.utils import format_message
+from snr.utils.debug.debug import DebugFn
 
 
 class Consumer:
     def __init__(self,
                  parent_name: str,
-                 action: Callable,
+                 action: Callable[[Any], None],
                  sleep_time: float,
-                 debugger=None):
+                 dbg: Optional[DebugFn] = None
+                 ) -> None:
         self.name = parent_name + "_consumer"
-        self.dbgf = self.__printf
-        if debugger:
-            self.dbgf = debugger.debug
+        self.dbgf: DebugFn = self.__printf
+        if dbg is not None:
+            really_dbg: DebugFn = dbg
+            self.dbgf = lambda *a: really_dbg(self.name, *a)
         self.action = action
         self.sleep_time = sleep_time
         self.queue: Queue[Any] = Queue()
@@ -37,27 +40,11 @@ class Consumer:
 
         self.thread.start()
 
-    # def start(self):
-    #     self.dbgf(DEBUG_CHANNEL, "Starting thread")
-    #     if self.is_alive():
-    #         self.dbgf(CRITICAL_CHANNEL,
-    #                   "Trying to start already running thread")
-    #     self.start_flag = True
-    #     self.thread.start()
-    #     if not self.is_alive():
-    #         self.dbgf(CRITICAL_CHANNEL,
-    #                   "Started thread but not alive")
-
     def put(self, item: Any):
         self.check_alive("Consumer fed but thread is not alive")
         self.queue.put(item)
 
     def __loop(self):
-        # if not self.start_flag:
-        #     self.dbgf(CRITICAL_CHANNEL,
-        #               "Thread not properly started, waiting for start()")
-        #     while not self.start_flag:
-        #         sleep(self.sleep_time)
         self.dbgf(DEBUG_CHANNEL, "Thread now running")
         if self.terminate_flag:
             self.dbgf(CRITICAL_CHANNEL,
@@ -121,5 +108,8 @@ class Consumer:
             # self.start_flag and
             self.thread.is_alive())  # and not self.terminate_flag
 
-    def __printf(self, level: str, *args: Union[List,  str]) -> None:
-        print(format_message(self.name, level, *args))
+    def __printf(self,
+                 level: str,
+                 message: str,
+                 format_args: Union[List[Any], None] = None) -> None:
+        print(format_message(self.name, level, message, format_args))
