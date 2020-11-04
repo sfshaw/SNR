@@ -1,17 +1,19 @@
+from enum import Enum
 from typing import Callable, Dict, List, Optional
 
 from snr.factory import Factory
 
-MODE_DEBUG: str = "debug"
-MODE_DEPLOYED: str = "deployed"
-
-ComponentsByRole = Dict[str, List[Factory]]
-ComponentsGetter = Callable[[str], ComponentsByRole]
+Role = str
 
 
-# def get_empty(role: str) -> ComponentsByRole:
-#     empty: ComponentsByRole = {}
-#     return empty
+class Mode(Enum):
+    DEBUG = "debug"
+    DEPLOYED = "deployed"
+    TEST = "test"
+
+
+ComponentsByRole = Dict[Role, List[Factory]]
+ComponentsGetter = Callable[[Mode], ComponentsByRole]
 
 
 class Config:
@@ -24,7 +26,7 @@ class Config:
         if (not self.factories) and (not self.get_factories):
             raise Exception("No componets provided")
 
-    def get(self, mode: str) -> ComponentsByRole:
+    def get(self, mode: Mode) -> ComponentsByRole:
         if self.get_factories:
             self.factories = self.get_factories(mode)
         return self.factories

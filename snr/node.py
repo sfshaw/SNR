@@ -1,6 +1,6 @@
-
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from snr.config import Mode, Role
 from snr.context import Context
 from snr.dds.dds import DDS
 from snr.dds.factory import DDSFactory
@@ -14,8 +14,10 @@ TASK_TYPE_TERMINATE = "terminate"
 
 
 class Node(Context):
-    def __init__(self, parent_context: Context,
-                 role: str, mode: str,
+    def __init__(self,
+                 parent_context: Context,
+                 role: Role,
+                 mode: Mode,
                  factories: List[Factory]
                  ) -> None:
         super().__init__(role + "_node", parent_context)

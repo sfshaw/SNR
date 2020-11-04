@@ -1,13 +1,14 @@
-from snr.runner.synchronus_runner import SynchronousRunner
-from snr.factory import Factory
 from typing import Dict, List
+
+from snr.config import Mode
+from snr.factory import Factory
 from snr.runner.runner import Runner
 
 
 class MultiRunner(Runner):
 
     def __init__(self,
-                 mode: str,
+                 mode: Mode,
                  factories_by_role: Dict[str, List[Factory]] = {}
                  ) -> None:
         self.mode = mode

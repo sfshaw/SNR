@@ -1,4 +1,4 @@
-from snr.config import Config
+from snr.config import Config, Mode, Role
 from snr.context import root_context
 from snr.runner.runner import Runner, setup_node
 from snr.utils.utils import print_exit
@@ -6,7 +6,7 @@ from snr.utils.utils import print_exit
 
 class SynchronousRunner(Runner):
 
-    def __init__(self, mode: str, role: str, config: Config):
+    def __init__(self, mode: Mode, role: Role, config: Config):
         super().__init__(mode, role, config)
 
     def run(self):
