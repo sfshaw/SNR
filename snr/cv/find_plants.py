@@ -1,8 +1,7 @@
-from typing import List
+from typing import List, Tuple
 
 import cv2
 import numpy as np
-
 
 # Minimim area threshold that is boxed
 AREA_THRESHHOLD = 1000
@@ -14,12 +13,11 @@ color = green
 # Function that takes in a image and draws boxes around suspicious plants
 
 
-def box_image(img: np.array) -> List:
+def box_image(image: np.array) -> List[Tuple[int, int, int, int]]:
     """Sample CV method courtesy of the BIG_J
     """
-    frame = img
     # Converting image from BGR to HSV color space
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # Generating the mask that outlines the plants
     # Method 1: Look for the color green
@@ -41,13 +39,13 @@ def box_image(img: np.array) -> List:
                                            cv2.RETR_TREE,
                                            cv2.CHAIN_APPROX_SIMPLE)
 
-    boxes = []  # List of Rectangle objects
+    boxes: List[Tuple[int, int, int, int]] = []  # List of Rectangle objects
     # Loop through each of the "Plant" areas
     for c in contours:
         # If the "Plant" is large enough draw a rectangle around it
         if cv2.contourArea(c) > AREA_THRESHHOLD:
             # Get the bounding rect
-            x, y, w, h = cv2.boundingRect(c)
+            (x, y, w, h) = cv2.boundingRect(c)
             boxes.append((x, y, w, h))
 
     return boxes
