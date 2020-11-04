@@ -15,6 +15,8 @@ SLEEP_TIME = 0.001
 JOIN_TIMEOUT = 0.5
 DAEMON_THREADS = False
 
+DataDict = Dict[str, Page]
+
 
 class DDS(Context):
     def __init__(self,
@@ -24,7 +26,7 @@ class DDS(Context):
         super().__init__("dds", parent_node)
 
         self.timer = TimeProvider()
-        self.data_dict: Dict[str, Page] = {}
+        self.data_dict: DataDict = {}
 
         self.info("Creating connections from {} factories: {}",
                   [len(factories), factories])
