@@ -1,15 +1,26 @@
+from typing import Any, Callable
 
 MAX_PRINTABLE_DATA_LEN = 60
 
 
 class Page:
-    def __init__(self, key: str, data):
-        self.fresh = True
+    def __init__(self,
+                 key: str,
+                 data: Any,
+                 origin: str,
+                 created_at: float):
         self.key = key
         self.data = data
+        self.origin = origin
+        self.created_at = created_at
 
     def __repr__(self):
-        s = str(self.data)
-        if len(s) > MAX_PRINTABLE_DATA_LEN:
-            return f"k: {self.key},\t v:{type(self.data)}"
-        return f"k: {self.key},\t v:{self.data}"
+        data = str(self.data)
+        if len(data) > MAX_PRINTABLE_DATA_LEN:
+            data = type(self.data)
+        return "k: {},\t v: {},\to: {},\tt: {}".format(
+            self.key,
+            data,
+            self.origin,
+            self.created_at)
+
