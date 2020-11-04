@@ -39,20 +39,13 @@ def get_all(*args):
     return all
 
 
-def format_message(context_name: str, level: str, *args: Union[List,  str]):
-    n = len(args)
-    # Print message to console
-    if n == 1:
-        return "[{}:\t{}]\t{}".format(context_name, level, args[0])
-    elif n == 2:
-        message = str(args[0])
-        return "[{}:\t{}]\t{}".format(context_name, level, message.format(*args[1]))
-    elif n > 2:
-        message = str(args[0])
-        return "[{}:\t{}]\t{}".format(context_name, level, message.format(*args[1:]))
-    else:
-        return "[format:\twarn]\tMalformed args: {}, {}, {}".format(
-            context_name, level, args)
+def format_message(context_name: str,
+                   level: str,
+                   message: str,
+                   format_args: Optional[List[str]] = None):
+    if format_args:
+        message = message.format(*format_args)
+    return "[{}:\t{}]\t{}".format(context_name, level, message)
 
 
 def init_dict(keys: List[str], val: Any) -> dict:
