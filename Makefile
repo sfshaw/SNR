@@ -35,10 +35,6 @@ t: test
 test: check
 	$(PYTHON) -m unittest -v
 
-ft: functional_test
-functional_test: install
-	$(PYTHON)  $(SRC_DIR)/functional_tests/$(FILE_UNDER_TEST) $(TEST_FLAGS)
-
 clean:
 	$(PY_SETUP) clean
 	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR)
