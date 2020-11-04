@@ -4,20 +4,24 @@ https://www.pygame.org/docs/ref/joystick.html
 """
 
 import random
-from typing import Tuple, Union
+from snr.node import Node
+from typing import Any, Dict, Tuple, Union
 
 import pygame
 
 from snr.async_endpoint import AsyncEndpoint
-from snr.context import Context
 
 
 class Controller(AsyncEndpoint):
-    def __init__(self, parent_context: Context,
-                 name: str):
-        super().__init__(parent_context, name,
-                         self.init_controller, self.monitor_controller,
-                         parent_context.settings.CONTROLLER_INIT_TICK_RATE)
+    def __init__(self,
+                 parent: Node,
+                 name: str
+                 ) -> None:
+        super().__init__(parent,
+                         name,
+                         self.init_controller,
+                         self.monitor_controller,
+                         parent.settings.CONTROLLER_INIT_TICK_RATE)
 
         if not self.settings.USE_CONTROLLER:
             self.dbg("controller", "Controller disabled by self.settings")
@@ -36,8 +40,8 @@ class Controller(AsyncEndpoint):
 
         self.start_loop()
 
-    def store_data(self, data):
-        self.parent.datastore.store(self.name, data)
+    def store_data(self, data: Dict[str, Any]):
+        self.parent_node.store_data(self.name, data)
 
     def init_controller(self):
         if self.settings.SIMULATE_INPUT:
