@@ -1,4 +1,5 @@
-CPYTHON=python3.9
+CPYTHON=python3
+CPYTHON39=python3.9
 PYPY=pypy3
 PYTHON=$(CPYTHON)
 
