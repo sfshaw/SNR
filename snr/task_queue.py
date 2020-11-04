@@ -61,3 +61,6 @@ class TaskQueue(Context):
             else:
                 return None
         return self.queue.get()
+
+    def is_empty(self) -> bool:
+        return self.queue.empty()
