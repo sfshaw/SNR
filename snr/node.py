@@ -1,31 +1,31 @@
 
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
+from snr.context import Context
 from snr.dds.dds import DDS
 from snr.dds.factory import DDSFactory
-from snr.context import Context
-from snr.endpoint_factory import EndpointFactory
-from snr.factory import EndpointFactory, Factory
-from snr.endpoint import Endpoint
-from snr.task import SomeTasks, Task, TaskHandler
+from snr.endpoint import Endpoint, EndpointFactory
+from snr.factory import Factory
+from snr.task import SomeTasks, Task, TaskHandler, TaskSource
 from snr.task_queue import TaskQueue
 
+SLEEP_TIME = 0.001
 TASK_TYPE_TERMINATE = "terminate"
 
 
 class Node(Context):
     def __init__(self, parent_context: Context,
                  role: str, mode: str,
-                 factories: List[Factory]):
+                 factories: List[Factory]
+                 ) -> None:
         super().__init__(role + "_node", parent_context)
         self.role = role
         self.mode = mode
         dds_facs, endpoint_facs = self.seperate(factories)
         self.task_queue = TaskQueue(self, self.get_new_tasks)
-        self.datastore = DDS(parent_context=self,
-                             parent_node=self,
-                             factories=dds_facs,
-                             task_scheduler=self.task_queue.schedule)
+        self.datastore = DDS(self,
+                             dds_facs,
+                             self.task_queue.schedule)
         (self.endpoints, self.task_producers) = self.get_all(endpoint_facs)
         self.task_handlers: Dict[str, TaskHandler] = {
             TASK_TYPE_TERMINATE: self.terminate_task_handler
@@ -36,21 +36,24 @@ class Node(Context):
 
     def loop(self):
         while not self.terminate_flag:
-            t = self.task_queue.get_next()
-            self.execute_task(t)
-            # self.sleep(self.settings.NODE_SLEEP_TIME)
-        # self.terminate()  # Not needed, runner termiantes node after loop is done
+            if self.task_queue.is_empty():
+                self.datastore.catch_up()
+            t: Optional[Task] = self.task_queue.get_next()
+            if t:
+                self.execute_task(t)
+            else:
+                self.sleep(SLEEP_TIME)
 
     def get_new_tasks(self):
         """Retrieve tasks from endpoints and queue them.
         """
-        new_tasks = []
+        new_tasks: List[Task] = []
         for task_source in self.task_producers:
-            t = task_source()
+            t: SomeTasks = task_source()
             if t:
                 if isinstance(t, Task):
                     new_tasks.append(t)
-                elif isinstance(t, List):
+                else:
                     new_tasks.extend(t)
                 self.dbg("Produced task: {} from {}",
                          [t, task_source])
@@ -114,38 +117,37 @@ class Node(Context):
         Conversely, join may be called from an external context such as
         another thread or process.
         """
-        reason = self.datastore.get("node_exit_reason")
 
-        # Shutdown all endpoints
         for e in self.endpoints:
             e.join()
 
         self.info("Terminated all endpoints")
 
-        # Display everything that was stored in the datastore
-        self.datastore.dump()
+        self.datastore.dump_data()
         self.datastore.join()
 
         self.info("Node {} finished terminating", [self.role])
 
-    def seperate(self, factories: List[Factory]
-                 ) -> Tuple[List[DDSFactory],
-                            List[EndpointFactory]]:
+    def seperate(self,
+                 factories: List[Factory]
+                 ) -> Tuple[
+            List[DDSFactory],
+            List[EndpointFactory]]:
         dds_facs: List[DDSFactory] = []
         endpoint_facs: List[EndpointFactory] = []
         self.info("Seperating facs: {}", [factories])
         for f in factories:
             if isinstance(f, DDSFactory):
                 dds_facs.append(f)
-            if isinstance(f, EndpointFactory):
+            elif isinstance(f, EndpointFactory):
                 endpoint_facs.append(f)
         self.dbg("DDS facs: {}\n\t\t\tEndpoint facs: {}",
                  [dds_facs, endpoint_facs])
-        return dds_facs, endpoint_facs
+        return (dds_facs, endpoint_facs)
 
     def get_all(self,
                 factories: List[EndpointFactory]
-                ) -> Tuple[List[Endpoint], List[Callable]]:
+                ) -> Tuple[List[Endpoint], List[TaskSource]]:
         self.info("Adding components from {} factories", [len(factories)])
         endpoints = []
         task_producers = []
@@ -157,7 +159,7 @@ class Node(Context):
                 self.info("{} added {}", [factory, endpoint])
         return endpoints, task_producers
 
-    def store_data(self, key: str, data) -> None:
+    def store_data(self, key: str, data: Any) -> None:
         self.datastore.store(key, data)
 
     def get_data(self, key: str) -> Union[Any, None]:
