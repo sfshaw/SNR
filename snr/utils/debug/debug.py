@@ -1,10 +1,4 @@
 
-PROFILING_CHANNEL = "profiling"
-DUMP_CHANNEL = "dump"
-INFO_CHANNEL = "info"
-LOG_CHANNEL = "log"
-DEBUG_CHANNEL = "verbose"
-WARNING_CHANNEL = "warning"
-ERROR_CHANNEL = "error"
-CRITICAL_CHANNEL = "critical"
-FATAL_CHANNEL = "fatal"
+from typing import Callable
+
+DebugFn = Callable[..., None]
