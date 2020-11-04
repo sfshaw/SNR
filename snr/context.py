@@ -1,27 +1,28 @@
 import time
-from snr.utils.profiler import Profiler
-from typing import Callable, Union
+from typing import Any, Callable, List, Optional, Union
 
-from snr.utils.debug.debugger import Debugger
-from snr.utils.debug.debug import DEBUG_CHANNEL, DUMP_CHANNEL,  ERROR_CHANNEL, FATAL_CHANNEL, INFO_CHANNEL, LOG_CHANNEL, WARNING_CHANNEL
 from snr.settings import Settings
+from snr.utils.debug.channels import *
+from snr.utils.debug.debugger import Debugger
+from snr.utils.profiler import Profiler
 
 
 class Context:
 
     def __init__(self,
                  name: str,
-                 parent_context,
-                 debugger: Debugger = None,
-                 profiler: Profiler = None,
-                 settings: Settings = Settings()):
+                 parent_context: Any,
+                 debugger: Optional[Debugger] = None,
+                 profiler: Optional[Profiler] = None,
+                 settings: Settings = Settings()
+                 ) -> None:
         self.name = name
         if not debugger:
             debugger = Debugger(settings)
         self.debugger = debugger
         self.profiler = profiler
         self.settings: Settings = settings
-        if parent_context:
+        if isinstance(parent_context, Context):
             self.parent_name = parent_context.name
             self.debugger = parent_context.debugger
             self.profiler = profiler
@@ -31,33 +32,51 @@ class Context:
 
     def terminate(self):
         self.dbg("Terminating context {}", [self.name])
-        self.profiler.join()
-        self.profiler.dump()
+        if isinstance(self.profiler, Profiler):
+            self.profiler.join()
+            self.profiler.dump()
         self.debugger.join()
         print("Context terminated.")
 
-    def fatal(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, FATAL_CHANNEL, *args)
+    def fatal(self,
+              message: str,
+              format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, FATAL_CHANNEL, message, format_args)
 
-    def err(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, ERROR_CHANNEL, *args)
+    def err(self,
+            message: str,
+            format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, ERROR_CHANNEL, message, format_args)
 
-    def warn(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, WARNING_CHANNEL, *args)
+    def warn(self,
+             message: str,
+             format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, WARNING_CHANNEL, message, format_args)
 
-    def log(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, LOG_CHANNEL, *args)
+    def log(self,
+            message: str,
+            format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, LOG_CHANNEL, message, format_args)
 
-    def dbg(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, DEBUG_CHANNEL, *args)
+    def dbg(self,
+            message: str,
+            format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, DEBUG_CHANNEL, message, format_args)
 
-    def info(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, INFO_CHANNEL, *args)
+    def info(self,
+             message: str,
+             format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, INFO_CHANNEL, message, format_args)
 
-    def dump(self, *args: Union[list,  str]):
-        self.debugger.debug(self.name, DUMP_CHANNEL, *args)
+    def dump(self,
+             message: str,
+             format_args: Union[List[Any], Any, None] = None):
+        self.debugger.debug(self.name, DUMP_CHANNEL, message, format_args)
 
-    def time(self, task_name: str, handler: Callable, *args):
+    def time(self,
+             task_name: str,
+             handler: Callable[[Any], Any],
+             *args: Any) -> Any:
         if self.profiler:
             return self.profiler.time(f"{task_name}:{self.name}",
                                       lambda: handler(*args))
@@ -68,8 +87,8 @@ class Context:
         """Pauses the execution of the thread for time_s seconds
         """
         if self.settings.DISABLE_SLEEP:
-            # TODO: Elimanate debug dependancy from utils (will crash)
             self.debugger.debug(f"{self.name}:sleep",
+                                WARNING_CHANNEL,
                                 "Sleep disabled, not sleeping")
             return
         if time_s == 0:
