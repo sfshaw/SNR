@@ -49,7 +49,7 @@ class DDS(Context):
 
     def get(self, key: str) -> Optional[Any]:
         # First flush the inbound queue so we have all data
-        self.rx_consumer.catch_up()
+        self.rx_consumer.catch_up("DDS read")
         page: Any = self.data_dict.get(key)
         if page:
             return page.data
@@ -58,12 +58,13 @@ class DDS(Context):
     def inbound_store(self, page: Page) -> None:
         self.rx_consumer.put(page)
 
-    def catch_up(self) -> None:
+    def catch_up(self, reason: str) -> None:
         time_waited = time()
-        self.rx_consumer.catch_up()
-        self.tx_consumer.catch_up()
+        self.rx_consumer.catch_up(f"dds_catch_up ({reason})")
+        self.tx_consumer.catch_up(f"dds_catch_up ({reason})")
         time_waited -= time()
-        self.info("Waited {} ms for DDS to catch up", [time_waited * 1000])
+        self.info("Waited {} ms for DDS to catch up for {}",
+                  [time_waited * 1000, reason])
 
     def dump_data(self) -> None:
         for (k, v) in self.data_dict.items():
@@ -91,7 +92,7 @@ class DDS(Context):
         """Shutdown DDS threads
         """
         self.set_terminate_flag("join")
-        self.catch_up()
+        self.catch_up("Join")
         for connection in self.connections:
             connection.join()
         self.rx_consumer.join()

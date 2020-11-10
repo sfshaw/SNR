@@ -79,12 +79,12 @@ class Consumer:
     def join(self):
         self.dbgf(INFO_CHANNEL, "Preparing to join thread")
         self.set_terminate_flag("join")
-        self.catch_up()
+        self.catch_up("join")
         self.thread.join(timeout=0.75)
         if self.thread.is_alive():
             self.dbgf(WARNING_CHANNEL, "Thread just won't die.")
 
-    def catch_up(self) -> None:
+    def catch_up(self, reason: str) -> None:
         MAX_TIME_WAITED = 5 * self.sleep_time
         time_waited = 0.0
         while (self.is_alive()
@@ -92,9 +92,10 @@ class Consumer:
                and not self.queue.empty):
             sleep(self.sleep_time)
             time_waited += self.sleep_time
-        self.dbgf(DEBUG_CHANNEL,
-                  "Waited {} ms for consumer to catch up",
-                  [time_waited * 1000])
+        if time_waited > 0.0000001:
+            self.dbgf(DEBUG_CHANNEL,
+                      "Waited {} ms for consumer to catch up for {}",
+                      [time_waited * 1000, reason])
 
     def set_terminate_flag(self, reason: str) -> None:
         self.terminate_flag = True

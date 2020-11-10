@@ -44,7 +44,7 @@ class Node(Context):
     def loop(self):
         while not self.terminate_flag:
             if self.task_queue.is_empty():
-                self.datastore.catch_up()
+                self.datastore.catch_up("idle_node_no_tasks")
             t: Optional[Task] = self.task_queue.get_next()
             if t:
                 self.execute_task(t)
@@ -103,7 +103,7 @@ class Node(Context):
         if new_tasks:
             self.task_queue.schedule(new_tasks)
         self.dbg("Letting DDS catch up")
-        self.datastore.catch_up()
+        self.datastore.catch_up("Scheduled tasks after execution")
 
     def terminate_task_handler(self, t: Task) -> SomeTasks:
         if ("all" in t.val_list
