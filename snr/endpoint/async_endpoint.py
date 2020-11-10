@@ -29,15 +29,12 @@ class AsyncEndpoint(Endpoint):
     def __init__(self,
                  parent: Node,
                  name: str,
-                 loop_handler: Callable[[], None],
-                 setup_handler: Callable[[], None] = no_op,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  task_producers: List[TaskSource] = [],
                  task_handlers: Dict[str, TaskHandler] = {}
                  ) -> None:
         super().__init__(parent, name, task_producers, task_handlers)
-        self.setup = setup_handler
-        self.loop_handler = loop_handler
+        self.parent = parent
         self.terminate_flag = False
         self.set_delay(tick_rate_hz)
 
@@ -51,6 +48,12 @@ class AsyncEndpoint(Endpoint):
             self.delay_s = 0.0
         else:
             self.delay_s = 1.0 / tick_rate_hz
+
+    def setup(self) -> None:
+        pass
+
+    def loop_handler(self) -> None:
+        raise NotImplementedError
 
     def start_loop(self):
         self.dbg("Starting async endpoint {} thread",
