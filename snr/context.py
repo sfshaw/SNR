@@ -11,32 +11,28 @@ class Context:
 
     def __init__(self,
                  name: str,
-                 parent_context: Any,
-                 debugger: Optional[Debugger] = None,
-                 profiler: Optional[Profiler] = None,
-                 settings: Settings = Settings()
+                 parent: Any,
+                 profiler: Optional[Profiler] = None
                  ) -> None:
         self.name = name
-        if not debugger:
-            debugger = Debugger(settings)
-        self.debugger = debugger
-        self.profiler = profiler
-        self.settings: Settings = settings
-        if isinstance(parent_context, Context):
-            self.parent_name = parent_context.name
-            self.debugger = parent_context.debugger
-            self.profiler = profiler
-            self.settings = parent_context.settings
-        elif (not self.debugger) or (not self.settings):
-            print(f"FATAL: Incorrectly constructed context: {name}")
+        self.debugger: Debugger = parent.debugger
+        self.settings: Settings = parent.settings
+        self.profiler: Optional[Profiler] = profiler
+
+        if self.debugger and self.settings:
+            pass
+        else:
+            raise Exception(f"FATAL: Incorrectly constructed context: {name}")
 
     def terminate(self):
         self.dbg("Terminating context {}", [self.name])
+        self.terminate_profiler()
+        print("Context terminated.")
+
+    def terminate_profiler(self) -> None:
         if isinstance(self.profiler, Profiler):
             self.profiler.join()
             self.profiler.dump()
-        self.debugger.join()
-        print("Context terminated.")
 
     def fatal(self,
               message: str,
@@ -67,6 +63,7 @@ class Context:
              message: str,
              format_args: Union[List[Any], Any, None] = None):
         self.debugger.debug(self.name, INFO_CHANNEL, message, format_args)
+        self.debugger.catch_up("info message")
 
     def dump(self,
              message: str,
@@ -98,13 +95,3 @@ class Context:
 
     def debug_delay(self):
         self.sleep(self.settings.DEBUGGING_DELAY_S)
-
-
-def root_context(name: str) -> Context:
-    settings = Settings()
-    debugger = Debugger(settings)
-    return Context(name=name,
-                   parent_context=None,
-                   debugger=debugger,
-                   profiler=Profiler(debugger, settings),
-                   settings=settings)

@@ -7,8 +7,10 @@ from snr.dds.factory import DDSFactory
 from snr.endpoint.endpoint import Endpoint
 from snr.endpoint.factory import EndpointFactory
 from snr.factory import Factory
+from snr.root_context import RootContext
 from snr.task import SomeTasks, Task, TaskHandler, TaskSource
 from snr.task_queue import TaskQueue
+from snr.utils.profiler import Profiler
 
 SLEEP_TIME = 0.001
 TASK_TYPE_TERMINATE = "terminate"
@@ -16,12 +18,14 @@ TASK_TYPE_TERMINATE = "terminate"
 
 class Node(Context):
     def __init__(self,
-                 parent_context: Context,
+                 parent: RootContext,
                  role: Role,
                  mode: Mode,
                  factories: List[Factory]
                  ) -> None:
-        super().__init__(role + "_node", parent_context)
+        super().__init__(role + "_node",
+                         parent,
+                         Profiler(parent.debugger, parent.settings))
         self.role = role
         self.mode = mode
         dds_facs, endpoint_facs = self.seperate(factories)
@@ -128,7 +132,7 @@ class Node(Context):
 
         self.datastore.dump_data()
         self.datastore.join()
-
+        super().terminate()
         self.info("Node {} finished terminating", [self.role])
 
     def seperate(self,

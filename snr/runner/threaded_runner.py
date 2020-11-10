@@ -3,7 +3,7 @@ from threading import Thread
 from typing import List
 
 from snr.config import Config, Mode
-from snr.context import root_context
+from snr.root_context import RootContext
 from snr.runner.multi_runner import MultiRunner
 from snr.runner.runner import Runner
 from snr.runner.synchronus_runner import SynchronousRunner
@@ -22,7 +22,7 @@ class ThreadedRunner(MultiRunner):
         super().__init__(mode, config.get(mode))
 
     def run(self):
-        context = root_context("runner")
+        context = RootContext("runner")
         runners: List[Runner] = [SynchronousRunner(
             self.mode,
             role,
@@ -32,7 +32,7 @@ class ThreadedRunner(MultiRunner):
         try:
             [thread.start() for thread in threads]
         except KeyboardInterrupt:
-            context.fatal("TODO: Handle keyboard interrupt in runner threads")
+            print("TODO: Handle keyboard interrupt in runner threads")
             # for runner  in runners:
             #     if runner:
             #         context.log("framework", "Interrupted by user, exiting")

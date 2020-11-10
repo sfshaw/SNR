@@ -1,10 +1,7 @@
-import sys
-from typing import Any, List
+
+from typing import Any
 
 from snr.config import Config, Mode, Role
-from snr.context import Context
-from snr.factory import Factory
-from snr.node import Node
 
 
 class Runner():
@@ -16,14 +13,3 @@ class Runner():
 
     def run(self) -> Any:
         raise NotImplementedError
-
-
-def setup_node(context: Context,
-               role: Role,
-               mode: Mode,
-               factories: List[Factory]
-               ) -> Node:
-    py_v: str = sys.version[0:5]
-    context.info("Starting {} node in {} mode using Python {}",
-                 [role, mode, py_v])
-    return Node(context, role, mode, factories)

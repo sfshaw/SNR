@@ -1,6 +1,7 @@
 from snr.config import Config, Mode, Role
-from snr.context import root_context
-from snr.runner.runner import Runner, setup_node
+from snr.node import Node
+from snr.root_context import RootContext
+from snr.runner.runner import Runner
 from snr.utils.utils import print_exit
 
 
@@ -10,17 +11,17 @@ class SynchronousRunner(Runner):
         super().__init__(mode, role, config)
 
     def run(self):
-        context = root_context("runner")
+        context = RootContext("runner")
         node = None
         try:
-            node = setup_node(context, self.role, self.mode, self.factories)
+            node = Node(context, self.role, self.mode, self.factories)
             node.loop()  # Blocking loop
         except KeyboardInterrupt:
             if node:
-                context.log("Interrupted by user, exiting")
+                print("Interrupted by user, exiting")
                 node.set_terminate_flag("Interrupted by user")
             else:
-                context.fatal("Exiting before node was done being constructed")
+                print("Exiting before node was done being constructed")
         finally:
             if node:
                 node.terminate()

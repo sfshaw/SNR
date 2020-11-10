@@ -43,7 +43,7 @@ class DDS(Context):
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
-        page = Page(key, value, self.parent_name, created_at, process)
+        page = Page(key, value, self.parent_node.name, created_at, process)
         self.inbound_store(page)
         self.tx_consumer.put(page)
 

@@ -7,10 +7,12 @@ from snr.task import SomeTasks, Task, TaskSource
 
 class TaskQueue(Context):
     def __init__(self,
-                 parent_context: Context,
+                 parent: Context,
                  task_source: TaskSource
                  ) -> None:
-        super().__init__("task_queue", parent_context)
+        super().__init__("task_queue",
+                         parent,
+                         parent.profiler)
         self.get_new_tasks = task_source
         self.queue: "Queue[Task]" = Queue()
 
