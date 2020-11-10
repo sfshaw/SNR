@@ -68,13 +68,12 @@ class AsyncEndpoint(Endpoint):
 
     def threaded_method(self):
         self.setup()
-
         try:
             while not self.terminate_flag:
-                if self.profiler is None:
-                    self.loop_handler()
-                else:
+                if self.profiler:
                     self.profiler.time(self.name, self.loop_handler)
+                else:
+                    self.loop_handler()
                 self.tick()
         except KeyboardInterrupt:
             pass
