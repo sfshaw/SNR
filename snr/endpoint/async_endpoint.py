@@ -6,12 +6,11 @@ Relay: Server data to other nodes
 """
 
 from threading import Thread
-from typing import Callable, Dict, List
+from typing import Dict, List
 
 from snr.endpoint.endpoint import Endpoint
 from snr.node import Node
 from snr.task import TaskHandler, TaskSource
-from snr.utils.utils import no_op
 
 DEFAULT_TICK_RATE = 24
 DAEMON_THREADS = False
@@ -64,7 +63,10 @@ class AsyncEndpoint(Endpoint):
         """Externaly wait to shutdown a threaded endpoint
         """
         self.set_terminate_flag("join")
-        self.thread.join(timeout=1)
+        if self.thread.is_alive():
+            self.thread.join(timeout=1)
+        else:
+            self.warn("Thread was not alive on join")
 
     def threaded_method(self):
         self.setup()
