@@ -43,7 +43,8 @@ class PingTestEndpoint(Endpoint):
     def handle_recv_ping(self, t: Task) -> SomeTasks:
         self.expector.call("process_ping_test")
         start = self.parent_node.get_data("ping_test")
-        self.info("DDS ping latency: {} ms", [(time() - float(start)) * 1000])
+        self.info("DDS ping latency: {} ms",
+                  [(time() - float(start)) * 1000])
         return Task(TASK_TYPE_TERMINATE, TaskPriority.high, ["all"])
 
 
@@ -63,13 +64,14 @@ class PingTestFactory(EndpointFactory):
 class TestInternalDDSPing(unittest.TestCase):
 
     def test_internal_dds_ping(self):
-        expector = Expector({"produce_task": 2,
-                             "ping_test": 1,
-                             "process_ping_test": 1, })
-        runner = SynchronusTestRunner(Config(
-            factories={
-                "test": [PingTestFactory(expector)]
-            }))
+        expector = Expector({
+            "ping_test": 1,
+            "process_ping_test": 1,
+        })
+        config = Config({
+            "test": [PingTestFactory(expector)]
+        })
+        runner = SynchronusTestRunner(config)
         runner.run()
         expector.assert_satisfied(self)
 
