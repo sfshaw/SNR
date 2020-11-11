@@ -25,6 +25,7 @@ class DDS(Context):
                  task_scheduler: Callable[[Task], None] = no_op):
         super().__init__("dds", parent_node)
 
+        self.parent_node = parent_node    
         self.timer = TimeProvider()
         self.data_dict: DataDict = {}
 
