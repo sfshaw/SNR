@@ -8,7 +8,7 @@ from snr.endpoint.factory import EndpointFactory
 from snr.node import Node
 
 
-class TestStringMethods(unittest.TestCase):
+class TestConfig(unittest.TestCase):
     class TestFac(EndpointFactory):
         def __init__(self):
             pass
@@ -28,11 +28,11 @@ class TestStringMethods(unittest.TestCase):
     def test_getter(self):
         self.called: bool = False
 
-        def getter(s: str) -> ComponentsByRole:
+        def getter(mode: Mode) -> ComponentsByRole:
             self.called = True
             return {}
 
-        self.assertEqual(Config(get_factories=getter).get("test_mode"), {})
+        self.assertEqual(Config(get_factories=getter).get(Mode.TEST), {})
         self.assertTrue(self.called)
 
 
