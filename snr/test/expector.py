@@ -10,10 +10,14 @@ class Expector:
             self.times_called[key] = 0
 
     def call(self, key: str):
-        self.times_called[key] = self.times_called[key] + 1
+        val = self.times_called.get(key)
+        if val is None:
+            val = 0
+        self.times_called[key] = val + 1
 
     def assert_satisfied(self, testcase: unittest.TestCase):
         for (key, expected_value) in self.expectations.items():
             testcase.assertEqual(self.times_called[key],
                                  expected_value,
                                  "For " + key)
+        testcase.assertTrue(True)
