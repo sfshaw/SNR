@@ -26,16 +26,15 @@ class Profiler(Consumer):
             return None
         super().__init__("profiler",
                          self.store_task,
-                         SLEEP_TIME_S,
-                         debugger.debug)
+                         SLEEP_TIME_S)
         self.debugger = debugger
         self.settings = settings
         self.time_dict: Dict[str, Deque[float]] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
 
-    def time(self, name: str, handler: Callable[[], Any]) -> Any:
+    def time(self, name: str, handler: Callable[[Any], Any], args: Any) -> Any:
         time = Timer()
-        result = handler()
+        result = handler(args)
         self.log_task(name, time.end())
         return result
 
