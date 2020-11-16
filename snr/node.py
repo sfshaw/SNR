@@ -30,7 +30,7 @@ class Node(Context):
         self.mode = mode
 
         dds_facs, endpoint_facs = self.seperate(factories)
-        
+
         self.task_queue = TaskQueue(self, self.get_new_tasks)
         self.datastore = DDS(self,
                              dds_facs,

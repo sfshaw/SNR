@@ -5,6 +5,7 @@ AsyncEndpoint: Generate and process data for Nodes
 Relay: Server data to other nodes
 """
 # import signal
+from snr.endpoint.factory import EndpointFactory
 from typing import Callable
 from multiprocessing import Process
 
@@ -24,13 +25,14 @@ class ProcEndpoint(Endpoint):
     """
 
     def __init__(self,
+                 factory: EndpointFactory,
                  parent: Node,
                  name: str,
                  setup_handler: Callable[[], None],
                  loop_handler: Callable[[], None],
                  tick_rate_hz: float
                  ) -> None:
-        super().__init__(parent, name)
+        super().__init__(factory, parent, name)
         self.setup = setup_handler
         self.loop_handler = loop_handler
         self.terminate_flag = False
@@ -46,7 +48,7 @@ class ProcEndpoint(Endpoint):
         else:
             self.delay = 1.0 / tick_rate_hz
 
-    def start_loop(self):
+    def start(self):
         self.info("Starting proc endpoint {} process", [self.name])
         self.proc = self.get_proc()
         self.proc.start()
@@ -67,7 +69,7 @@ class ProcEndpoint(Endpoint):
                 if self.profiler is None:
                     self.loop_handler()
                 else:
-                    self.profiler.time(self.name, self.loop_handler)
+                    self.time(self.name, self.loop_handler, None)
 
                     # self.dbg("profiling_endpoint",
                     #       "Ran {} task in {:6.3f} us",

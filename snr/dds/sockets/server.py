@@ -3,7 +3,7 @@
 import pickle
 import socket
 from socket import socket as Socket
-from typing import Optional
+from typing import Any, Optional
 
 from snr.dds.page import InboundStoreFn, Page
 from snr.dds.sockets.config import SocketsConfig
@@ -16,13 +16,14 @@ class SocketsServer(AsyncEndpoint):
     """
 
     def __init__(self,
+                 factory: Any,
                  parent: Node,
                  config: SocketsConfig,
                  inbound_store: InboundStoreFn
                  ) -> None:
-        super().__init__(parent,
+        super().__init__(factory,
+                         parent,
                          name="dds_sockets_server",
-                         loop_handler=self.receive_data,
                          tick_rate_hz=0)
         self.config: SocketsConfig = config
         self.inbound_store: InboundStoreFn = inbound_store
@@ -32,9 +33,9 @@ class SocketsServer(AsyncEndpoint):
         self.connected: bool = False
 
         # Async endpoint thread loop
-        self.start_loop()
+        self.start()
 
-    def receive_data(self) -> None:
+    def loop_handler(self) -> None:
         self.diagnose()
         self.info("Waiting to receive data")
         try:

@@ -35,6 +35,17 @@ class NodeCore(Endpoint):
             self.parent_node.set_terminate_flag("terminate_task")
         return None
 
+    def task_handler_reload(self, t: Task) -> SomeTasks:
+        endpoint_name = t.val_list[0]
+        endpoint = self.parent_node.endpoints.get(endpoint_name)
+        if isinstance(endpoint, Endpoint):
+            self.info("Reloading endoint: {}", [endpoint_name])
+            self.parent_node.endpoints[endpoint_name] = endpoint.reload(self)
+        else:
+            self.warn("Endpoint {} not found", [endpoint_name])
+
+        return None
+
     def task_handler_list_endpoints(self, t: Task):
         self.info("Listing endpoints:")
         for name in self.parent_node.endpoints.keys():

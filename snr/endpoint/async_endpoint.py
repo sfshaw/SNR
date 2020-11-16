@@ -5,6 +5,7 @@ AsyncEndpoint: Generate and process data for Nodes
 Relay: Server data to other nodes
 """
 
+from snr.endpoint.factory import EndpointFactory
 from threading import Thread
 from typing import Dict, List
 
@@ -26,13 +27,18 @@ class AsyncEndpoint(Endpoint):
     """
 
     def __init__(self,
+                 factory: EndpointFactory,
                  parent: Node,
                  name: str,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  task_producers: List[TaskSource] = [],
                  task_handlers: Dict[str, TaskHandler] = {}
                  ) -> None:
-        super().__init__(parent, name, task_producers, task_handlers)
+        super().__init__(factory,
+                         parent,
+                         name,
+                         task_producers,
+                         task_handlers)
         self.parent = parent
         self.terminate_flag = False
         self.set_delay(tick_rate_hz)
@@ -54,7 +60,7 @@ class AsyncEndpoint(Endpoint):
     def loop_handler(self) -> None:
         raise NotImplementedError
 
-    def start_loop(self):
+    def start(self):
         self.dbg("Starting async endpoint {} thread",
                  [self.name])
         self.thread.start()
@@ -73,7 +79,7 @@ class AsyncEndpoint(Endpoint):
         try:
             while not self.terminate_flag:
                 if self.profiler:
-                    self.profiler.time(self.name, self.loop_handler)
+                    self.time(self.name, self.loop_handler, None)
                 else:
                     self.loop_handler()
                 self.tick()
@@ -98,3 +104,6 @@ class AsyncEndpoint(Endpoint):
         self.terminate_flag = True
         self.info("Preparing to terminating async_endpoint {} for {}",
                   [self.name, reason])
+
+    def terminate(self):
+        pass

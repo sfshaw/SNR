@@ -1,6 +1,6 @@
 from typing import List
 
-from snr.context import Context
+from snr.context.context import Context
 from snr.dds.dds import DDS
 from snr.dds.dds_connection import DDSConnection
 from snr.dds.factory import DDSFactory
