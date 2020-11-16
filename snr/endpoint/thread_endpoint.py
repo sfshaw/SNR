@@ -17,7 +17,7 @@ DEFAULT_TICK_RATE = 24
 DAEMON_THREADS = False
 
 
-class AsyncEndpoint(Endpoint):
+class ThreadEndpoint(Endpoint):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An

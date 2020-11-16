@@ -7,11 +7,11 @@ from typing import Any, Optional
 
 from snr.dds.page import InboundStoreFn, Page
 from snr.dds.sockets.config import SocketsConfig
-from snr.endpoint.async_endpoint import AsyncEndpoint
+from snr.endpoint.thread_endpoint import ThreadEndpoint
 from snr.node import Node
 
 
-class SocketsServer(AsyncEndpoint):
+class SocketsServer(ThreadEndpoint):
     """Asynchronous sockets server which sends commands to robot
     """
 

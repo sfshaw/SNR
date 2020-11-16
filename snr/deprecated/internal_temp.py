@@ -22,7 +22,7 @@
 #         return INVALID_VALUE
 
 
-# class IntTempMon(AsyncEndpoint):
+# class IntTempMon(ThreadEndpoint):
 #     """AsyncEndpoint for internal Raspberry Pi temperature monitoring
 
 #     Settings toggle of this class' use must be done in the calling
