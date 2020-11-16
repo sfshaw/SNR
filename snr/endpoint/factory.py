@@ -9,7 +9,7 @@ class EndpointFactory(Factory):
         pass
 
     def get(self, parent_node: Any) -> List[Endpoint]:
-        return raise NotImplementedError
+        raise NotImplementedError
 
     def reload(self) -> None:
         raise NotImplementedError
