@@ -11,13 +11,15 @@ DIST_DIR=dist
 SRC_DIR=snr
 TEST_DIR=$(SRC_DIR)/test
 
-TEST1=test1.py
 
 TEST_FLAGS=test -d
-FILE_UNDER_TEST=$(TEST1)
 
-.PHNOY: dev check build install dist test
-dev:
+.PHONY: dev develop check build install dist test
+d: dev
+dev: develop
+	$(PYTHON) $(SRC_DIR)/dev.py
+
+develop:
 	$(PY_SETUP) develop --user
 
 check:
