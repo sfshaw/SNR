@@ -25,7 +25,7 @@ class DDS(Context):
                  task_scheduler: Callable[[Task], None] = no_op):
         super().__init__("dds", parent_node)
 
-        self.parent_node = parent_node    
+        self.parent_node = parent_node
         self.timer = TimeProvider()
         self.data_dict: DataDict = {}
 
@@ -68,9 +68,8 @@ class DDS(Context):
                   [time_waited * 1000, reason])
 
     def dump_data(self) -> None:
-        for (k, v) in self.data_dict.items():
-            super().dump("k: {}\tv: {}",
-                         [k, v])
+        for page in self.data_dict.values():
+            super().dump("{}", [page])
 
     def write(self, page: Page):
         self.data_dict[page.key] = page
