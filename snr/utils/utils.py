@@ -39,7 +39,7 @@ def format_message(context_name: str,
                    format_args: Optional[List[str]] = None):
     if format_args:
         message = message.format(*format_args)
-    return "[{}:\t{}]\t{}".format(context_name, level, message)
+    return "[{}:\t{}]\t{}\n".format(context_name, level, message)
 
 
 def init_dict(keys: List[str], val: Any) -> Dict[str, Any]:
