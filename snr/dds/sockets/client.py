@@ -4,7 +4,7 @@
 import pickle
 import socket
 
-from snr.context import Context
+from snr.context.context import Context
 from snr.dds.page import Page
 from snr.dds.sockets.config import SocketsConfig
 from snr.utils.utils import attempt, print_exit

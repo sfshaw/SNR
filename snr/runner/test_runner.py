@@ -1,6 +1,6 @@
 from snr.config import ComponentsByRole, Config, Mode
 from snr.node import Node
-from snr.root_context import RootContext
+from snr.context.root_context import RootContext
 from snr.runner.synchronus_runner import SynchronousRunner
 from snr.runner.threaded_runner import ThreadedRunner
 

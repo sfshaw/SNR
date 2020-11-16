@@ -3,7 +3,7 @@ from threading import Thread
 from typing import List
 
 from snr.config import Config, Mode
-from snr.root_context import RootContext
+from snr.context.root_context import RootContext
 from snr.runner.multi_runner import MultiRunner
 from snr.runner.runner import Runner
 from snr.runner.synchronus_runner import SynchronousRunner

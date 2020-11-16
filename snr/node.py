@@ -1,14 +1,13 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from snr.config import Mode, Role
-from snr.context import Context
+from snr.context.context import Context
 from snr.dds.dds import DDS
 from snr.dds.factory import DDSFactory
 from snr.endpoint.endpoint import Endpoint
 from snr.endpoint.factory import EndpointFactory
 from snr.factory import Factory
-from snr.root_context import RootContext
-from snr.task import SomeTasks, Task, TaskHandler, TaskSource
+from snr.context.root_context import RootContext
 from snr.task_queue import TaskQueue
 from snr.utils.profiler import Profiler
 

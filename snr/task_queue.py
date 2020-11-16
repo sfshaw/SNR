@@ -1,7 +1,7 @@
 from queue import Queue
 from typing import List, Union
 
-from snr.context import Context
+from snr.context.context import Context
 from snr.task import SomeTasks, Task, TaskSource
 
 

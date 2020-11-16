@@ -1,7 +1,7 @@
 import socket
 from typing import List, Tuple
 
-from snr.context import Context
+from snr.context.context import Context
 from snr.dds.sockets.discovery_server import DiscoveryServer
 
 TIMEOUT = 2

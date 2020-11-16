@@ -2,7 +2,7 @@
 from time import time
 from typing import Any, Callable, Dict, List, Optional
 
-from snr.context import Context
+from snr.context.context import Context
 from snr.dds.dds_connection import DDSConnection
 from snr.dds.factory import DDSFactory
 from snr.dds.page import Page

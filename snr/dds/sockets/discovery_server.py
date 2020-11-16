@@ -3,7 +3,7 @@ import socket
 from socket import socket as Socket
 from typing import Optional
 
-from snr.context import Context
+from snr.context.context import Context
 
 LOCALHOST = "localhost"
 MAX_CONNECTIONS = 10

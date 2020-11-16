@@ -1,3 +1,4 @@
+from snr.context.std_io import StdIo
 import time
 from typing import Any, Callable, List, Optional, Union
 
@@ -15,6 +16,7 @@ class Context:
                  profiler: Optional[Profiler] = None
                  ) -> None:
         self.name = name
+        self.stdIo: StdIo = parent.stdIo
         self.debugger: Debugger = parent.debugger
         self.settings: Settings = parent.settings
         self.profiler: Optional[Profiler] = profiler
@@ -62,8 +64,10 @@ class Context:
     def info(self,
              message: str,
              format_args: Union[List[Any], Any, None] = None):
-        self.debugger.debug(self.name, INFO_CHANNEL, message, format_args)
-        self.debugger.catch_up("info message")
+        self.debugger.debug_flush(self.name,
+                                  INFO_CHANNEL,
+                                  message,
+                                  format_args)
 
     def dump(self,
              message: str,
@@ -73,10 +77,10 @@ class Context:
     def time(self,
              task_name: str,
              handler: Callable[[Any], Any],
-             *args: Any) -> Any:
+             args: Any) -> Any:
         if self.profiler:
             return self.profiler.time(f"{task_name}:{self.name}",
-                                      lambda: handler(*args))
+                                      handler, args)
         else:
             return handler(*args)
 
@@ -93,5 +97,5 @@ class Context:
 
         time.sleep(time_s)
 
-    def debug_delay(self):
-        self.sleep(self.settings.DEBUGGING_DELAY_S)
+    # def debug_delay(self):
+    #     self.sleep(self.settings.DEBUGGING_DELAY_S)
