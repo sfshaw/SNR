@@ -5,7 +5,8 @@ from typing import List
 from snr.config import Config
 from snr.endpoint.endpoint import Endpoint
 from snr.endpoint.factory import EndpointFactory
-from snr.node import TASK_TYPE_TERMINATE, Node
+from snr.node import Node
+from snr.endpoint.node_core_endpoint import TASK_TYPE_TERMINATE
 from snr.runner.test_runner import SynchronusTestRunner
 from snr.task import SomeTasks, Task, TaskPriority
 from snr.test.expector import Expector
@@ -13,17 +14,18 @@ from snr.test.expector import Expector
 
 class PingTestEndpoint(Endpoint):
     def __init__(self,
+                 factory: EndpointFactory,
                  parent_node: Node,
                  name: str,
                  expector: Expector):
-        super().__init__(
-            parent_node,
-            name,
-            task_producers=[self.produce_task],
-            task_handlers={
-                "ping_test": self.handle_ping_test,
-                "process_ping_test": self.handle_recv_ping
-            })
+        super().__init__(factory,
+                         parent_node,
+                         name,
+                         task_producers=[self.produce_task],
+                         task_handlers={
+                             "ping_test": self.handle_ping_test,
+                             "process_ping_test": self.handle_recv_ping
+                         })
         self.parent_node = parent_node
         self.expector = expector
         self.produced_task: bool = False
@@ -53,7 +55,8 @@ class PingTestFactory(EndpointFactory):
         self.expector = expector
 
     def get(self, parent_node: Node) -> List[Endpoint]:
-        return [PingTestEndpoint(parent_node,
+        return [PingTestEndpoint(self,
+                                 parent_node,
                                  "ping_test_endpoint",
                                  self.expector)]
 
