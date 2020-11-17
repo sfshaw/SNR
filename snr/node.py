@@ -84,18 +84,18 @@ class Node(Context):
         new_tasks: List[Task] = []
         handlers = [e.task_handlers.get(t.task_type)
                     for e in self.endpoints.values()]
+        handlers = [h for h in handlers if h]
         self.dbg("Got {} handlers for {} task: {}",
                  [len(handlers), t.task_type, handlers])
         new_tasks: List[Task] = []
         for handler in handlers:
-            if handler:
-                self.dbg("Executing {} task with {}", [t.task_type, handler])
-                result = self.time(t.task_type, handler, t)
-                if result:
-                    if isinstance(result, Task):
-                        new_tasks.append(result)
-                    else:
-                        new_tasks.extend(result)
+            self.dbg("Executing {} task with {}", [t.task_type, handler])
+            result = self.time(t.task_type, handler, t)
+            if result:
+                if isinstance(result, Task):
+                    new_tasks.append(result)
+                else:
+                    new_tasks.extend(result)
         self.dbg("Task execution resulted in {} new tasks",
                  [len(new_tasks)])
         if new_tasks:
