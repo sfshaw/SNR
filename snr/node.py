@@ -160,4 +160,4 @@ class Node(Context):
         self.datastore.store(key, data, process)
 
     def get_data(self, key: str) -> Union[Any, None]:
-        return self.datastore.get(key)
+        return self.datastore.get_data(key)

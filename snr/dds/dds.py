@@ -48,13 +48,16 @@ class DDS(Context):
         self.inbound_store(page)
         self.tx_consumer.put(page)
 
-    def get(self, key: str) -> Optional[Any]:
-        # First flush the inbound queue so we have all data
-        self.rx_consumer.catch_up("DDS read")
-        page: Any = self.data_dict.get(key)
+    def get_data(self, key: str) -> Optional[Any]:
+        page: Any = self.get_page(key)
         if page:
             return page.data
         return None
+
+    def get_page(self, key: str) -> Optional[Page]:
+        # First flush the inbound queue so we have all data
+        self.rx_consumer.catch_up("DDS read")
+        return self.data_dict.get(key)
 
     def inbound_store(self, page: Page) -> None:
         self.rx_consumer.put(page)
