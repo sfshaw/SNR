@@ -36,8 +36,14 @@ class DDS(Context):
                                                         self)
         self.schedule_task = task_scheduler
 
-        self.rx_consumer = Consumer("dds_rx", self.write, SLEEP_TIME)
-        self.tx_consumer = Consumer("dds_tx", self.send, SLEEP_TIME)
+        self.rx_consumer = Consumer("dds_rx",
+                                    self.write,
+                                    SLEEP_TIME,
+                                    self.stdio.put)
+        self.tx_consumer = Consumer("dds_tx",
+                                    self.send,
+                                    SLEEP_TIME,
+                                    self.stdio.put)
 
         self.info("Initialized with {} connections",
                   [len(self.connections)])

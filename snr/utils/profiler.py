@@ -26,7 +26,8 @@ class Profiler(Consumer):
             return None
         super().__init__("profiler",
                          self.store_task,
-                         SLEEP_TIME_S)
+                         SLEEP_TIME_S,
+                         debugger.stdIo.put)
         self.debugger = debugger
         self.settings = settings
         self.time_dict: Dict[str, Deque[float]] = {}
