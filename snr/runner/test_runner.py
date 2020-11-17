@@ -37,26 +37,28 @@ class SynchronusTestRunnerStartupOnly(SynchronousRunner):
         print("Test Runner done")
 
 
-class SynchronusTestRunner(SynchronousRunner):
+class SynchronusTestRunner(Runner):
 
-    def __init__(self, config: Config) -> None:
-        super().__init__(Mode.DEBUG, "test", config)
+    def __init__(self,
+                 config: Config,
+                 stdio: Optional[StdIoConsumer] = None
+                 ) -> None:
+        super().__init__(Mode.DEBUG, "test", config, stdio)
 
     def run(self):
-        context = RootContext("runner")
-        node = None
-        try:
-            node = Node(context, self.role, self.mode, self.factories)
-            node.loop()  # Blocking loop
-        except KeyboardInterrupt:
-            if node:
-                print("Interrupted by user, exiting")
-                node.set_terminate_flag("Interrupted by user")
-            else:
-                print("Exiting before node was done being constructed")
-        finally:
-            if node:
-                node.terminate()
-                node = None
-        context.terminate()
+        with RootContext("runner", self.stdio) as context:
+            node = None
+            try:
+                node = Node(context, self.role, self.mode, self.factories)
+                node.loop()  # Blocking loop
+            except KeyboardInterrupt:
+                if node:
+                    print("Interrupted by user, exiting")
+                    node.set_terminate_flag("Interrupted by user")
+                else:
+                    print("Exiting before node was done being constructed")
+            finally:
+                if node:
+                    node.terminate()
+                  node = None
         print("Test Runner done")
