@@ -124,7 +124,7 @@ class Node(Context):
 
         self.datastore.dump_data()
         self.datastore.join()
-        super().terminate()
+        super().terminate()  # Terminate node context and profiler
         self.info("Node {} finished terminating", [self.role])
 
     def seperate(self,
