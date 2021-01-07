@@ -11,6 +11,8 @@ DAEMON_THREAD = False
 SLEEP_TIME_S = 0.01
 JOIN_TIMEOUT = 1
 
+ProfilingResult = Tuple[str, float]
+
 
 class Timer:
     def __init__(self):
@@ -20,30 +22,30 @@ class Timer:
         return time() - self.start_time
 
 
-class Profiler(Consumer):
+class Profiler(Consumer[ProfilingResult]):
     def __init__(self, debugger: Debugger, settings: Settings):
         if not settings.ENABLE_PROFILING:
             return None
         super().__init__("profiler",
                          self.store_task,
                          SLEEP_TIME_S,
-                         debugger.stdIo.put)
+                         debugger.stdout.print)
         self.debugger = debugger
         self.settings = settings
         self.time_dict: Dict[str, Deque[float]] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
 
     def time(self, name: str, handler: Callable[[Any], Any], args: Any) -> Any:
-        time = Timer()
+        timer = Timer()
         result = handler(args)
-        self.log_task(name, time.end())
+        self.log_task(name, timer.end())
         return result
 
     def log_task(self, task_type: str, runtime: float):
         self.put((task_type, runtime))
 
     def store_task(self, type_and_runtime: Tuple[str, float]):
-        (task_type,  runtime) = type_and_runtime
+        (task_type, runtime) = type_and_runtime
         self.debugger.debug("profiling_task", DEBUG_CHANNEL,
                             "Ran {} task in {:6.3f} us",
                             [task_type, runtime * 1000000])
