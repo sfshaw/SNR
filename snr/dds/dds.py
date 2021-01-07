@@ -1,15 +1,12 @@
 
-from time import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from snr.context.context import Context
-from snr.dds.dds_connection import DDSConnection
-from snr.dds.factory import DDSFactory
 from snr.dds.page import Page
-from snr.dds.time_provider import TimeProvider
-from snr.task import Task
+from snr.task import PROCESS_DATA_PREFIX, Task
 from snr.utils.consumer import Consumer
-from snr.utils.utils import get_all, no_op
+from snr.utils.time_provider import TimeProvider
+from snr.utils.utils import no_op
 
 SLEEP_TIME = 0.001
 JOIN_TIMEOUT = 0.5
@@ -21,38 +18,25 @@ DataDict = Dict[str, Page]
 class DDS(Context):
     def __init__(self,
                  parent_node: Any,
-                 factories: List[DDSFactory] = [],
-                 task_scheduler: Callable[[Task], None] = no_op):
+                 task_scheduler: Callable[[Task], None] = no_op
+                 ) -> None:
         super().__init__("dds", parent_node)
 
         self.parent_node = parent_node
         self.timer = TimeProvider()
         self.data_dict: DataDict = {}
-
-        self.info("Creating connections from {} factories: {}",
-                  [len(factories), factories])
-        self.connections: List[DDSConnection] = get_all(factories,
-                                                        parent_node,
-                                                        self)
         self.schedule_task = task_scheduler
 
-        self.rx_consumer = Consumer("dds_rx",
-                                    self.write,
-                                    SLEEP_TIME,
-                                    self.stdio.put)
-        self.tx_consumer = Consumer("dds_tx",
-                                    self.send,
-                                    SLEEP_TIME,
-                                    self.stdio.put)
-
-        self.info("Initialized with {} connections",
-                  [len(self.connections)])
+        self.inbound_consumer = Consumer[Page]("dds_inbound",
+                                               self.write,
+                                               SLEEP_TIME,
+                                               self.stdout.print)
+        self.info("DDS initialized")
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
         page = Page(key, value, self.parent_node.name, created_at, process)
         self.inbound_store(page)
-        self.tx_consumer.put(page)
 
     def get_data(self, key: str) -> Optional[Any]:
         page: Any = self.get_page(key)
@@ -62,19 +46,14 @@ class DDS(Context):
 
     def get_page(self, key: str) -> Optional[Page]:
         # First flush the inbound queue so we have all data
-        self.rx_consumer.catch_up("DDS read")
+        self.inbound_consumer.flush()
         return self.data_dict.get(key)
 
     def inbound_store(self, page: Page) -> None:
-        self.rx_consumer.put(page)
+        self.inbound_consumer.put(page)
 
-    def catch_up(self, reason: str) -> None:
-        time_waited = time()
-        self.rx_consumer.catch_up(f"dds_catch_up ({reason})")
-        self.tx_consumer.catch_up(f"dds_catch_up ({reason})")
-        time_waited -= time()
-        self.info("Waited {} ms for DDS to catch up for {}",
-                  [time_waited * 1000, reason])
+    def flush(self) -> None:
+        self.inbound_consumer.flush
 
     def dump_data(self) -> None:
         for page in self.data_dict.values():
@@ -83,26 +62,15 @@ class DDS(Context):
     def write(self, page: Page):
         self.data_dict[page.key] = page
         if page.process:
-            self.schedule_task(Task(f"process_{page.key}"))
-
-    def send(self, page: Page):
-        for connection in self.connections:
-            try:
-                connection.send(page)
-            except Exception:
-                pass
+            self.schedule_task(Task(f"{PROCESS_DATA_PREFIX}{page.key}"))
 
     def set_terminate_flag(self, reason: str):
-        self.rx_consumer.set_terminate_flag(reason)
-        self.tx_consumer.set_terminate_flag(reason)
+        self.inbound_consumer.set_terminate_flag(reason)
         self.info("Preparing to terminate DDS for {}", [reason])
 
     def join(self):
         """Shutdown DDS threads
         """
         self.set_terminate_flag("join")
-        self.catch_up("Join")
-        for connection in self.connections:
-            connection.join()
-        self.rx_consumer.join()
-        self.tx_consumer.join()
+        self.flush()
+        self.inbound_consumer.join_from(self.name)

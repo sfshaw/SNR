@@ -1,12 +1,11 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from threading import Event
+from typing import Any, Dict, List, Optional, Union
 
 from snr.config import Mode, Role
 from snr.context.context import Context
 from snr.context.root_context import RootContext
 from snr.dds.dds import DDS
-from snr.dds.factory import DDSFactory
 from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.factory import EndpointFactory
 from snr.endpoint.node_core_endpoint import NodeCore
 from snr.factory import Factory
 from snr.task import SomeTasks, Task
@@ -29,13 +28,10 @@ class Node(Context):
         self.role = role
         self.mode = mode
 
-        dds_facs, endpoint_facs = self.seperate(factories)
-
         self.task_queue = TaskQueue(self, self.get_new_tasks)
         self.datastore = DDS(self,
-                             dds_facs,
                              self.task_queue.schedule)
-        self.endpoints = self.get_endpoints(endpoint_facs)
+        self.endpoints = self.get_endpoints(factories)
         self.terminate_flag: bool = False
         self.info("Initialized with {} endpoints",
                   [len(self.endpoints)])
@@ -127,33 +123,15 @@ class Node(Context):
         super().terminate()  # Terminate node context and profiler
         self.info("Node {} finished terminating", [self.role])
 
-    def seperate(self,
-                 factories: List[Factory]
-                 ) -> Tuple[
-            List[DDSFactory],
-            List[EndpointFactory]]:
-        dds_facs: List[DDSFactory] = []
-        endpoint_facs: List[EndpointFactory] = []
-        self.info("Seperating facs: {}", [factories])
-        for f in factories:
-            if isinstance(f, DDSFactory):
-                dds_facs.append(f)
-            elif isinstance(f, EndpointFactory):
-                endpoint_facs.append(f)
-        self.dbg("DDS facs: {}\n\t\t\tEndpoint facs: {}",
-                 [dds_facs, endpoint_facs])
-        return (dds_facs, endpoint_facs)
-
     def get_endpoints(self,
-                      factories: List[EndpointFactory]
+                      factories: List[Factory]
                       ) -> Dict[str, Endpoint]:
         self.info("Adding components from {} factories", [len(factories)])
         endpoints: Dict[str, Endpoint] = {"node_core": NodeCore(None, self)}
         for factory in factories:
-            new_endpoints = factory.get(self)
-            for endpoint in new_endpoints:
-                endpoints[endpoint.name] = endpoint
-                self.info("{} added {}", [factory, endpoint])
+            new_endpoint = factory.get(self)
+            endpoints[new_endpoint.name] = new_endpoint
+            self.info("{} added {}", [factory, new_endpoint])
         return endpoints
 
     def store_data(self, key: str, data: Any, process: bool = True) -> None:

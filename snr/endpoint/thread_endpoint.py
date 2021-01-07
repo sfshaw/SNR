@@ -1,15 +1,8 @@
-""" SNR framework for scheduling and task management
-
-Node: Task queue driven host for data and endpoints
-AsyncEndpoint: Generate and process data for Nodes
-Relay: Server data to other nodes
-"""
-
-from snr.endpoint.factory import EndpointFactory
 from threading import Thread
 from typing import Dict, List
 
 from snr.endpoint.endpoint import Endpoint
+from snr.factory import Factory
 from snr.node import Node
 from snr.task import TaskHandler, TaskSource
 
@@ -27,7 +20,7 @@ class ThreadEndpoint(Endpoint):
     """
 
     def __init__(self,
-                 factory: EndpointFactory,
+                 factory: Factory,
                  parent: Node,
                  name: str,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
@@ -45,7 +38,7 @@ class ThreadEndpoint(Endpoint):
 
         self.thread = Thread(target=self.threaded_method,
                              args=[],
-                             name=f"thread_{self.name}",
+                             name=self.name + "_thread",
                              daemon=DAEMON_THREADS)
 
     def set_delay(self, tick_rate_hz: float):
@@ -79,7 +72,7 @@ class ThreadEndpoint(Endpoint):
         try:
             while not self.terminate_flag:
                 if self.profiler:
-                    self.time(self.name, self.loop_handler, None)
+                    self.time(self.name, lambda _: self.loop_handler(), None)
                 else:
                     self.loop_handler()
                 self.tick()
