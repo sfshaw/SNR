@@ -1,8 +1,10 @@
-""" Defines the basic unit of work for Nodes
+""" Defines the basic unit of work for Nodes and Endpoints
 """
 
 from enum import Enum
 from typing import Any, Callable, List, Union
+
+PROCESS_DATA_PREFIX = "process_"
 
 
 class TaskPriority(Enum):
