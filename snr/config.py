@@ -30,3 +30,10 @@ class Config:
         if self.get_factories:
             self.factories = self.get_factories(mode)
         return self.factories
+
+
+class TestConfig(Config):
+    def __init__(self,
+                 factories: List[Factory] = []
+                 ) -> None:
+        super().__init__({"test": factories})
