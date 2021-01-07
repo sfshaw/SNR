@@ -32,7 +32,7 @@ class Node(Context):
         self.datastore = DDS(self,
                              self.task_queue.schedule)
         self.endpoints = self.get_endpoints(factories)
-        self.terminate_flag: bool = False
+        self.terminate_flag = Event()
         self.info("Initialized with {} endpoints",
                   [len(self.endpoints)])
 
@@ -40,16 +40,16 @@ class Node(Context):
         for endpoint in self.endpoints.values():
             endpoint.start()
 
-        while not self.terminate_flag:
+        while not self.terminate_flag.is_set():
             if self.task_queue.is_empty():
-                self.datastore.catch_up("idle_node_no_tasks")
+                self.datastore.flush()
             t: Optional[Task] = self.task_queue.get_next()
             if t:
                 self.execute_task(t)
             else:
                 self.sleep(SLEEP_TIME)
-
-        self.terminate()
+        self.dbg("Node exiting main loop")
+        self.__terminate()
 
     def get_new_tasks(self):
         """Retrieve tasks from endpoints and queue them.
@@ -96,31 +96,32 @@ class Node(Context):
                  [len(new_tasks)])
         if new_tasks:
             self.task_queue.schedule(new_tasks)
-        self.dbg("Letting DDS catch up")
-        self.datastore.catch_up("Scheduled tasks after execution")
+        self.datastore.flush()
 
     def set_terminate_flag(self, reason: str):
         self.info("Exit reason: {}", [reason])
         self.datastore.store("node_exit_reason", reason, False)
-        self.terminate_flag = True
+        self.terminate_flag.set()
         for e in self.endpoints.values():
             e.set_terminate_flag(f"node: {reason}")
 
-    def terminate(self):
+    def __terminate(self):
         """Execute actions needed to deconstruct a Node.
         Terminate is executed the main thread or process of an object.
         Conversely, join may be called from an external context such as
         another thread or process.
         """
-
+        self.stdout.flush()
         for e in self.endpoints:
             e.join("node_terminate")
 
         self.info("Terminated all endpoints")
 
-        self.datastore.dump_data()
         self.datastore.join()
-        super().terminate()  # Terminate node context and profiler
+        self.datastore.dump_data()
+
+        self.stdout.flush()
+        super().terminate()
         self.info("Node {} finished terminating", [self.role])
 
     def get_endpoints(self,
