@@ -1,6 +1,6 @@
 from typing import Any, List, Union
 
-from snr.context.std_io import StdIo, StdIoTask
+from snr.context.stdout import StdOut, StdOutTask
 from snr.settings import Settings
 from snr.utils.utils import format_message
 
@@ -16,8 +16,8 @@ class Debugger:
     printed. Messages can be formatted.
     """
 
-    def __init__(self, stdIo: StdIo, settings: Settings) -> None:
-        self.stdIo = stdIo
+    def __init__(self, stdout: StdOut, settings: Settings) -> None:
+        self.stdout = stdout
         self.settings = settings
 
     def debug(self,
@@ -40,7 +40,7 @@ class Debugger:
         #     pass
 
     def flush(self):
-        self.stdIo.flush()
+        self.stdout.flush()
 
     def debug_flush(self,
                     context_name: str,
@@ -50,5 +50,5 @@ class Debugger:
         self.debug(context_name, level, message, format_args)
         self.flush()
 
-    def __print(self, s: StdIoTask):
-        self.stdIo.put(s)
+    def __print(self, s: str):
+        self.stdout.put(StdOutTask(s, False))
