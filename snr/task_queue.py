@@ -21,42 +21,25 @@ class TaskQueue(Context):
         """
         if isinstance(t, Task):
             self.__schedule_task(t)
-            return
-        if isinstance(t, List):
+        elif isinstance(t, List):
             # Recursively handle lists
             self.dbg("Recursively scheduling list of {} tasks",
                      [len(t)])
             for item in t:
                 self.schedule(item)
-            return
-        if not t:
-            if t is None:
-                self.warn("Cannot schedule None or empty list")
-                return
-        self.err("Cannot schedule {} object {}", [type(t), t])
+        else:
+            self.err("Cannot schedule {} object {}", [type(t), t])
 
     def __schedule_task(self, t: Task) -> None:
         # Handle normal tasks
         self.dbg("Scheduling task {}", [t])
         # Ignore Priority
         self.queue.put(t)
-        # TODO: Use priority with multiprocessing queue
-        # if t.priority == TaskPriority.high:
-        #     self.queue.put(t)  # High priotity at front (right)
-        # elif t.priority == TaskPriority.normal:
-        #     self.queue.put(t)  # Normal priotity at end (left)
-        #     # TODO:  insert normal priority in between high and low
-        # elif t.priority == TaskPriority.low:
-        #     self.queue.put(t)  # Normal priotity at end (left)
-        # else:
-        #     self.err( "Cannot schedule task with priority: {}",
-        #              [t.priority])
 
     def get_next(self) -> Union[Task, None]:
         """Take the next task off the queue
         """
         if self.queue.empty():
-            self.info("Ran out of tasks, getting more")
             new_tasks = self.get_new_tasks()
             if new_tasks:
                 self.schedule(new_tasks)
