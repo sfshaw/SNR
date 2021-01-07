@@ -1,7 +1,10 @@
-from snr.context.std_io import StdIo
+from __future__ import annotations
+
 import time
 from typing import Any, Callable, List, Optional, Union
 
+from snr.context.root_context import RootContext
+from snr.context.stdout import StdOut
 from snr.settings import Settings
 from snr.utils.debug.channels import *
 from snr.utils.debug.debugger import Debugger
@@ -12,11 +15,11 @@ class Context:
 
     def __init__(self,
                  name: str,
-                 parent: Any,
+                 parent: Union[RootContext, Context],
                  profiler: Optional[Profiler] = None
                  ) -> None:
         self.name = name
-        self.stdIo: StdIo = parent.stdIo
+        self.stdout: StdOut = parent.stdout
         self.debugger: Debugger = parent.debugger
         self.settings: Settings = parent.settings
         self.profiler: Optional[Profiler] = profiler
@@ -28,13 +31,11 @@ class Context:
 
     def terminate(self):
         self.dbg("Terminating context {}", [self.name])
-        self.terminate_profiler()
-        print("Context terminated.")
-
-    def terminate_profiler(self) -> None:
         if isinstance(self.profiler, Profiler):
-            self.profiler.join()
+            self.profiler.join_from("context temrinate")
             self.profiler.dump()
+        self.info("Context {} termianted", [self.name])
+        self.stdout.flush()
 
     def fatal(self,
               message: str,
@@ -96,6 +97,3 @@ class Context:
             return
 
         time.sleep(time_s)
-
-    # def debug_delay(self):
-    #     self.sleep(self.settings.DEBUGGING_DELAY_S)

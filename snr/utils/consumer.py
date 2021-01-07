@@ -1,109 +1,104 @@
-"""Incomplete implementation of a thread function for consuming a
- multiprocessing Queue.
-
- Blockers: storing self.terminate flag
- Options: a. pass as a reference to func
-          b. make consumer an object with that state
-Recommendations: b. make consumer an object
-
-Duplicate implementations already exist in dds.py and debug.py
-"""
 from multiprocessing import Queue
 from queue import Empty
-from threading import Thread
+from threading import Event, Thread
 from time import sleep
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
 
 from snr.utils.debug.channels import *
 from snr.utils.utils import format_message
 
+CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
-class Consumer:
+
+T = TypeVar('T')
+
+
+class Consumer(Thread, Generic[T]):
     def __init__(self,
                  parent_name: str,
-                 action: Callable[[Any], None],
-                 sleep_time: float
+                 action: Callable[[T], None],
+                 sleep_time: float,
+                 stdout_print: Callable[..., None] = print
                  ) -> None:
-        self.name = parent_name + "_consumer"
+        Thread.__init__(self,
+                        target=self.__loop,
+                        name=parent_name + CONSUMER_THREAD_NAME_SUFFIX)
+        # self.name = parent_name + CONSUMER_NAME_SUFFIX
         self.action = action
         self.sleep_time = sleep_time
-        self.queue: Queue[Any] = Queue()
-        self.terminate_flag = False
-        self.thread = Thread(target=self.__loop, args=[], daemon=False)
+        self.stdout_print = stdout_print
+        self.queue: Queue[T] = Queue()
+        self.terminate_flag = Event()
+        self.fed = Event()
+        self.flushed = Event()
+        self.flushed.set()
 
-        self.thread.start()
+        self.start()
 
-    def put(self, item: Any):
-        self.check_alive("Consumer fed but thread is not alive")
+    def put(self, item: T) -> None:
+        self.__check_alive(f"Consumer fed but thread is not alive ({item})")
         self.queue.put(item)
+        self.fed.set()
+        self.flushed.clear()
 
-    def __loop(self):
+    def __loop(self) -> None:
         self.dbg(DEBUG_CHANNEL, "Thread now running")
-        if self.terminate_flag:
-            self.dbg(CRITICAL_CHANNEL,
-                     "Thread expected to die instantly")
-        while not self.terminate_flag:
-            try:
-                item = None
-                item = self.queue.get_nowait()
-                if item is not None:
-                    self.action(item)
-            except Empty:
-                pass
-            except EOFError as e:
-                self.dbg(ERROR_CHANNEL, f"EOFError: {e}")
-                self.terminate_flag = True
+        while not self.terminate_flag.is_set():
+            self.__iterate()
+
+            # self.fed.wait(timeout=self.sleep_time)
             sleep(self.sleep_time)
 
         # Flush remaining lines
-        try:
-            item = None
-            item = self.queue.get_nowait()
-            while item is not None:
-                self.action(item)
-                item = None
-                item = self.queue.get_nowait()
-        except Empty:
-            self.dbg(DEBUG_CHANNEL, "Thread emptied queue")
-        except Exception as e:
-            self.dbg(ERROR_CHANNEL, f"Failed to empty queue{e}")
+        while not self.queue.empty():
+            self.__iterate()
         self.dbg(DEBUG_CHANNEL, "Thread exited loop")
 
-    def join(self):
-        self.dbg(INFO_CHANNEL, "Preparing to join thread")
+    def __iterate(self) -> None:
+        item: Optional[T] = None
+        try:
+            item = self.__get()
+            if item:
+                self.action(item)
+        except Empty:
+            pass
+        except EOFError as e:
+            msg = f"EOFError: {e}"
+            self.dbg(ERROR_CHANNEL, msg)
+            self.set_terminate_flag(msg)
+        item = None
+        if self.queue.empty():
+            self.fed.clear()
+        if self.queue.empty():
+            self.flushed.set()
+
+    def __get(self) -> Optional[T]:
+        return self.queue.get_nowait()
+
+    def join_from(self, joiner: str, timeout: Optional[float] = None):
+        self.dbg(INFO_CHANNEL, "Preparing to join thread from {}", [joiner])
         self.set_terminate_flag("join")
-        self.catch_up("join")
-        self.thread.join(timeout=0.75)
-        if self.thread.is_alive():
+        self.flush()
+        super().join(timeout)
+        if self.is_alive():
             self.dbg(WARNING_CHANNEL, "Thread just won't die.")
 
-    def catch_up(self, reason: str) -> None:
-        MAX_TIME_WAITED = 5 * self.sleep_time
-        time_waited = 0.0
-        while (self.is_alive()
-               and time_waited < MAX_TIME_WAITED
-               and not self.queue.empty):
-            sleep(self.sleep_time)
-            time_waited += self.sleep_time
-        if time_waited > 0.0000001:
-            self.dbg(DEBUG_CHANNEL,
-                     "Waited {} ms for consumer to catch up for {}",
-                     [time_waited * 1000, reason])
+    def flush(self) -> None:
+        self.__check_alive("Cannot flush dead consumer")
+        self.flushed.wait()
 
     def set_terminate_flag(self, reason: str) -> None:
-        self.terminate_flag = True
+        self.terminate_flag.set()
 
-    def check_alive(self, message: str) -> None:
+    def __check_alive(self, message: str) -> None:
         if not self.is_alive():
             self.dbg(DEBUG_CHANNEL, message, [self.name])
-
-    def is_alive(self) -> bool:
-        return(
-            # self.start_flag and
-            self.thread.is_alive())  # and not self.terminate_flag
 
     def dbg(self,
             level: str,
             message: str,
             format_args: Union[List[Any], None] = None) -> None:
-        print(format_message(self.name, level, message, format_args), end="")
+        self.stdout_print(format_message(self.name,
+                                         level,
+                                         message,
+                                         format_args))
