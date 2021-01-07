@@ -1,25 +1,17 @@
 from collections import deque
-from time import time
 from typing import Any, Callable, Deque, Dict, Tuple
 
 from snr.settings import Settings
 from snr.utils.consumer import Consumer
 from snr.utils.debug.channels import *
 from snr.utils.debug.debugger import Debugger
+from snr.utils.timer import Timer
 
 DAEMON_THREAD = False
 SLEEP_TIME_S = 0.01
 JOIN_TIMEOUT = 1
 
 ProfilingResult = Tuple[str, float]
-
-
-class Timer:
-    def __init__(self):
-        self.start_time = time()
-
-    def end(self) -> float:
-        return time() - self.start_time
 
 
 class Profiler(Consumer[ProfilingResult]):
@@ -38,7 +30,7 @@ class Profiler(Consumer[ProfilingResult]):
     def time(self, name: str, handler: Callable[[Any], Any], args: Any) -> Any:
         timer = Timer()
         result = handler(args)
-        self.log_task(name, timer.end())
+        self.log_task(name, timer.current())
         return result
 
     def log_task(self, task_type: str, runtime: float):

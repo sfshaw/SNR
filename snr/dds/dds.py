@@ -5,7 +5,7 @@ from snr.context.context import Context
 from snr.dds.page import Page
 from snr.task import PROCESS_DATA_PREFIX, Task
 from snr.utils.consumer import Consumer
-from snr.utils.time_provider import TimeProvider
+from snr.utils.timer import Timer
 from snr.utils.utils import no_op
 
 SLEEP_TIME = 0.001
@@ -23,7 +23,7 @@ class DDS(Context):
         super().__init__("dds", parent_node)
 
         self.parent_node = parent_node
-        self.timer = TimeProvider()
+        self.timer = Timer()
         self.data_dict: DataDict = {}
         self.schedule_task = task_scheduler
 
