@@ -26,10 +26,10 @@ class StdOut(Consumer[StdOutTask]):
     def handler(self, task: StdOutTask) -> None:
         if isinstance(task, str):
             print(f"Task is str, not Task: {task}")
-
-        self.stdout.write(task.msg)
-        if task.flush:
-            self.stdout.flush()
+        else:
+            self.stdout.write(task.msg)
+            if task.flush:
+                self.stdout.flush()
 
     def print(self, msg: str) -> None:
         self.put(StdOutTask(msg, True))
