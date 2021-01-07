@@ -1,11 +1,13 @@
 from typing import Dict
 import unittest
 
+Expectations = Dict[str, int]
+
 
 class Expector:
-    def __init__(self, expectations: Dict[str, int]) -> None:
+    def __init__(self, expectations: Expectations) -> None:
         self.expectations = expectations
-        self.times_called: Dict[str, int] = {}
+        self.times_called: Expectations = {}
         for key in expectations:
             self.times_called[key] = 0
 
