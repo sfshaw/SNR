@@ -1,20 +1,19 @@
 import unittest
-from typing import List
 
 from snr.config import ComponentsByRole, Config, Mode
 from snr.endpoint.dummy import DummyEndpoint
 from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.factory import EndpointFactory
+from snr.factory import Factory
 from snr.node import Node
 
 
 class TestConfig(unittest.TestCase):
-    class TestFac(EndpointFactory):
+    class TestFac(Factory):
         def __init__(self):
             pass
 
-        def get(self, parent_node: Node) -> List[Endpoint]:
-            return [DummyEndpoint(parent_node)]
+        def get(self, parent_node: Node) -> Endpoint:
+            return DummyEndpoint(parent_node)
 
     def test_empty(self):
         with self.assertRaises(Exception):
