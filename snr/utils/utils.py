@@ -3,7 +3,7 @@ Attempts to document propper usage of such functions
 """
 
 import sys
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 
 def print_usage() -> None:
@@ -25,21 +25,29 @@ def no_op(*args: Any) -> None:
     pass
 
 
-def get_all(*args: Any):
+def get_all(*args: Any) -> List[Any]:
     factories = args[0]
     all = []
     for f in factories:
-        all.extend(f.get(*args[1:]))
+        got: Union[List[Any], Any] = f.get(*args[1:])
+        if isinstance(got, List):
+            all.extend(got)
+        else:
+            all.append(got)
     return all
 
 
 def format_message(context_name: str,
                    level: str,
                    message: str,
-                   format_args: Optional[List[str]] = None):
+                   format_args: Optional[List[str]] = None,
+                   end: str = "\n"):
     if format_args:
         message = message.format(*format_args)
-    return "[{}:\t{}]\t{}\n".format(context_name, level, message)
+    return "[{}:\t{}]\t{}{}".format(context_name,
+                                    level,
+                                    message,
+                                    end)
 
 
 def init_dict(keys: List[str], val: Any) -> Dict[str, Any]:
@@ -51,8 +59,8 @@ def init_dict(keys: List[str], val: Any) -> Dict[str, Any]:
 
 def attempt(action: Callable[[], bool],
             tries: int,
-            fail_once: Callable[[], None],
-            failure: Callable[[int], None]
+            fail_once: Callable[[Exception], None],
+            failure: Callable[[Exception], None]
             ) -> None:
     """Wrapper for trying to complete and action with a number of tries
     Should follow this prototype:
@@ -63,12 +71,13 @@ def attempt(action: Callable[[], bool],
             except Exception as error:
                 debug("channel", "error: {}", [error.__repr__()])
                 return False
+                # raise Exception()
 
         def fail_once() -> None:
             debug("action", "action failed, retrying")
             sleep(settings.ACTION_RETRY_WAIT)
 
-        def failure(tries: int) -> None:
+        def failure(e: Exception) -> None:
             if settings.REQUIRE_ACTION:
                 exit("Could not do required action")
             else:
@@ -77,12 +86,22 @@ def attempt(action: Callable[[], bool],
                 settings.USE_ACTION = False
 
         attempt(try_action, settings.ACTION_ATTEMPTS, fail_once, failure)
-        debug("action", "Did action")
     """
+    def try_action() -> Optional[Exception]:
+        try:
+            result = action()
+            if not result:
+                raise Exception("Attempt failed")
+            return None
+        except Exception as e:
+            return e
+
     attempts = 1
-    while (not action()):
+    result = try_action()
+    while (isinstance(result, Exception)):
         if attempts >= tries:
-            failure(attempts)
+            failure(result)
             return
-        fail_once()
+        fail_once(result)
+        result = try_action()
         attempts += 1
