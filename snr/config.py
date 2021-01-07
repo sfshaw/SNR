@@ -20,7 +20,7 @@ class Config:
     def __init__(self,
                  factories: ComponentsByRole = {},
                  get_factories: Optional[ComponentsGetter] = None
-                 ):
+                 ) -> None:
         self.factories = factories
         self.get_factories = get_factories
         if (not self.factories) and (not self.get_factories):
