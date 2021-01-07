@@ -1,20 +1,20 @@
-import unittest
 from time import time
-from typing import List
 
 from snr.config import Config
 from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.factory import EndpointFactory
-from snr.node import Node
 from snr.endpoint.node_core_endpoint import TASK_TYPE_TERMINATE
+from snr.factory import Factory
+from snr.io.recorder.factory import RecorderFactory
+from snr.node import Node
 from snr.runner.test_runner import SynchronusTestRunner
 from snr.task import SomeTasks, Task, TaskPriority
-from snr.test.expector import Expector
+from snr.test.utils.expector import Expector
+from snr.test.utils.test_base import *
 
 
 class PingTestEndpoint(Endpoint):
     def __init__(self,
-                 factory: EndpointFactory,
+                 factory: Factory,
                  parent_node: Node,
                  name: str,
                  expector: Expector):
@@ -50,21 +50,19 @@ class PingTestEndpoint(Endpoint):
         return Task(TASK_TYPE_TERMINATE, TaskPriority.high, ["all"])
 
 
-class PingTestFactory(EndpointFactory):
+class PingTestFactory(Factory):
     def __init__(self, expector: Expector):
+        super().__init__("Ping test factory")
         self.expector = expector
 
-    def get(self, parent_node: Node) -> List[Endpoint]:
-        return [PingTestEndpoint(self,
-                                 parent_node,
-                                 "ping_test_endpoint",
-                                 self.expector)]
-
-    def __repr__(self) -> str:
-        return "Ping test factory"
+    def get(self, parent_node: Node) -> Endpoint:
+        return PingTestEndpoint(self,
+                                parent_node,
+                                "ping_test_endpoint",
+                                self.expector)
 
 
-class TestInternalDDSPing(unittest.TestCase):
+class TestInternalDDSPing(SNRTestBase):
 
     def test_internal_dds_ping(self):
         expector = Expector({
@@ -72,9 +70,11 @@ class TestInternalDDSPing(unittest.TestCase):
             "process_ping_test": 1,
         })
         config = Config({
-            "test": [PingTestFactory(expector)]
+            "test": [PingTestFactory(expector),
+                     RecorderFactory("test_dds_internal_ping_recorder",
+                                     ["ping_test", "process_ping_test"])]
         })
-        runner = SynchronusTestRunner(config)
+        runner = SynchronusTestRunner(config, self.stdout)
         runner.run()
         expector.assert_satisfied(self)
 
