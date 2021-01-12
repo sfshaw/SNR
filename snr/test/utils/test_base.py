@@ -1,6 +1,7 @@
-from snr.context.stdout import StdOut
 import unittest
 from sys import stdout
+
+from snr.context.stdout import StdOut
 
 
 class SNRTestBase(unittest.TestCase):
