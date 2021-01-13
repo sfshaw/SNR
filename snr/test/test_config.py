@@ -1,38 +1,19 @@
 import unittest
 
-from snr.config import ComponentsByRole, Config, Mode
-from snr.endpoint.dummy import DummyEndpoint
-from snr.endpoint.endpoint import Endpoint
-from snr.factory import Factory
-from snr.node import Node
+from snr.config import Components, Config, Mode
+from snr.endpoint.dummy import DummyEndpointFactory
 
 
-class TestConfig(unittest.TestCase):
-    class TestFac(Factory):
-        def __init__(self):
-            pass
-
-        def get(self, parent_node: Node) -> Endpoint:
-            return DummyEndpoint(parent_node)
+class TestConfig_(unittest.TestCase):
 
     def test_empty(self):
         with self.assertRaises(Exception):
-            Config()
+            Config(Mode.TEST, {})
 
     def test_one_fac(self):
-        components: ComponentsByRole = {"test_role": [self.TestFac()]}
-        config = Config(factories=components)
-        self.assertEqual(config.get(Mode.TEST), components)
-
-    def test_getter(self):
-        self.called: bool = False
-
-        def getter(mode: Mode) -> ComponentsByRole:
-            self.called = True
-            return {}
-
-        self.assertEqual(Config(get_factories=getter).get(Mode.TEST), {})
-        self.assertTrue(self.called)
+        factories: Components = [DummyEndpointFactory()]
+        config = Config(Mode.TEST, {"test": factories})
+        self.assertEqual(config.get("test"), factories)
 
 
 if __name__ == '__main__':

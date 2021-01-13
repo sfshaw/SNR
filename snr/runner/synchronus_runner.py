@@ -1,20 +1,23 @@
-from snr.config import Config, Mode, Role
+from typing import Optional
+
+from snr.config import Config, Role
 from snr.node import Node
-from snr.context.root_context import RootContext
-from snr.runner.runner import Runner
-from snr.utils.utils import print_exit
+from snr.runner import Runner
 
 
 class SynchronousRunner(Runner):
 
-    def __init__(self, mode: Mode, role: Role, config: Config):
-        super().__init__(mode, role, config)
+    def __init__(self, role: Role, config: Config):
+        super().__init__(role, config)
 
     def run(self):
-        with RootContext("synchronous_runner") as context:
-            node = None
+        with self.config.root_context("synchronous_runner") as context:
+            node: Optional[Node] = None
             try:
-                node = Node(context, self.role, self.mode, self.factories)
+                node = Node(context,
+                            self.role,
+                            self.config.mode,
+                            self.config.get(self.role))
                 node.loop()  # Blocking loop
             except KeyboardInterrupt:
                 if node:
@@ -24,6 +27,5 @@ class SynchronousRunner(Runner):
                     print("Exiting before node was done being constructed")
             finally:
                 if node:
-                    node.terminate()
+                    node.set_terminate_flag("Runner clean up")
                     node = None
-        print_exit("Ya done now")

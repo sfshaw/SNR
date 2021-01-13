@@ -14,7 +14,7 @@ class ProdRunner(SynchronousRunner):
             sys.exit(1)
         role = sys.argv[1]
 
-        mode: Mode = Mode.DEPLOYED
+        config.mode = Mode.DEPLOYED
         if "-d" in sys.argv:
-            mode = Mode.DEBUG
-        super(SynchronousRunner).__init__(mode, role, config)
+            config.mode = Mode.DEBUG
+        super().__init__(role, config)
