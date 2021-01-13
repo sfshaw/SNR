@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from snr.context.stdout import StdOut
+from snr.context.stdout_consumer import StdOutConsumer
 from snr.settings import Settings
 from snr.utils.debug.channels import *
 from snr.utils.debug.debugger import Debugger
@@ -11,7 +12,7 @@ from snr.utils.debug.debugger import Debugger
 class RootContext:
     def __init__(self,
                  name: str,
-                 stdout: Optional[StdOut] = None
+                 stdout: Optional[StdOutConsumer] = None
                  ) -> None:
         self.name = name
         self.settings = Settings()
@@ -19,7 +20,7 @@ class RootContext:
         if not stdout:
             self.owned_stdio = True
             stdout = StdOut(name)
-        self.stdout: StdOut = stdout
+        self.stdout: StdOutConsumer = stdout
         self.debugger: Debugger = Debugger(self.stdout, self.settings)
 
     def __enter__(self) -> RootContext:
