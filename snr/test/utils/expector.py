@@ -19,7 +19,7 @@ class Expector:
 
     def assert_satisfied(self, testcase: unittest.TestCase):
         for (key, expected_value) in self.expectations.items():
-            testcase.assertEqual(self.times_called[key],
-                                 expected_value,
+            testcase.assertEqual(expected_value,
+                                 self.times_called[key],
                                  "For " + key)
         testcase.assertTrue(True)
