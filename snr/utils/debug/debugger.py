@@ -1,6 +1,6 @@
 from typing import Any, List, Union
 
-from snr.context.stdout import StdOut, StdOutTask
+from snr.context.stdout_consumer import StdOutConsumer, StdOutTask
 from snr.settings import Settings
 from snr.utils.utils import format_message
 
@@ -16,7 +16,7 @@ class Debugger:
     printed. Messages can be formatted.
     """
 
-    def __init__(self, stdout: StdOut, settings: Settings) -> None:
+    def __init__(self, stdout: StdOutConsumer, settings: Settings) -> None:
         self.stdout = stdout
         self.settings = settings
 
