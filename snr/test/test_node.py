@@ -13,23 +13,7 @@ from snr.utils.utils import no_op
 
 class TestNode(SNRTestBase):
 
-    def test_tuple_key(self):
-        class Type(Enum):
-            a = "a"
-            b = "b"
-
-        dict = {
-            Type.a: 1,
-            (Type.a, 2): 2,
-            (Type.b, 3): 3,
-            Type.b: 4
-        }
-        self.assertEqual(1, dict.get(Type.a))
-        self.assertEqual(2, dict.get((Type.a, 2)))
-        self.assertEqual(3, dict.get((Type.b, 3)))
-        self.assertEqual(4, dict.get(Type.b))
-
-    def test_proof_of_concept(self):
+    def test_lookup_proof_of_concept(self):
         class Type(Enum):
             a = "a"
             b = "b"
