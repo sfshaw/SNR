@@ -12,15 +12,6 @@ def print_usage() -> None:
     print(f"usage: {sys.executable} main.py [robot | topside]")
 
 
-def print_exit(reason: str) -> None:
-    """Kills the program after printing the supplied str reason
-    """
-    sys.stdout.flush()
-    sys.stderr.flush()
-    print("\nExiting: " + reason.__repr__())
-    sys.exit(0)
-
-
 def no_op(*args: Any) -> None:
     pass
 
@@ -87,12 +78,12 @@ def attempt(action: Callable[[], bool],
 
         attempt(try_action, settings.ACTION_ATTEMPTS, fail_once, failure)
     """
-    def try_action() -> Optional[Exception]:
+    def try_action() -> Union[Any, Exception]:
         try:
             result = action()
             if not result:
                 raise Exception("Attempt failed")
-            return None
+            return result
         except Exception as e:
             return e
 
