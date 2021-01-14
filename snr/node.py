@@ -7,7 +7,7 @@ from snr.context.root_context import RootContext
 from snr.dds.dds import DDS
 from snr.endpoint import Endpoint
 from snr.endpoint.node_core_endpoint import NodeCore
-from snr.factory import Factory
+from snr.endpoint.factory import Factory
 from snr.task import SomeTasks, Task, TaskHandler
 from snr.task_queue import TaskQueue
 from snr.utils.profiler import Profiler
@@ -32,7 +32,8 @@ class Node(Context):
         self.datastore = DDS(self,
                              self.task_queue.schedule)
         self.endpoints = self.get_endpoints(factories)
-        self.terminate_flag = Event()
+        self.__terminate_flag = Event()
+        self.is_terminated = Event()
         self.info("Initialized with {} endpoints",
                   [len(self.endpoints)])
 
@@ -40,7 +41,7 @@ class Node(Context):
         for endpoint in self.endpoints.values():
             endpoint.start()
 
-        while not self.terminate_flag.is_set():
+        while not self.__terminate_flag.is_set():
             if self.task_queue.is_empty():
                 self.datastore.flush()
             t: Optional[Task] = self.task_queue.get_next()
@@ -49,7 +50,7 @@ class Node(Context):
             else:
                 self.sleep(SLEEP_TIME)
         self.dbg("Node exiting main loop")
-        self.__terminate()
+        self.terminate()
 
     def get_new_tasks(self):
         """Retrieve tasks from endpoints and queue them.
@@ -105,16 +106,21 @@ class Node(Context):
     def set_terminate_flag(self, reason: str):
         self.info("Exit reason: {}", [reason])
         self.datastore.store("node_exit_reason", reason, False)
-        self.terminate_flag.set()
+        self.__terminate_flag.set()
         for e in self.endpoints.values():
-            e.set_terminate_flag(f"node: {reason}")
+            e.set_terminate_flag()
 
-    def __terminate(self):
+    def terminate(self):
         """Execute actions needed to deconstruct a Node.
         Terminate is executed the main thread or process of an object.
         Conversely, join may be called from an external context such as
         another thread or process.
         """
+        if not self.__terminate_flag.is_set():
+            self.warn("Temrinated prior to setting of terminate flag")
+            self.set_terminate_flag("terminate")
+        if self.is_terminated.is_set():
+            self.err("Already terminated")
         self.stdout.flush()
         for e in self.endpoints:
             e.join("node_terminate")
@@ -126,6 +132,7 @@ class Node(Context):
 
         self.stdout.flush()
         super().terminate()
+        self.is_terminated.set()
         self.info("Node {} finished terminating", [self.role])
 
     def get_endpoints(self,
