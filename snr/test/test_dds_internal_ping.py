@@ -1,18 +1,18 @@
 from time import time
 
-from snr.config import Config
+from snr import task
 from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.node_core_endpoint import TASK_TYPE_TERMINATE
-from snr.factory import Factory
-from snr.io.recorder.factory import RecorderFactory
+from snr.endpoint.endpoint_factory import EndpointFactory
+from snr.endpoint.factory import Factory
+from snr.endpoint.synchronous_endpoint import SynchronousEndpoint
 from snr.node import Node
 from snr.runner.test_runner import SynchronusTestRunner
-from snr.task import SomeTasks, Task, TaskPriority
+from snr.task import SomeTasks, Task, TaskType
 from snr.test.utils.expector import Expector
 from snr.test.utils.test_base import *
 
 
-class PingTestEndpoint(Endpoint):
+class PingTestEndpoint(SynchronousEndpoint):
     def __init__(self,
                  factory: Factory,
                  parent_node: Node,
@@ -23,8 +23,10 @@ class PingTestEndpoint(Endpoint):
                          name,
                          task_producers=[self.produce_task],
                          task_handlers={
-                             "ping_test": self.handle_ping_test,
-                             "process_ping_test": self.handle_recv_ping
+                             (TaskType.event, "ping_test"):
+                             self.handle_ping_test,
+                             (TaskType.process_data, "ping_test"):
+                             self.handle_recv_ping
                          })
         self.parent_node = parent_node
         self.expector = expector
@@ -34,7 +36,7 @@ class PingTestEndpoint(Endpoint):
         self.expector.call("produce_task")
         if not self.produced_task:
             self.produced_task = True
-            return Task("ping_test", priority=TaskPriority.normal)
+            return task.event("ping_test")
         return None
 
     def handle_ping_test(self, t: Task) -> SomeTasks:
@@ -47,17 +49,17 @@ class PingTestEndpoint(Endpoint):
         start = self.parent_node.get_data("ping_test")
         self.info("DDS ping latency: {} ms",
                   [(time() - float(start)) * 1000])
-        return Task(TASK_TYPE_TERMINATE, TaskPriority.high, ["all"])
+        return task.terminate("test_endpoint_done")
 
 
-class PingTestFactory(Factory):
+class PingTestFactory(EndpointFactory):
     def __init__(self, expector: Expector):
         super().__init__("Ping test factory")
         self.expector = expector
 
-    def get(self, parent_node: Node) -> Endpoint:
+    def get(self, parent: Node) -> Endpoint:
         return PingTestEndpoint(self,
-                                parent_node,
+                                parent,
                                 "ping_test_endpoint",
                                 self.expector)
 
@@ -69,12 +71,12 @@ class TestInternalDDSPing(SNRTestBase):
             "ping_test": 1,
             "process_ping_test": 1,
         })
-        config = Config({
-            "test": [PingTestFactory(expector),
-                     RecorderFactory("test_dds_internal_ping_recorder",
-                                     ["ping_test", "process_ping_test"])]
-        })
-        runner = SynchronusTestRunner(config, self.stdout)
+        config = self.get_config([
+            PingTestFactory(expector),
+            # RecorderFactory("ping_recorder",
+            #                 ["ping_test", "process_ping_test"])
+        ])
+        runner = SynchronusTestRunner(config)
         runner.run()
         expector.assert_satisfied(self)
 

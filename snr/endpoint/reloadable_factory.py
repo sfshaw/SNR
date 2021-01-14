@@ -1,9 +1,8 @@
 import importlib
-from importlib import reload
-from typing import Any
 
 from snr.endpoint import Endpoint
-from snr.factory import Factory
+from snr.endpoint.factory import Factory
+from snr.node import Node
 
 
 class ReloadableEndpointFactory(Factory):
@@ -13,11 +12,11 @@ class ReloadableEndpointFactory(Factory):
         super().__init__(name)
         self.child_module: importlib.types.ModuleType = child_module
 
-    def get(self, parent_node: Any) -> Endpoint:
+    def get(self, parent: Node) -> Endpoint:
         raise NotImplementedError
 
     def reload(self) -> None:
-        reload(self.child_module)
+        importlib.reload(self.child_module)
 
 
 """Example factory that might be implemented for an endpoint

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, List
 
 from snr.endpoint.endpoint import Endpoint
-from snr.factory import Factory
+from snr.endpoint.factory import Factory
 from snr.node import Node
 from snr.task import TaskHandlerMap, TaskSource
 

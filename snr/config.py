@@ -5,7 +5,7 @@ from snr.context.root_context import RootContext
 from snr.context.silent_stdout import SilentStdOut
 from snr.context.stdout import StdOut
 from snr.context.stdout_consumer import StdOutConsumer
-from snr.factory import Factory
+from snr.endpoint.factory import Factory
 
 Role = str
 

@@ -4,7 +4,7 @@ from threading import Event, Thread
 from typing import List
 
 from snr.endpoint.endpoint import Endpoint
-from snr.factory import Factory
+from snr.endpoint.factory import Factory
 from snr.node import Node
 from snr.task import TaskHandlerMap, TaskSource
 
