@@ -1,9 +1,12 @@
 
+from threading import Lock
 from time import sleep
 
 from snr.test.utils.test_base import *
 from snr.utils.consumer import Consumer
 from snr.utils.utils import no_op
+
+SLEEP_TIME_S = 0.0001
 
 
 class TestConsumer(SNRTestBase):
@@ -24,17 +27,15 @@ class TestConsumer(SNRTestBase):
 
     def test_consumer_start_join(self):
         # TODO: Remove hacky sleeps
-        SLEEP_TIME = 0.0002
-        CATCH_UP_TIME = SLEEP_TIME * 2
+        CATCH_UP_TIME = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
                                  no_op,
-                                 SLEEP_TIME,
+                                 SLEEP_TIME_S,
                                  self.stdout.print)
 
         sleep(CATCH_UP_TIME)
         self.assertTrue(consumer.is_alive())
 
-        self.assertTrue(consumer.is_alive())
         sleep(CATCH_UP_TIME)
         self.assertTrue(consumer.is_alive())
 
@@ -44,38 +45,54 @@ class TestConsumer(SNRTestBase):
         self.assertFalse(consumer.is_alive())
 
     def test_consumer_put(self):
-        SLEEP_TIME = 0.0002
 
+        self.lock = Lock()
         self.num: int = 0
 
         def increment(n: int) -> None:
-            self.num = self.num + n
+            with self.lock:
+                self.num += n
 
+        def check(value: int) -> None:
+            with self.lock:
+                self.assertEqual(value, self.num)
         consumer = Consumer("test_put",
                             increment,
-                            SLEEP_TIME,
+                            SLEEP_TIME_S,
                             self.stdout.print)
-        consumer.flush()
-        self.assertTrue(consumer.is_alive())
 
-        self.assertEqual(0, self.num)
-        consumer.put(0)
-        consumer.flush()
-        self.assertEqual(0, self.num)
+        def flush() -> None:
+            sleep(SLEEP_TIME_S * 10)
+            consumer.flush()
+            sleep(SLEEP_TIME_S * 10)
+            consumer.flush()
 
-        consumer.put(1)
-        consumer.flush()
-        self.assertEqual(1, self.num)
+        try:
 
-        self.assertTrue(consumer.is_alive())
-        consumer.put(2)
-        consumer.flush()
-        self.assertEqual(3, self.num)
-        self.assertTrue(consumer.is_alive())
+            flush()
+            self.assertTrue(consumer.is_alive())
+            check(0)
 
-        consumer.join_from("test complete")
-        self.assertFalse(consumer.is_alive())
-        self.assertEqual(3, self.num)
+            consumer.put(0)
+            flush()
+            check(0)
+
+            consumer.put(1)
+            flush()
+            check(1)
+
+            self.assertTrue(consumer.is_alive())
+            consumer.put(2)
+            flush()
+            check(3)
+            self.assertTrue(consumer.is_alive())
+
+            consumer.join_from("test complete")
+            flush()
+            self.assertFalse(consumer.is_alive())
+            check(3)
+        finally:
+            consumer.join_from("test complete")
 
 
 if __name__ == '__main__':

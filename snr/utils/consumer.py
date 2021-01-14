@@ -20,38 +20,39 @@ class Consumer(Thread, Generic[T]):
                  sleep_time: float,
                  stdout_print: Callable[..., None] = print
                  ) -> None:
-        Thread.__init__(self,
-                        target=self.__loop,
-                        name=parent_name + CONSUMER_THREAD_NAME_SUFFIX)
-        # self.name = parent_name + CONSUMER_NAME_SUFFIX
+        super().__init__(target=self.__loop,
+                         name=parent_name + CONSUMER_THREAD_NAME_SUFFIX)
         self.action = action
         self.sleep_time = sleep_time
         self.stdout_print = stdout_print
         self.queue: Queue[T] = Queue()
-        self.terminate_flag = Event()
-        self.fed = Event()
+        self.__terminate_flag = Event()
         self.flushed = Event()
         self.flushed.set()
 
         self.start()
 
     def put(self, item: T) -> None:
-        self.__check_alive(f"Consumer fed but thread is not alive ({item})")
-        self.queue.put(item)
-        self.fed.set()
-        self.flushed.clear()
+        if (self.is_alive() and not self.__terminate_flag.is_set()):
+            self.queue.put(item)
+            self.flushed.clear()
+        else:
+            self.dbg(ERROR_CHANNEL,
+                     "Consumer fed but thread is not alive ({})",
+                     [item])
 
     def __loop(self) -> None:
         self.dbg(DEBUG_CHANNEL, "Thread now running")
-        while not self.terminate_flag.is_set():
+        while not self.__terminate_flag.is_set():
             self.__iterate()
 
             # self.fed.wait(timeout=self.sleep_time)
             sleep(self.sleep_time)
 
         # Flush remaining lines
-        while not self.queue.empty():
+        while not self.flushed.is_set():
             self.__iterate()
+        self.flushed.set()
         self.dbg(DEBUG_CHANNEL, "Thread exited loop")
 
     def __iterate(self) -> None:
@@ -65,34 +66,29 @@ class Consumer(Thread, Generic[T]):
         except EOFError as e:
             msg = f"EOFError: {e}"
             self.dbg(ERROR_CHANNEL, msg)
-            self.set_terminate_flag(msg)
+            self.set_terminate_flag()
         item = None
-        if self.queue.empty():
-            self.fed.clear()
         if self.queue.empty():
             self.flushed.set()
 
     def __get(self) -> Optional[T]:
         return self.queue.get_nowait()
 
-    def join_from(self, joiner: str, timeout: Optional[float] = None):
+    def join_from(self, joiner: str):
         self.dbg(INFO_CHANNEL, "Preparing to join thread from {}", [joiner])
-        self.set_terminate_flag("join")
-        self.flush()
-        super().join(timeout)
+        self.set_terminate_flag()
+        super().join()
         if self.is_alive():
             self.dbg(WARNING_CHANNEL, "Thread just won't die.")
 
     def flush(self) -> None:
-        self.__check_alive("Cannot flush dead consumer")
-        self.flushed.wait()
+        if self.is_alive():
+            self.flushed.wait()
+        else:
+            self.dbg(ERROR_CHANNEL, "Cannot flush dead consumer")
 
-    def set_terminate_flag(self, reason: str) -> None:
-        self.terminate_flag.set()
-
-    def __check_alive(self, message: str) -> None:
-        if not self.is_alive():
-            self.dbg(DEBUG_CHANNEL, message, [self.name])
+    def set_terminate_flag(self):
+        self.__terminate_flag.set()
 
     def dbg(self,
             level: str,
