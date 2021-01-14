@@ -39,8 +39,8 @@ class Profiler(Consumer[ProfilingResult]):
     def store_task(self, type_and_runtime: Tuple[str, float]):
         (task_type, runtime) = type_and_runtime
         self.debugger.debug("profiling_task", DEBUG_CHANNEL,
-                            "Ran {} task in {:6.3f} us",
-                            [task_type, runtime * 1000000])
+                            "Ran {} task in {}",
+                            [task_type, self.format_time(runtime)])
         if self.time_dict.get(task_type) is None:
             self.init_task_type(task_type)
         self.time_dict[task_type].append(runtime)
