@@ -1,4 +1,3 @@
-from snr.config import TestConfig
 from snr.runner.test_runner import SynchronusTestRunner
 from snr.test.utils.expector import Expector
 from snr.test.utils.expector_endpoint import ExpectorEndpointFactory
@@ -12,12 +11,12 @@ class TestExpectorEndpoint(SNRTestBase):
 
     def test_expector_endpoint(self):
         expector = Expector({})
-        config = TestConfig([
+        config = self.get_config([
             ExpectorEndpointFactory(expector),
             TimeoutEndpointFactory(seconds=1)
         ])
 
-        runner = SynchronusTestRunner(config, self.stdout)
+        runner = SynchronusTestRunner(config)
         runner.run()
         expector.assert_satisfied(self)
 
