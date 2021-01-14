@@ -1,10 +1,8 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
-
+from __future__ import annotations
 from enum import Enum
-from typing import Any, Callable, List, Union
-
-PROCESS_DATA_PREFIX = "process_"
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 
 class TaskPriority(Enum):
@@ -13,33 +11,60 @@ class TaskPriority(Enum):
     low = 1
 
 
+class TaskType(Enum):
+    event = "event"
+    process_data = "process_data"
+    reload = "reload"
+    terminate = "terminate"
+
+
+TaskId = Union[TaskType, Tuple[TaskType, str]]
+
+
 class Task:
-    """The task class and associated code for using and passing tasks
-
-    The Task object is one that defines a action or event
-    """
-
     def __init__(self,
-                 task_type: str,
-                 priority: TaskPriority = TaskPriority.normal,
+                 type: TaskType,
+                 name: str,
+                 priority: TaskPriority = TaskPriority.normal,  # unused
                  val_list: List[Any] = []
                  ) -> None:
-        self.task_type = task_type
+        self.type = type
+        self.name = name
         self.priority = priority
         self.val_list = val_list
+
+    def id(self) -> TaskId:
+        return (self.type, self.name)
 
     def __eq__(self, other: Any):
         return (
             (self.__class__ == other.__class__) and
-            (self.task_type == other.task_type) and
+            (self.name == other.task_type) and
             (self.priority == other.priority) and
             (self.val_list == other.val_list))
 
     def __repr__(self):
-        return "Task: type: {}, priority: {}, val_list: {}".format(
-            self.task_type, self.priority, self.val_list)
+        return "Task({}): type: {}, priority: {}, val_list: {}".format(
+            self.name, self.type, self.priority, self.val_list)
+
+
+def event(name: str, val_list: List[Any] = []) -> Task:
+    return Task(TaskType.event, name, val_list=val_list)
+
+
+def process_data(name: str) -> Task:
+    return Task(TaskType.process_data, name)
+
+
+def reload(endpoint_name: str) -> Task:
+    return Task(TaskType.reload, endpoint_name)
+
+
+def terminate(reason: str) -> Task:
+    return Task(TaskType.terminate, reason)
 
 
 SomeTasks = Union[None, Task, List[Task]]
 TaskHandler = Callable[[Task], SomeTasks]
+TaskHandlerMap = Dict[TaskId, TaskHandler]
 TaskSource = Callable[[], SomeTasks]

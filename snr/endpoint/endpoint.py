@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, List, Optional
 
 from snr.context.context import Context
-from snr.task import TaskHandler, TaskSource
+from snr.task import Task, TaskHandler, TaskHandlerMap, TaskSource
 
 
 class Endpoint(Context):
@@ -12,7 +12,7 @@ class Endpoint(Context):
                  parent_node: Any,
                  name: str,
                  task_producers: List[TaskSource] = [],
-                 task_handlers: Dict[str, TaskHandler] = {}
+                 task_handlers: TaskHandlerMap = {}
                  ) -> None:
         super().__init__(name, parent_node)
         self.factory = factory
@@ -21,20 +21,28 @@ class Endpoint(Context):
         self.task_handlers = task_handlers
 
     def start(self) -> None:
-        pass
-
-    def set_terminate_flag(self, reason: str) -> None:
         # Stub for synchronous endpoints
-        pass
+        raise NotImplementedError
 
     def terminate(self) -> None:
-        self.warn("{} does not implement terminate()",
-                  [self.name])
+        # Stub for synchronous endpoints
         raise NotImplementedError
 
     def join(self) -> None:
         # Stub for synchronous endpoints
-        return
+        raise NotImplementedError
+
+    def set_terminate_flag(self) -> None:
+        # Stub for synchronous endpoints
+        raise NotImplementedError
+
+    def get_task_handler(self, t: Task) -> Optional[TaskHandler]:
+        handler = self.task_handlers.get(t.id())
+        if not handler:
+            handler = self.task_handlers.get(t.type)
+            # self.dbg("Handler for {} not found, using type handler {}",
+            #          [t.id(), handler])
+        return handler
 
     def reload(self, parent_node: Any) -> Endpoint:
         self.factory.reload()

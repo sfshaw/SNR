@@ -1,29 +1,30 @@
-from typing import Any, Dict
+from typing import Any
 
-from snr.endpoint.endpoint import Endpoint
-from snr.task import SomeTasks, Task, TaskHandler
+from snr.endpoint import Endpoint
+from snr.task import SomeTasks, Task, TaskType
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
-TASK_TYPE_TERMINATE = "terminate"
-TASK_TYPE_RELOAD_ENDPOINT = "reload"
 TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 
 
 class NodeCore(Endpoint):
     def __init__(self,
-                 factory: None,
+                 factory: Any,
                  parent_node: Any
                  ) -> None:
-        task_handlers: Dict[str, TaskHandler] = {
-            TASK_TYPE_TERMINATE: self.task_handler_terminate,
-            TASK_TYPE_RELOAD_ENDPOINT: self.task_handler_reload,
-            TASK_TYPE_LIST_ENDPOINTS: self.task_handler_list_endpoints,
-        }
         super().__init__(factory,
                          parent_node,
                          parent_node.name + NODE_CORE_NAME_SUFFIX,
-                         task_handlers=task_handlers)
+                         task_handlers={
+                             TaskType.terminate: self.task_handler_terminate,
+                             TaskType.reload: self.task_handler_reload,
+                             (TaskType.event, "cmd_list_endpoints"):
+                             self.task_handler_list_endpoints,
+                         })
+
+    def start(self) -> None:
+        pass
 
     def task_producer(self) -> SomeTasks:
         return None
@@ -51,3 +52,6 @@ class NodeCore(Endpoint):
         for name in self.parent_node.endpoints.keys():
             self.info("\t{}", [name])
         self.debugger.flush()
+
+    def set_terminate_flag(self) -> None:
+        pass

@@ -1,9 +1,8 @@
-
 from typing import Any, Callable, Dict, Optional
 
 from snr.context.context import Context
 from snr.dds.page import Page
-from snr.task import PROCESS_DATA_PREFIX, Task
+from snr.task import Task, process_data
 from snr.utils.consumer import Consumer
 from snr.utils.timer import Timer
 from snr.utils.utils import no_op
@@ -27,10 +26,11 @@ class DDS(Context):
         self.data_dict: DataDict = {}
         self.schedule_task = task_scheduler
 
-        self.inbound_consumer = Consumer[Page]("dds_inbound",
-                                               self.write,
-                                               SLEEP_TIME,
-                                               self.stdout.print)
+        self.inbound_consumer = Consumer[Page](
+            parent_node.name + "_dds_inbound",
+            self.write,
+            SLEEP_TIME,
+            self.stdout.print)
         self.info("DDS initialized")
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
@@ -62,10 +62,11 @@ class DDS(Context):
     def write(self, page: Page):
         self.data_dict[page.key] = page
         if page.process:
-            self.schedule_task(Task(f"{PROCESS_DATA_PREFIX}{page.key}"))
+            t = process_data(page.key)
+            self.schedule_task(t)
 
     def set_terminate_flag(self, reason: str):
-        self.inbound_consumer.set_terminate_flag(reason)
+        self.inbound_consumer.set_terminate_flag()
         self.info("Preparing to terminate DDS for {}", [reason])
 
     def join(self):

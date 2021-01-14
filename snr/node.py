@@ -5,10 +5,10 @@ from snr.config import Mode, Role
 from snr.context.context import Context
 from snr.context.root_context import RootContext
 from snr.dds.dds import DDS
-from snr.endpoint.endpoint import Endpoint
+from snr.endpoint import Endpoint
 from snr.endpoint.node_core_endpoint import NodeCore
 from snr.factory import Factory
-from snr.task import SomeTasks, Task
+from snr.task import SomeTasks, Task, TaskHandler
 from snr.task_queue import TaskQueue
 from snr.utils.profiler import Profiler
 
@@ -78,15 +78,14 @@ class Node(Context):
             return
 
         new_tasks: List[Task] = []
-        handlers = [e.task_handlers.get(t.task_type)
-                    for e in self.endpoints.values()]
-        handlers = [h for h in handlers if h]
+        handlers = self.get_task_handlers(t)
+
         self.dbg("Got {} handlers for {} task: {}",
-                 [len(handlers), t.task_type, handlers])
+                 [len(handlers), t.name, handlers])
         new_tasks: List[Task] = []
         for handler in handlers:
-            self.dbg("Executing {} task with {}", [t.task_type, handler])
-            result = self.time(t.task_type, handler, t)
+            self.dbg("Executing {} task with {}", [t.name, handler])
+            result = self.time(t.name, handler, t)
             if result:
                 if isinstance(result, Task):
                     new_tasks.append(result)
@@ -97,6 +96,11 @@ class Node(Context):
         if new_tasks:
             self.task_queue.schedule(new_tasks)
         self.datastore.flush()
+
+    def get_task_handlers(self, t: Task) -> List[TaskHandler]:
+        maybe_handlers = [e.get_task_handler(t)
+                          for e in self.endpoints.values()]
+        return [handler for handler in maybe_handlers if handler]
 
     def set_terminate_flag(self, reason: str):
         self.info("Exit reason: {}", [reason])

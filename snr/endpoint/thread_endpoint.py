@@ -1,13 +1,15 @@
-from threading import Thread
-from typing import Dict, List
+from __future__ import annotations
+
+from threading import Event, Thread
+from typing import List
 
 from snr.endpoint.endpoint import Endpoint
 from snr.factory import Factory
 from snr.node import Node
-from snr.task import TaskHandler, TaskSource
+from snr.task import TaskHandlerMap, TaskSource
 
 DEFAULT_TICK_RATE = 24
-DAEMON_THREADS = False
+JOIN_TIMEOUT = None
 
 
 class ThreadEndpoint(Endpoint):
@@ -25,7 +27,7 @@ class ThreadEndpoint(Endpoint):
                  name: str,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  task_producers: List[TaskSource] = [],
-                 task_handlers: Dict[str, TaskHandler] = {}
+                 task_handlers: TaskHandlerMap = {}
                  ) -> None:
         super().__init__(factory,
                          parent,
@@ -33,13 +35,10 @@ class ThreadEndpoint(Endpoint):
                          task_producers,
                          task_handlers)
         self.parent = parent
-        self.terminate_flag = False
         self.set_delay(tick_rate_hz)
-
-        self.thread = Thread(target=self.threaded_method,
-                             args=[],
-                             name=self.name + "_thread",
-                             daemon=DAEMON_THREADS)
+        self.__terminate_flag = Event()
+        self.__thread = Thread(target=self.threaded_method,
+                               name=self.name + "_thread")
 
     def set_delay(self, tick_rate_hz: float):
         if tick_rate_hz == 0:
@@ -56,21 +55,21 @@ class ThreadEndpoint(Endpoint):
     def start(self):
         self.dbg("Starting async endpoint {} thread",
                  [self.name])
-        self.thread.start()
+        self.__thread.start()
 
     def join(self):
         """Externaly wait to shutdown a threaded endpoint
         """
-        self.set_terminate_flag("join")
-        if self.thread.is_alive():
-            self.thread.join(timeout=1)
+        self.set_terminate_flag()
+        if self.__thread.is_alive():
+            self.__thread.join(timeout=JOIN_TIMEOUT)
         else:
             self.warn("Thread was not alive on join")
 
     def threaded_method(self):
         self.setup()
         try:
-            while not self.terminate_flag:
+            while not self.__terminate_flag.is_set():
                 if self.profiler:
                     self.time(self.name, lambda _: self.loop_handler(), None)
                 else:
@@ -86,17 +85,17 @@ class ThreadEndpoint(Endpoint):
         return self.name
 
     def tick(self):
-        # TODO: Ensure that this does not block other threads: thread.sleep()?
         if (self.delay_s == 0.0):
             self.warn("Async_endpoint {} does not sleep (max tick rate)",
                       [self.name])
         else:
             self.sleep(self.delay_s)
 
-    def set_terminate_flag(self, reason: str):
-        self.terminate_flag = True
-        self.info("Preparing to terminating async_endpoint {} for {}",
-                  [self.name, reason])
+    def is_terminated(self) -> bool:
+        return self.__terminate_flag.is_set()
+
+    def set_terminate_flag(self) -> None:
+        self.__terminate_flag.set()
 
     def terminate(self):
         pass
