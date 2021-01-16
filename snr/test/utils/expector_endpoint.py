@@ -12,7 +12,6 @@ class ExpectorEndpoint(SynchronousEndpoint):
                  parent_node: Node,
                  expector: Expector
                  ) -> None:
-        self.expector = expector
         task_handlers = {}
         for key in expector.expectations:
             task_handlers[key] = self.call
@@ -20,9 +19,11 @@ class ExpectorEndpoint(SynchronousEndpoint):
                          parent_node,
                          "expector",
                          task_handlers=task_handlers)
+        self.expector = expector
 
     def call(self, task: Task) -> SomeTasks:
-        self.expector.call(task.name)
+        print(f"Called for: {task}")
+        self.expector.call(task.id())
         return None
 
 

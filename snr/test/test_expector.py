@@ -6,27 +6,32 @@ from snr.test.utils.expector import Expector
 class TestExpector(unittest.TestCase):
 
     def test_empty(self):
-        expector = Expector({})
-        expector.assert_satisfied(self)
+        expector = Expector({}, self)
+        expector.assert_satisfied()
+
+    def test_empty_with_syntax(self):
+        with Expector({}, self) as _:
+            pass
 
     def test_call(self):
-        expector = Expector({
+        with Expector({
             "foo": 0,
             "bar": 1,
             "bazz": 2
-        })
-        expector.call("bar")
-        expector.call("bazz")
-        expector.call("bazz")
-        expector.call("extraneous")
-        expector.assert_satisfied(self)
+        },
+                self) as expector:
+            expector.call("bar")
+            expector.call("bazz")
+            expector.call("bazz")
+            expector.call("extraneous")
 
     def test_fail(self):
-        expector = Expector({
-            "foop": 1
-        })
         with self.assertRaises(AssertionError):
-            expector.assert_satisfied(self)
+            with Expector({
+                "foop": 1
+            },
+                    self) as _:
+                pass
 
 
 if __name__ == '__main__':
