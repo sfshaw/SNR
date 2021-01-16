@@ -1,3 +1,4 @@
+from snr.task import TaskType
 from snr.runner.test_runner import SynchronusTestRunner
 from snr.test.utils.expector import Expector
 from snr.test.utils.expector_endpoint import ExpectorEndpointFactory
@@ -10,15 +11,14 @@ raw_data_filename = "snr/test/test_data/raw_data.txt"
 class TestExpectorEndpoint(SNRTestBase):
 
     def test_expector_endpoint(self):
-        expector = Expector({})
-        config = self.get_config([
-            ExpectorEndpointFactory(expector),
-            TimeoutEndpointFactory(seconds=1)
-        ])
+        with Expector({TaskType.terminate: 1}, self) as expector:
+            config = self.get_config([
+                ExpectorEndpointFactory(expector),
+                TimeoutEndpointFactory(seconds=0.5)
+            ])
 
-        runner = SynchronusTestRunner(config)
-        runner.run()
-        expector.assert_satisfied(self)
+            runner = SynchronusTestRunner(config)
+            runner.run()
 
 
 if __name__ == '__main__':

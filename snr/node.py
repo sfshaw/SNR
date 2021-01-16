@@ -146,6 +146,9 @@ class Node(Context):
             self.info("{} added {}", [factory, new_endpoint])
         return endpoints
 
+    def schedule(self, t: Task) -> None:
+        self.task_queue.schedule(t)
+
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
         self.datastore.store(key, data, process)
 

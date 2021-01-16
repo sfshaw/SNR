@@ -3,6 +3,7 @@ from snr.endpoint.endpoint_factory import EndpointFactory
 from snr.endpoint.factory import Factory
 from snr.endpoint.thread_endpoint import ThreadEndpoint
 from snr.node import Node
+from snr import task
 
 
 class TimeoutEndpoint(ThreadEndpoint):
@@ -18,7 +19,7 @@ class TimeoutEndpoint(ThreadEndpoint):
 
     def setup(self) -> None:
         self.sleep(self.timeout_s)
-        self.parent_node.set_terminate_flag("Timeout")
+        self.parent_node.schedule(task.terminate("Timeout"))
 
 
 class TimeoutEndpointFactory(EndpointFactory):
