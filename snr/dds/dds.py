@@ -7,9 +7,8 @@ from snr.utils.consumer import Consumer
 from snr.utils.timer import Timer
 from snr.utils.utils import no_op
 
-SLEEP_TIME = 0.001
+SLEEP_TIME_S = 0.0005
 JOIN_TIMEOUT = 0.5
-DAEMON_THREADS = False
 
 DataDict = Dict[str, Page]
 
@@ -29,7 +28,7 @@ class DDS(Context):
         self.inbound_consumer = Consumer[Page](
             parent_node.name + "_dds_inbound",
             self.write,
-            SLEEP_TIME,
+            SLEEP_TIME_S,
             self.stdout.print)
         self.info("DDS initialized")
 
@@ -57,7 +56,7 @@ class DDS(Context):
 
     def dump_data(self) -> None:
         for page in self.data_dict.values():
-            super().dump("{}", [page])
+            self.dump("{}", [page])
 
     def write(self, page: Page):
         self.data_dict[page.key] = page
