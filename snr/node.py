@@ -4,10 +4,10 @@ from typing import Any, Dict, List, Optional, Union
 from snr.config import Mode, Role
 from snr.context.context import Context
 from snr.context.root_context import RootContext
-from snr.dds.dds import DDS
+from snr.datastore.datastore import Datastore
 from snr.endpoint import Endpoint
-from snr.endpoint.node_core_endpoint import NodeCore
 from snr.endpoint.factory import Factory
+from snr.endpoint.node_core_endpoint import NodeCore
 from snr.task import SomeTasks, Task, TaskHandler
 from snr.task_queue import TaskQueue
 from snr.utils.profiler import Profiler
@@ -29,8 +29,8 @@ class Node(Context):
         self.mode = mode
 
         self.task_queue = TaskQueue(self, self.get_new_tasks)
-        self.datastore = DDS(self,
-                             self.task_queue.schedule)
+        self.datastore = Datastore(self,
+                                   self.task_queue.schedule)
         self.endpoints = self.get_endpoints(factories)
         self.__terminate_flag = Event()
         self.is_terminated = Event()

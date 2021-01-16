@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, Optional
 
 from snr.context.context import Context
-from snr.dds.page import Page
+from snr.datastore.page import Page
 from snr.task import Task, process_data
 from snr.utils.consumer import Consumer
 from snr.utils.timer import Timer
@@ -13,12 +13,12 @@ JOIN_TIMEOUT = 0.5
 DataDict = Dict[str, Page]
 
 
-class DDS(Context):
+class Datastore(Context):
     def __init__(self,
                  parent_node: Any,
                  task_scheduler: Callable[[Task], None] = no_op
                  ) -> None:
-        super().__init__("dds", parent_node)
+        super().__init__("datastore", parent_node)
 
         self.parent_node = parent_node
         self.timer = Timer()
@@ -30,7 +30,7 @@ class DDS(Context):
             self.write,
             SLEEP_TIME_S,
             self.stdout.print)
-        self.info("DDS initialized")
+        self.info("Datastore initialized")
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
@@ -66,10 +66,10 @@ class DDS(Context):
 
     def set_terminate_flag(self, reason: str):
         self.inbound_consumer.set_terminate_flag()
-        self.info("Preparing to terminate DDS for {}", [reason])
+        self.info("Preparing to terminate datastore for {}", [reason])
 
     def join(self):
-        """Shutdown DDS threads
+        """Shutdown datastore threads
         """
         self.set_terminate_flag("join")
         self.flush()

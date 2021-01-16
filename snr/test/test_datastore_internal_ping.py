@@ -47,7 +47,7 @@ class PingTestEndpoint(SynchronousEndpoint):
     def handle_recv_ping(self, t: Task) -> SomeTasks:
         self.expector.call("process_ping_test")
         start = self.parent_node.get_data("ping_test")
-        self.info("DDS ping latency: {} ms",
+        self.info("Datastore ping latency: {} ms",
                   [(time() - float(start)) * 1000])
         return task.terminate("test_endpoint_done")
 
@@ -64,21 +64,20 @@ class PingTestFactory(EndpointFactory):
                                 self.expector)
 
 
-class TestInternalDDSPing(SNRTestBase):
+class TestInternalDatastorePing(SNRTestBase):
 
     def test_internal_dds_ping(self):
-        expector = Expector({
-            "ping_test": 1,
-            "process_ping_test": 1,
-        })
-        config = self.get_config([
-            PingTestFactory(expector),
-            # RecorderFactory("ping_recorder",
-            #                 ["ping_test", "process_ping_test"])
-        ])
-        runner = SynchronusTestRunner(config)
-        runner.run()
-        expector.assert_satisfied(self)
+        with Expector({
+                "ping_test": 1,
+                "process_ping_test": 1},
+                self) as expector:
+            config = self.get_config([
+                PingTestFactory(expector),
+                # RecorderFactory("ping_recorder",
+                #                 ["ping_test", "process_ping_test"])
+            ])
+            runner = SynchronusTestRunner(config)
+            runner.run()
 
 
 if __name__ == '__main__':

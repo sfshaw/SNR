@@ -1,20 +1,16 @@
+from dataclasses import dataclass
 from typing import Any, Callable
 
 MAX_PRINTABLE_DATA_LEN = 60
 
 
+@dataclass
 class Page:
-    def __init__(self,
-                 key: str,
-                 data: Any,
-                 origin: str,
-                 created_at: float,
-                 process: bool = True):
-        self.key = key
-        self.data = data
-        self.origin = origin
-        self.created_at = created_at
-        self.process = process
+    key: str
+    data: Any
+    origin: str
+    created_at: float
+    process: bool = True
 
     def __repr__(self):
         data = str(self.data)
