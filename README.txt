@@ -2,15 +2,20 @@
 SNR
 ===
 
-SNR provides a soft-realtime-robotics framework for education. It was 
-originally developed for the Cal POly Robotics Club Underwater
-Remote Operated Vehicle (UROV). Typical usage often looks like this::
+SNR provides a soft-realtime robotics framework for education. It was 
+originally developed for the Cal Poly Robotics Club Underwater
+Remote Operated Vehicle (UROV). Typical usage often looks like this:
 
     #!/usr/bin/env python
 
-    from snr import *
+    from snr import *  // TODO: Export user facing classes and types
 
     # TODO: Sample code
+
+
+
+
+Markdown cheatsheet:
 
 (Note the double-colon and 4-space indent formatting above.)
 
