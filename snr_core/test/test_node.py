@@ -68,9 +68,10 @@ class TestNode(SNRTestBase):
             except KeyboardInterrupt:
                 pass
             finally:
-                if node:
+                if node and not node.is_terminated.is_set():
                     node.set_terminate_flag("test done")
                     node.terminate()
+                    node = None
 
 
 if __name__ == '__main__':

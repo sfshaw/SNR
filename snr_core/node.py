@@ -1,5 +1,5 @@
 from threading import Event
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from snr_core.config import Mode, Role
 from snr_core.context.context import Context
@@ -8,7 +8,7 @@ from snr_core.datastore.datastore import Datastore
 from snr_core.endpoint import Endpoint
 from snr_core.endpoint.factory import Factory
 from snr_core.endpoint.node_core_endpoint import NodeCore
-from snr_core.task import SomeTasks, Task, TaskHandler
+from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
 from snr_core.task_queue import TaskQueue
 from snr_core.utils.profiler import Profiler
 
@@ -28,9 +28,9 @@ class Node(Context):
         self.role = role
         self.mode = mode
 
-        self.task_queue = TaskQueue(self, self.get_new_tasks)
-        self.datastore = Datastore(self,
-                                   self.task_queue.schedule)
+        self.__task_queue = TaskQueue(self, self.get_new_tasks)
+        self.__datastore = Datastore(self,
+                                   self.__task_queue.schedule)
         self.endpoints = self.get_endpoints(factories)
         self.__terminate_flag = Event()
         self.is_terminated = Event()
@@ -42,9 +42,9 @@ class Node(Context):
             endpoint.start()
 
         while not self.__terminate_flag.is_set():
-            if self.task_queue.is_empty():
-                self.datastore.flush()
-            t: Optional[Task] = self.task_queue.get_next()
+            if self.__task_queue.is_empty():
+                self.__datastore.flush()
+            t: Optional[Task] = self.__task_queue.get_next()
             if t:
                 self.execute_task(t)
             else:
@@ -84,9 +84,9 @@ class Node(Context):
         self.dbg("Got {} handlers for {} task: {}",
                  [len(handlers), t.name, handlers])
         new_tasks: List[Task] = []
-        for handler in handlers:
+        for (handler, key) in handlers:
             self.dbg("Executing {} task with {}", [t.name, handler])
-            result = self.time(t.name, handler, t)
+            result = self.time(t.name, handler, [t, key])
             if result:
                 if isinstance(result, Task):
                     new_tasks.append(result)
@@ -95,17 +95,20 @@ class Node(Context):
         self.dbg("Task execution resulted in {} new tasks",
                  [len(new_tasks)])
         if new_tasks:
-            self.task_queue.schedule(new_tasks)
-        self.datastore.flush()
+            self.__task_queue.schedule(new_tasks)
+        self.__datastore.flush()
 
-    def get_task_handlers(self, t: Task) -> List[TaskHandler]:
-        maybe_handlers = [e.get_task_handler(t)
-                          for e in self.endpoints.values()]
-        return [handler for handler in maybe_handlers if handler]
+    def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
+        maybe_handlers_and_keys = [e.get_task_handler(t)
+                                   for e in self.endpoints.values()]
+        return [(handler, key)
+                for (handler, key) in maybe_handlers_and_keys
+                if handler]
 
     def set_terminate_flag(self, reason: str):
-        self.info("Exit reason: {}", [reason])
-        self.datastore.store("node_exit_reason", reason, False)
+        self.info("Setting terminate flag for: {}", [reason])
+        self.__datastore.store("node_exit_reason", reason, False)
+        self.__datastore.flush()
         self.__terminate_flag.set()
         for e in self.endpoints.values():
             e.set_terminate_flag()
@@ -127,8 +130,8 @@ class Node(Context):
 
         self.info("Terminated all endpoints")
 
-        self.datastore.join()
-        self.datastore.dump_data()
+        self.__datastore.join()
+        self.__datastore.dump_data()
 
         self.stdout.flush()
         super().terminate()
@@ -147,10 +150,10 @@ class Node(Context):
         return endpoints
 
     def schedule(self, t: Task) -> None:
-        self.task_queue.schedule(t)
+        self.__task_queue.schedule(t)
 
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
-        self.datastore.store(key, data, process)
+        self.__datastore.store(key, data, process)
 
     def get_data(self, key: str) -> Union[Any, None]:
-        return self.datastore.get_data(key)
+        return self.__datastore.get_data(key)

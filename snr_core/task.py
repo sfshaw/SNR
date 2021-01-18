@@ -1,8 +1,9 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
 from __future__ import annotations
+
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 
 class TaskPriority(Enum):
@@ -65,6 +66,6 @@ def terminate(reason: str) -> Task:
 
 
 SomeTasks = Union[None, Task, List[Task]]
-TaskHandler = Callable[[Task], SomeTasks]
+TaskHandler = Callable[[Task, TaskId], SomeTasks]
 TaskHandlerMap = Dict[TaskId, TaskHandler]
 TaskSource = Callable[[], SomeTasks]

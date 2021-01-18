@@ -22,10 +22,15 @@ class Expector:
 
     def assert_satisfied(self):
         for (key, expected_value) in self.expectations.items():
+            if expected_value != self.times_called[str(key)]:
+                self.dump()
             self.testcase.assertEqual(expected_value,
                                       self.times_called[str(key)],
                                       "For " + str(key))
         self.testcase.assertTrue(True)
+
+    def dump(self) -> None:
+        print(self.times_called)
 
     def __enter__(self) -> Expector:
         return self

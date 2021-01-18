@@ -37,6 +37,8 @@ class RootContext:
                 WARNING_CHANNEL,
                 "Exiting context (exc_type: {},\texec_val: {}\ttraceback: {})",
                 [exc_type, exc_value, traceback])
+        if isinstance(exc_value, Exception):
+            raise exc_value
         self.terminate()
 
     def terminate(self):
@@ -48,6 +50,3 @@ class RootContext:
             print("Context terminated.")
         else:
             self.stdout.flush()
-            self.debugger.debug(self.name,
-                                INFO_CHANNEL,
-                                "Unowned StdIO not joined/terminated")

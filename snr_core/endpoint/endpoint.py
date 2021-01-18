@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 from snr_core.context.context import Context
-from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskSource
+from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskId, TaskSource
 
 
 class Endpoint(Context):
@@ -36,13 +36,16 @@ class Endpoint(Context):
         # Stub for synchronous endpoints
         raise NotImplementedError
 
-    def get_task_handler(self, t: Task) -> Optional[TaskHandler]:
-        handler = self.task_handlers.get(t.id())
+    def get_task_handler(self,
+                         t: Task
+                         ) -> Tuple[Optional[TaskHandler], TaskId]:
+        id = t.id()
+        (handler, key) = (self.task_handlers.get(id), id)
         if not handler:
-            handler = self.task_handlers.get(t.type)
+            (handler, key) = (self.task_handlers.get(t.type), t.type)
             # self.dbg("Handler for {} not found, using type handler {}",
             #          [t.id(), handler])
-        return handler
+        return (handler, key)
 
     def reload(self, parent_node: Any) -> Endpoint:
         self.factory.reload()

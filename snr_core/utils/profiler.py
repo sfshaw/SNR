@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Any, Callable, Deque, Dict, Tuple
+from typing import Any, Callable, Deque, Dict, List, Tuple
 
 from snr_core.settings import Settings
 from snr_core.utils.consumer import Consumer
@@ -27,9 +27,13 @@ class Profiler(Consumer[ProfilingResult]):
         self.time_dict: Dict[str, Deque[float]] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
 
-    def time(self, name: str, handler: Callable[[Any], Any], args: Any) -> Any:
+    def time(self,
+             name: str,
+             handler: Callable[[Any], Any],
+             args: List[Any]
+             ) -> Any:
         timer = Timer()
-        result = handler(args)
+        result = handler(*args)
         self.log_task(name, timer.current())
         return result
 

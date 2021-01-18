@@ -57,6 +57,7 @@ class Datastore(Context):
     def dump_data(self) -> None:
         for page in self.data_dict.values():
             self.dump("{}", [page])
+        super().flush()
 
     def write(self, page: Page):
         self.data_dict[page.key] = page

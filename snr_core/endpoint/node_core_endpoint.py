@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from typing import Any
 
 from snr_core.endpoint import Endpoint
-from snr_core.task import SomeTasks, Task, TaskType
+from snr_core.task import SomeTasks, Task, TaskId, TaskType
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
@@ -24,19 +26,21 @@ class NodeCore(Endpoint):
                          })
 
     def start(self) -> None:
+        # Must implement interface since SynchronousEndpoint cannot be imported
         pass
 
     def task_producer(self) -> SomeTasks:
+        # Must implement interface since SynchronousEndpoint cannot be imported
         return None
 
-    def task_handler_terminate(self, t: Task) -> SomeTasks:
+    def task_handler_terminate(self, t: Task, key: TaskId) -> SomeTasks:
         # if ("all" in t.val_list
         #         or self.parent_node.name in t.val_list
         #         or "node" in t.val_list):
-        self.parent_node.set_terminate_flag("terminate_task")
+        self.parent_node.set_terminate_flag(f"terminate_task:{t.name}")
         return None
 
-    def task_handler_reload(self, t: Task) -> SomeTasks:
+    def task_handler_reload(self, t: Task, key: TaskId) -> SomeTasks:
         endpoint_name = t.val_list[0]
         endpoint = self.parent_node.endpoints.get(endpoint_name)
         if isinstance(endpoint, Endpoint):
@@ -47,7 +51,7 @@ class NodeCore(Endpoint):
 
         return None
 
-    def task_handler_list_endpoints(self, t: Task):
+    def task_handler_list_endpoints(self, t: Task, key: TaskId):
         self.info("Listing endpoints:")
         for name in self.parent_node.endpoints.keys():
             self.info("\t{}", [name])

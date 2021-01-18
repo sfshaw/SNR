@@ -70,7 +70,7 @@ class ThreadEndpoint(Endpoint):
         try:
             while not self.__terminate_flag.is_set():
                 if self.profiler:
-                    self.time(self.name, lambda _: self.loop_handler(), None)
+                    self.time(self.name, self.loop_handler, [])
                 else:
                     self.loop_handler()
                 self.tick()
@@ -85,8 +85,9 @@ class ThreadEndpoint(Endpoint):
 
     def tick(self):
         if (self.delay_s == 0.0):
-            self.warn("Async_endpoint {} does not sleep (max tick rate)",
-                      [self.name])
+            self.warn("Thread {} does not sleep (max tick rate)",
+                      [self.name],
+                      flush=True)
         else:
             self.sleep(self.delay_s)
 

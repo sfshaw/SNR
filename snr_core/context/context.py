@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, TypeVar, Union
 
 from snr_core.context.root_context import RootContext
-from snr_core.context.stdout import StdOut
+from snr_core.context.stdout_consumer import StdOutConsumer
 from snr_core.settings import Settings
 from snr_core.utils.debug.channels import *
 from snr_core.utils.debug.debugger import Debugger
@@ -19,7 +19,7 @@ class Context:
                  profiler: Optional[Profiler] = None
                  ) -> None:
         self.name = name
-        self.stdout: StdOut = parent.stdout
+        self.stdout: StdOutConsumer = parent.stdout
         self.debugger: Debugger = parent.debugger
         self.settings: Settings = parent.settings
         self.profiler: Optional[Profiler] = profiler
@@ -29,7 +29,7 @@ class Context:
         else:
             raise Exception(f"FATAL: Incorrectly constructed context: {name}")
 
-    def terminate(self):
+    def terminate(self) -> None:
         self.dbg("Terminating context {}", [self.name])
         if isinstance(self.profiler, Profiler):
             self.profiler.join_from("context temrinate")
@@ -39,32 +39,41 @@ class Context:
 
     def fatal(self,
               message: str,
-              format_args: Union[List[Any], Any, None] = None):
+              format_args: Union[List[Any], Any, None] = None
+              ) -> None:
         self.debugger.debug(self.name, FATAL_CHANNEL, message, format_args)
 
     def err(self,
             message: str,
-            format_args: Union[List[Any], Any, None] = None):
+            format_args: Union[List[Any], Any, None] = None
+            ) -> None:
         self.debugger.debug(self.name, ERROR_CHANNEL, message, format_args)
 
     def warn(self,
              message: str,
-             format_args: Union[List[Any], Any, None] = None):
+             format_args: Union[List[Any], Any, None] = None,
+             flush: bool = False
+             ) -> None:
         self.debugger.debug(self.name, WARNING_CHANNEL, message, format_args)
+        if flush:
+            self.flush()
 
     def log(self,
             message: str,
-            format_args: Union[List[Any], Any, None] = None):
+            format_args: Union[List[Any], Any, None] = None
+            ) -> None:
         self.debugger.debug(self.name, LOG_CHANNEL, message, format_args)
 
     def dbg(self,
             message: str,
-            format_args: Union[List[Any], Any, None] = None):
+            format_args: Union[List[Any], Any, None] = None
+            ) -> None:
         self.debugger.debug(self.name, DEBUG_CHANNEL, message, format_args)
 
     def info(self,
              message: str,
-             format_args: Union[List[Any], Any, None] = None):
+             format_args: Union[List[Any], Any, None] = None
+             ) -> None:
         self.debugger.debug_flush(self.name,
                                   INFO_CHANNEL,
                                   message,
@@ -72,20 +81,28 @@ class Context:
 
     def dump(self,
              message: str,
-             format_args: Union[List[Any], Any, None] = None):
+             format_args: Union[List[Any], Any, None] = None
+             ) -> None:
         self.debugger.debug(self.name, DUMP_CHANNEL, message, format_args)
+
+    def flush(self) -> None:
+        self.debugger.flush()
+
+    T = TypeVar("T")
 
     def time(self,
              task_name: str,
-             handler: Callable[[Any], Any],
-             args: Any) -> Any:
+             handler: Callable[..., T],
+             args: List[Any]) -> T:
         if self.profiler:
             return self.profiler.time(f"{task_name}:{self.name}",
                                       handler, args)
         else:
             return handler(*args)
 
-    def sleep(self, time_s: float):
+    def sleep(self,
+              time_s: float
+              ) -> None:
         """Pauses the execution of the thread for time_s seconds
         """
         if self.settings.DISABLE_SLEEP:
