@@ -3,7 +3,7 @@ from snr import *
 
 class TestConsole(SNRTestBase):
 
-    def test_console(self):
+    def test_console_fails_to_connect(self):
         CONSOLE_PORT: int = 54321
 
         commands = [
