@@ -22,6 +22,9 @@ dev: develop
 develop:
 	$(PY_SETUP) develop --user
 
+console:
+	$(PYTHON) $(SRC_DIR)/io/console/console.py
+
 check:
 	$(PY_SETUP) check
 
