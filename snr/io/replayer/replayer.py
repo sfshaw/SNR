@@ -1,11 +1,11 @@
-from snr.endpoint.factory import Factory
 from typing import Optional
 
 from snr_core import task
-from snr.datastore.page import Page
-from snr.endpoint.thread_endpoint import ThreadEndpoint
-from snr.node import Node
-from snr.utils.timer import Timer
+from snr_core.datastore.page import Page
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.thread_endpoint import ThreadEndpoint
+from snr_core.node import Node
+from snr_core.utils.timer import Timer
 
 
 class Replayer(ThreadEndpoint):
@@ -18,7 +18,8 @@ class Replayer(ThreadEndpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "replayer")
+                         "replayer",
+                         self.loop_handler)
         self.file = open(filename)
         self.exit_when_done = exit_when_done
         self.timer = Timer()
@@ -30,7 +31,7 @@ class Replayer(ThreadEndpoint):
         else:
             self.set_terminate_flag()
             if self.exit_when_done:
-                self.parent.task_queue.schedule(
+                self.parent.schedule(
                     task.terminate("replayer_done"))
 
     def prepare_page(self) -> bool:
