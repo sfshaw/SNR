@@ -3,12 +3,12 @@ from __future__ import annotations
 import time
 from typing import Any, Callable, List, Optional, Union
 
-from snr.context.root_context import RootContext
-from snr.context.stdout import StdOut
-from snr.settings import Settings
-from snr.utils.debug.channels import *
-from snr.utils.debug.debugger import Debugger
-from snr.utils.profiler import Profiler
+from snr_core.context.root_context import RootContext
+from snr_core.context.stdout import StdOut
+from snr_core.settings import Settings
+from snr_core.utils.debug.channels import *
+from snr_core.utils.debug.debugger import Debugger
+from snr_core.utils.profiler import Profiler
 
 
 class Context:
@@ -34,7 +34,7 @@ class Context:
         if isinstance(self.profiler, Profiler):
             self.profiler.join_from("context temrinate")
             self.profiler.dump()
-        self.info("Context {} termianted", [self.name])
+        self.info("Context {} terminated", [self.name])
         self.stdout.flush()
 
     def fatal(self,

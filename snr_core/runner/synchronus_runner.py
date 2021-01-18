@@ -1,8 +1,8 @@
 from typing import Optional
 
-from snr.config import Config, Role
-from snr.node import Node
-from snr.runner import Runner
+from snr_core.config import Config, Role
+from snr_core.node import Node
+from snr_core.runner import Runner
 
 
 class SynchronousRunner(Runner):

@@ -1,8 +1,8 @@
 from typing import Dict, List
 
-from snr.config import Mode
-from snr.factory import Factory
-from snr.runner import Runner
+from snr_core.config import Mode
+from snr_core.endpoint.factory import Factory
+from snr_core.runner import Runner
 
 
 class MultiRunner(Runner):

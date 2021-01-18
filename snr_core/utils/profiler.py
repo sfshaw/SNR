@@ -1,11 +1,11 @@
 from collections import deque
 from typing import Any, Callable, Deque, Dict, Tuple
 
-from snr.settings import Settings
-from snr.utils.consumer import Consumer
-from snr.utils.debug.channels import *
-from snr.utils.debug.debugger import Debugger
-from snr.utils.timer import Timer
+from snr_core.settings import Settings
+from snr_core.utils.consumer import Consumer
+from snr_core.utils.debug.channels import *
+from snr_core.utils.debug.debugger import Debugger
+from snr_core.utils.timer import Timer
 
 DAEMON_THREAD = False
 SLEEP_TIME_S = 0.01

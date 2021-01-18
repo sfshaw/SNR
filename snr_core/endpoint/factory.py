@@ -1,6 +1,6 @@
 from typing import Any
 
-from snr.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint import Endpoint
 
 
 class Factory:

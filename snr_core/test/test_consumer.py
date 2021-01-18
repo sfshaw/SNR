@@ -2,9 +2,9 @@
 from threading import Lock
 from time import sleep
 
-from snr.test.utils.test_base import *
-from snr.utils.consumer import Consumer
-from snr.utils.utils import no_op
+from snr_core.test.utils.test_base import *
+from snr_core.utils.consumer import Consumer
+from snr_core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.0001
 
@@ -26,7 +26,6 @@ class TestConsumer(SNRTestBase):
         self.assertEqual(3, self.num)
 
     def test_consumer_start_join(self):
-        # TODO: Remove hacky sleeps
         CATCH_UP_TIME = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
                                  no_op,

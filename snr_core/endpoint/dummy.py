@@ -1,8 +1,8 @@
-from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.synchronous_endpoint import SynchronousEndpoint
-from snr.endpoint.factory import Factory
-from snr.node import Node
-from snr.task import TaskHandlerMap
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.synchronous_endpoint import SynchronousEndpoint
+from snr_core.node import Node
+from snr_core.task import TaskHandlerMap
 
 DEFAULT_NAME = "dummy_endpoint"
 

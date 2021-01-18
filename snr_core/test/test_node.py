@@ -1,14 +1,14 @@
 from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
-from snr import task
-from snr.config import Mode
-from snr.context.root_context import RootContext
-from snr.endpoint.dummy import DummyEndpointFactory
-from snr.node import Node
-from snr.task import TaskType
-from snr.test.utils.test_base import *
-from snr.utils.utils import no_op
+from snr_core import task
+from snr_core.config import Mode
+from snr_core.context.root_context import RootContext
+from snr_core.endpoint.dummy import DummyEndpointFactory
+from snr_core.node import Node
+from snr_core.task import TaskType
+from snr_core.test.utils.test_base import *
+from snr_core.utils.utils import no_op
 
 
 class TestNode(SNRTestBase):

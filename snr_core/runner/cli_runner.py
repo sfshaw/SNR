@@ -1,11 +1,11 @@
 import sys
 
-from snr.config import Config, Mode
-from snr.runner.synchronus_runner import SynchronousRunner
-from snr.utils.utils import print_usage
+from snr_core.config import Config, Mode
+from snr_core.runner.synchronus_runner import SynchronousRunner
+from snr_core.utils.utils import print_usage
 
 
-class ProdRunner(SynchronousRunner):
+class CLIRunner(SynchronousRunner):
 
     def __init__(self, config: Config):
         argc = len(sys.argv)

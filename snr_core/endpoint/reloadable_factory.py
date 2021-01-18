@@ -1,8 +1,8 @@
 import importlib
 
-from snr.endpoint import Endpoint
-from snr.endpoint.factory import Factory
-from snr.node import Node
+from snr_core.endpoint import Endpoint
+from snr_core.endpoint.factory import Factory
+from snr_core.node import Node
 
 
 class ReloadableEndpointFactory(Factory):
@@ -22,7 +22,7 @@ class ReloadableEndpointFactory(Factory):
 """Example factory that might be implemented for an endpoint
 """
 
-# from snr.node import Node
+# from snr import *
 
 # import my_endpoint
 

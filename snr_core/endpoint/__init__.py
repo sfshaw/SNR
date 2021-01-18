@@ -1,1 +1,1 @@
-from snr.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint import Endpoint

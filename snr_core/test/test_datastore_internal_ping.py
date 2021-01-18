@@ -1,15 +1,15 @@
 from time import time
 
-from snr import task
-from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.endpoint_factory import EndpointFactory
-from snr.endpoint.factory import Factory
-from snr.endpoint.synchronous_endpoint import SynchronousEndpoint
-from snr.node import Node
-from snr.runner.test_runner import SynchronusTestRunner
-from snr.task import SomeTasks, Task, TaskType
-from snr.test.utils.expector import Expector
-from snr.test.utils.test_base import *
+from snr_core import task
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint_factory import EndpointFactory
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.synchronous_endpoint import SynchronousEndpoint
+from snr_core.node import Node
+from snr_core.runner.test_runner import SynchronusTestRunner
+from snr_core.task import SomeTasks, Task, TaskType
+from snr_core.test.utils.expector import Expector
+from snr_core.test.utils.test_base import *
 
 
 class PingTestEndpoint(SynchronousEndpoint):

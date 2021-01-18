@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from snr.context.stdout import StdOut
-from snr.context.stdout_consumer import StdOutConsumer
-from snr.settings import Settings
-from snr.utils.debug.channels import *
-from snr.utils.debug.debugger import Debugger
+from snr_core.context.stdout import StdOut
+from snr_core.context.stdout_consumer import StdOutConsumer
+from snr_core.settings import Settings
+from snr_core.utils.debug.channels import *
+from snr_core.utils.debug.debugger import Debugger
 
 
 class RootContext:
@@ -50,4 +50,4 @@ class RootContext:
             self.stdout.flush()
             self.debugger.debug(self.name,
                                 INFO_CHANNEL,
-                                "Unowned StdIO not joined/termianted")
+                                "Unowned StdIO not joined/terminated")

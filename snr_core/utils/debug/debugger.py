@@ -1,8 +1,8 @@
 from typing import Any, List, Union
 
-from snr.context.stdout_consumer import StdOutConsumer, StdOutTask
-from snr.settings import Settings
-from snr.utils.utils import format_message
+from snr_core.context.stdout_consumer import StdOutConsumer, StdOutTask
+from snr_core.settings import Settings
+from snr_core.utils.utils import format_message
 
 SLEEP_TIME_S = 0.025
 # 5 ms => 200 Hz cap on debug messages being printed

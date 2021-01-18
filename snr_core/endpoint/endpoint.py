@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any, List, Optional
 
-from snr.context.context import Context
-from snr.task import Task, TaskHandler, TaskHandlerMap, TaskSource
+from snr_core.context.context import Context
+from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskSource
 
 
 class Endpoint(Context):

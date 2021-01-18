@@ -1,9 +1,9 @@
-from snr.endpoint.endpoint_factory import EndpointFactory
-from snr.endpoint.factory import Factory
-from snr.endpoint.synchronous_endpoint import SynchronousEndpoint
-from snr.node import Node
-from snr.task import SomeTasks, Task
-from snr.test.utils.expector import Expector
+from snr_core.endpoint.endpoint_factory import EndpointFactory
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.synchronous_endpoint import SynchronousEndpoint
+from snr_core.node import Node
+from snr_core.task import SomeTasks, Task
+from snr_core.test.utils.expector import Expector
 
 
 class ExpectorEndpoint(SynchronousEndpoint):
@@ -22,8 +22,8 @@ class ExpectorEndpoint(SynchronousEndpoint):
         self.expector = expector
 
     def call(self, task: Task) -> SomeTasks:
-        print(f"Called for: {task}")
-        self.expector.call(task.id())
+        self.dbg(f"Expector called for: {task}")
+        self.expector.call(task.type)
         return None
 
 

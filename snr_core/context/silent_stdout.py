@@ -1,5 +1,5 @@
-from snr.utils.utils import no_op
-from snr.context.stdout_consumer import StdOutConsumer
+from snr_core.utils.utils import no_op
+from snr_core.context.stdout_consumer import StdOutConsumer
 
 
 ONE_HUNDRED_MICROSECONDS = 0.0001

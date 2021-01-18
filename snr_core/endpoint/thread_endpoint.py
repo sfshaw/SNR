@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from threading import Event, Thread
-from typing import List
+from typing import Callable, List
 
-from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.factory import Factory
-from snr.node import Node
-from snr.task import TaskHandlerMap, TaskSource
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.factory import Factory
+from snr_core.node import Node
+from snr_core.task import TaskHandlerMap, TaskSource
 
 DEFAULT_TICK_RATE = 24
 JOIN_TIMEOUT = None
@@ -25,6 +25,7 @@ class ThreadEndpoint(Endpoint):
                  factory: Factory,
                  parent: Node,
                  name: str,
+                 loop_handler: Callable[[], None],
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  task_producers: List[TaskSource] = [],
                  task_handlers: TaskHandlerMap = {}
@@ -35,6 +36,7 @@ class ThreadEndpoint(Endpoint):
                          task_producers,
                          task_handlers)
         self.parent = parent
+        self.loop_handler = loop_handler
         self.set_delay(tick_rate_hz)
         self.__terminate_flag = Event()
         self.__thread = Thread(target=self.threaded_method,
@@ -48,9 +50,6 @@ class ThreadEndpoint(Endpoint):
 
     def setup(self) -> None:
         pass
-
-    def loop_handler(self) -> None:
-        raise NotImplementedError
 
     def start(self):
         self.dbg("Starting async endpoint {} thread",

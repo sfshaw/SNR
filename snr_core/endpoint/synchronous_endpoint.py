@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any, List
 
-from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.factory import Factory
-from snr.node import Node
-from snr.task import TaskHandlerMap, TaskSource
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.factory import Factory
+from snr_core.node import Node
+from snr_core.task import TaskHandlerMap, TaskSource
 
 
 class SynchronousEndpoint(Endpoint):

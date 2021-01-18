@@ -1,7 +1,7 @@
 from typing import Any
 
-from snr.endpoint import Endpoint
-from snr.task import SomeTasks, Task, TaskType
+from snr_core.endpoint import Endpoint
+from snr_core.task import SomeTasks, Task, TaskType
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 

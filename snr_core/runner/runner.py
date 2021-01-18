@@ -1,7 +1,7 @@
 
 from typing import Any
 
-from snr.config import Config, Role
+from snr_core.config import Config, Role
 
 
 class Runner():

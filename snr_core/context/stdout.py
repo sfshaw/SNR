@@ -1,7 +1,7 @@
 from sys import stdout
 from typing import TextIO
 
-from snr.context.stdout_consumer import StdOutConsumer, StdOutTask
+from snr_core.context.stdout_consumer import StdOutConsumer, StdOutTask
 
 
 class StdOut(StdOutConsumer):

@@ -4,8 +4,8 @@ from threading import Event, Thread
 from time import sleep
 from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
 
-from snr.utils.debug.channels import *
-from snr.utils.utils import format_message
+from snr_core.utils.debug.channels import *
+from snr_core.utils.utils import format_message
 
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 

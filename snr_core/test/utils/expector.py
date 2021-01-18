@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict
 from unittest.case import TestCase
 
@@ -14,7 +15,6 @@ class Expector:
             self.times_called[str(key)] = 0
 
     def call(self, key: Any):
-        print(f"expector called: {str(key)}")
         val = self.times_called.get(str(key))
         if val is None:
             val = 0

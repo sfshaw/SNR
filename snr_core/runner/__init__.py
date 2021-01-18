@@ -1,1 +1,1 @@
-from snr.runner.runner import Runner
+from snr_core.runner.runner import Runner

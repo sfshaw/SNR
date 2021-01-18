@@ -1,9 +1,10 @@
-from snr.endpoint.endpoint import Endpoint
-from snr.endpoint.endpoint_factory import EndpointFactory
-from snr.endpoint.factory import Factory
-from snr.endpoint.thread_endpoint import ThreadEndpoint
-from snr.node import Node
-from snr import task
+from snr_core import task
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint_factory import EndpointFactory
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.thread_endpoint import ThreadEndpoint
+from snr_core.node import Node
+from snr_core.utils.utils import no_op
 
 
 class TimeoutEndpoint(ThreadEndpoint):
@@ -14,7 +15,8 @@ class TimeoutEndpoint(ThreadEndpoint):
                  ) -> None:
         super().__init__(factory,
                          parent_node,
-                         "timeout_endpoint")
+                         "timeout_endpoint",
+                         no_op)
         self.timeout_s = timeout_s
 
     def setup(self) -> None:

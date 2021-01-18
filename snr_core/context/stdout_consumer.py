@@ -1,6 +1,7 @@
-from typing import Callable
-from snr.utils.consumer import Consumer
 from dataclasses import dataclass
+from typing import Callable
+
+from snr_core.utils.consumer import Consumer
 
 
 @dataclass

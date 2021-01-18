@@ -1,11 +1,11 @@
 from typing import Any, Callable, Dict, Optional
 
-from snr.context.context import Context
-from snr.datastore.page import Page
-from snr.task import Task, process_data
-from snr.utils.consumer import Consumer
-from snr.utils.timer import Timer
-from snr.utils.utils import no_op
+from snr_core.context.context import Context
+from snr_core.datastore.page import Page
+from snr_core.task import Task, process_data
+from snr_core.utils.consumer import Consumer
+from snr_core.utils.timer import Timer
+from snr_core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.0005
 JOIN_TIMEOUT = 0.5

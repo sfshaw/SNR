@@ -1,16 +1,16 @@
 from threading import Event
 from typing import Any, Dict, List, Optional, Union
 
-from snr.config import Mode, Role
-from snr.context.context import Context
-from snr.context.root_context import RootContext
-from snr.datastore.datastore import Datastore
-from snr.endpoint import Endpoint
-from snr.endpoint.factory import Factory
-from snr.endpoint.node_core_endpoint import NodeCore
-from snr.task import SomeTasks, Task, TaskHandler
-from snr.task_queue import TaskQueue
-from snr.utils.profiler import Profiler
+from snr_core.config import Mode, Role
+from snr_core.context.context import Context
+from snr_core.context.root_context import RootContext
+from snr_core.datastore.datastore import Datastore
+from snr_core.endpoint import Endpoint
+from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.node_core_endpoint import NodeCore
+from snr_core.task import SomeTasks, Task, TaskHandler
+from snr_core.task_queue import TaskQueue
+from snr_core.utils.profiler import Profiler
 
 SLEEP_TIME = 0.001
 
