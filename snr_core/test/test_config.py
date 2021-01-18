@@ -15,6 +15,14 @@ class TestConfig_(unittest.TestCase):
         config = Config(Mode.TEST, {"test": factories})
         self.assertEqual(config.get("test"), factories)
 
+    def test_two_facs(self):
+        factories: Components = [
+            DummyEndpointFactory("dummy1"),
+            DummyEndpointFactory("dummy2")
+        ]
+        config = Config(Mode.TEST, {"test": factories})
+        self.assertEqual(config.get("test"), factories)
+
 
 if __name__ == '__main__':
     unittest.main()
