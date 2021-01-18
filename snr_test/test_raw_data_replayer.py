@@ -1,4 +1,3 @@
-from snr_core.task import terminate
 from snr_test import *
 
 raw_data_filename = "snr_test/test_data/in/raw_data.txt"
