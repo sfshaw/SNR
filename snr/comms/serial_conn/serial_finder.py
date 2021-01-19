@@ -3,19 +3,22 @@
 # TODO: Find the origin of this code and give credit
 
 import glob
-from snr.context import Context
 import sys
 from sys import platform
-from typing import Callable, List, Union
+from typing import Callable, List, Optional
+
+from snr_core.context.context import Context
+from snr_core.utils.utils import attempt
 
 import serial
-
-from snr.utils.utils import attempt
 
 
 class SerialFinder(Context):
 
-    def __init__(self, parent_context: Context, set_port: Callable[[str], None]) -> None:
+    def __init__(self,
+                 parent_context: Context,
+                 set_port: Callable[[str], None]
+                 ) -> None:
         super().__init__("serial_finder", parent_context)
         self.set_port = set_port
 
@@ -40,30 +43,29 @@ class SerialFinder(Context):
                 self.dbg("{}", [p])
             # Select the port
             port = self.__select_port(ports)
-            self.set_port(port)
             if(port is None):
                 raise Exception("Serial Exception")
+            self.set_port(port)
             self.dbg("Using port: {}", [port])
             return True
 
         except Exception as error:
-            self.dbg("serial_finder", "Error finding port: {}", [str(error)])
+            self.dbg("Error finding port: {}", [str(error)])
             return False
 
-    def failure(self, tries: int):
-        self.dbg('serial_finder',
-                 "Could not find serial port after {} attempts. Crashing now.",
+    def failure(self, tries: int) -> None:
+        self.dbg("Could not find serial port after {} attempts. Crashing now.",
                  [tries])
         exit("Could not find port")
 
-    def fail_once(self):
-        self.dbg('serial_finder', "Failed to find serial port, trying again.")
+    def fail_once(self, e: Exception) -> None:
+        self.dbg("Failed to find serial port, trying again.")
         # Wait a second before retrying
         self.sleep(self.settings.SERIAL_RETRY_WAIT)
 
         # return port
 
-    def __list_ports(self) -> List:
+    def __list_ports(self) -> List[str]:
         """ Finds all serial ports and returns a list containing them
 
             :raises EnvironmentError:
@@ -73,7 +75,8 @@ class SerialFinder(Context):
         """
         if sys.platform.startswith('win'):
             ports = ['COM%s' % (i + 1) for i in range(256)]
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        elif (sys.platform.startswith('linux')
+              or sys.platform.startswith('cygwin')):
             # this excludes your current terminal "/dev/tty"
             ports = glob.glob('/dev/tty[A-Za-z]*')
         elif sys.platform.startswith('darwin'):
@@ -91,7 +94,7 @@ class SerialFinder(Context):
                 pass
         return result
 
-    def __select_port(self, ports: List[str]) -> Union[str, None]:
+    def __select_port(self, ports: List[str]) -> Optional[str]:
         """ Selects the apprpriate port from the given list
         """
         if platform == "linux" or platform == "linux2":
