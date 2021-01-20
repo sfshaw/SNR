@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 
 setup(
     name='SNR',
@@ -10,9 +10,5 @@ setup(
     license='LICENSE.txt',
     description='Soft-realtime robotics framework for education',
     long_description=open('README.txt').read(),
-    install_requires=[
-        "pygame >= 2.0.0",
-        "pyserial == 3.5",
-        "pysimplegui == 4.29.0",
-    ],
+    install_requires=[line for line in open("requirements.txt")],
 )
