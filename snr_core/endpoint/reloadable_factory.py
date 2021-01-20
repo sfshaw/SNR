@@ -1,11 +1,11 @@
 import importlib
 
-from snr_core.endpoint import Endpoint
-from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint_factory import EndpointFactory
 from snr_core.node import Node
 
 
-class ReloadableEndpointFactory(Factory):
+class ReloadableEndpointFactory(EndpointFactory):
     def __init__(self,
                  child_module: importlib.types.ModuleType,
                  name: str) -> None:
@@ -27,7 +27,7 @@ class ReloadableEndpointFactory(Factory):
 # import my_endpoint
 
 # class ReloadableFactoryTemplate(ReloadableEndointFactory):
-#     def __init__(self, stuff: str):
+#     def __init__(self, stuff: str) -> None:
 #         super().__init__(my_endpoint, "my_factory")
 #         self.stuff = stuff
 

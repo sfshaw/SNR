@@ -5,7 +5,7 @@ from snr_core.context.root_context import RootContext
 from snr_core.context.silent_stdout import SilentStdOut
 from snr_core.context.stdout import StdOut
 from snr_core.context.stdout_consumer import StdOutConsumer
-from snr_core.endpoint.factory import Factory
+from snr_core.factory.factory_base import FactoryBase
 
 Role = str
 
@@ -16,7 +16,7 @@ class Mode(Enum):
     TEST = "test"
 
 
-Components = List[Factory]
+Components = List[FactoryBase]
 ComponentsByRole = Dict[Role, Components]
 ComponentsGetter = Callable[[str], ComponentsByRole]
 

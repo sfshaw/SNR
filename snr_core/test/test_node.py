@@ -4,9 +4,9 @@ from typing import Dict, Optional, Tuple, Union
 from snr_core import task
 from snr_core.config import Mode
 from snr_core.context.root_context import RootContext
-from snr_core.endpoint.dummy import DummyEndpointFactory
 from snr_core.node import Node
 from snr_core.task import TaskType
+from snr_core.test.utils.dummy_endpoint import DummyEndpointFactory
 from snr_core.test.utils.test_base import *
 from snr_core.utils.utils import no_op
 

@@ -1,18 +1,17 @@
 from __future__ import annotations
 
 from threading import Event, Thread
-from typing import Callable, List
+from typing import Callable
 
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.endpoint.factory import Factory
+from snr_core.loop.loop_base import LoopBase
+from snr_core.loop.loop_factory import LoopFactory
 from snr_core.node import Node
-from snr_core.task import TaskHandlerMap, TaskSource
 
 DEFAULT_TICK_RATE = 24
 JOIN_TIMEOUT = None
 
 
-class ThreadEndpoint(Endpoint):
+class ThreadLoop(LoopBase):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An
@@ -22,19 +21,13 @@ class ThreadEndpoint(Endpoint):
     """
 
     def __init__(self,
-                 factory: Factory,
+                 factory: LoopFactory,
                  parent: Node,
                  name: str,
                  loop_handler: Callable[[], None],
-                 tick_rate_hz: float = DEFAULT_TICK_RATE,
-                 task_producers: List[TaskSource] = [],
-                 task_handlers: TaskHandlerMap = {}
+                 tick_rate_hz: float = DEFAULT_TICK_RATE
                  ) -> None:
-        super().__init__(factory,
-                         parent,
-                         name,
-                         task_producers,
-                         task_handlers)
+        super().__init__(parent, name)
         self.parent = parent
         self.loop_handler = loop_handler
         self.set_delay(tick_rate_hz)
@@ -77,11 +70,8 @@ class ThreadEndpoint(Endpoint):
         except KeyboardInterrupt:
             pass
 
-        self.dbg("Async endpoint {} exited loop", [self.name])
+        self.dbg("Thread Loop {} exited loop", [self.name])
         self.terminate()
-
-    def get_name(self):
-        return self.name
 
     def tick(self):
         if (self.delay_s == 0.0):

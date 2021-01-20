@@ -1,7 +1,13 @@
-from snr.config import Config
-from snr.io.console.factory import ConsoleFactory
-from snr.runner.test_runner import SynchronusTestRunner
+from snr_core.config import Config, Mode
+from snr.io.console.factory import (CommandProcessorFactory,
+                                    CommandReceiverFactory)
+from snr_core.runner.test_runner import SynchronusTestRunner
 
-runner = SynchronusTestRunner(Config({
-    "test": [ConsoleFactory()]}))
+CONSOLE_PORT: int = 54321
+runner = SynchronusTestRunner(
+    Config(Mode.TEST,
+           {"test": [
+               CommandReceiverFactory(CONSOLE_PORT),
+               CommandProcessorFactory()
+           ]}))
 runner.run()

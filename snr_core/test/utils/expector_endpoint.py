@@ -1,14 +1,13 @@
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.factory import Factory
-from snr_core.endpoint.synchronous_endpoint import SynchronousEndpoint
+from snr_core.endpoint.endpoint import Endpoint
 from snr_core.node import Node
 from snr_core.task import SomeTasks, Task, TaskId
 from snr_core.test.utils.expector import Expector
 
 
-class ExpectorEndpoint(SynchronousEndpoint):
+class ExpectorEndpoint(Endpoint):
     def __init__(self,
-                 factory: Factory,
+                 factory: EndpointFactory,
                  parent_node: Node,
                  expector: Expector
                  ) -> None:
@@ -32,7 +31,7 @@ class ExpectorEndpointFactory(EndpointFactory):
         super().__init__("Ping test factory")
         self.expector = expector
 
-    def get(self, parent: Node) -> SynchronousEndpoint:
+    def get(self, parent: Node) -> Endpoint:
         return ExpectorEndpoint(self,
                                 parent,
                                 self.expector)

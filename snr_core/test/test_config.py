@@ -1,7 +1,7 @@
 import unittest
 
 from snr_core.config import Components, Config, Mode
-from snr_core.endpoint.dummy import DummyEndpointFactory
+from snr_core.test.utils.dummy_endpoint import DummyEndpointFactory
 
 
 class TestConfig_(unittest.TestCase):

@@ -1,17 +1,21 @@
-from sys import stdout
-from typing import TextIO
+from typing import Optional, TextIO
 
 from snr_core.context.stdout_consumer import StdOutConsumer, StdOutTask
 
 
 class StdOut(StdOutConsumer):
-    def __init__(self, parent_name: str) -> None:
+    def __init__(self,
+                 parent_name: str,
+                 stdout: Optional[TextIO] = None
+                 ) -> None:
         super().__init__(parent_name,
                          self.handler)
-        self.stdout: TextIO = stdout
-        self.stdout.flush()
+        self.stdout = stdout
+        if self.stdout:
+            self.stdout.flush()
 
     def handler(self, task: StdOutTask) -> None:
-        self.stdout.write(task.msg)
-        if task.flush:
-            self.stdout.flush()
+        if self.stdout:
+            self.stdout.write(task.msg)
+            if task.flush:
+                self.stdout.flush()

@@ -1,21 +1,21 @@
-from snr_core.test.utils.expector_endpoint import ExpectorEndpoint, ExpectorEndpointFactory
+from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 from time import time
 
 from snr_core import task
-from snr_core.endpoint.endpoint import Endpoint
+from snr_core.endpoint.endpoint import EndpointBase
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.factory import Factory
-from snr_core.endpoint.synchronous_endpoint import SynchronousEndpoint
+from snr_core.factory.factory_base import FactoryBase
+from snr_core.endpoint.endpoint import Endpoint
 from snr_core.node import Node
 from snr_core.runner.test_runner import SynchronusTestRunner
-from snr_core.task import SomeTasks, Task, TaskId, TaskType, terminate
+from snr_core.task import SomeTasks, Task, TaskId, TaskType
 from snr_core.test.utils.expector import Expector
 from snr_core.test.utils.test_base import *
 
 
-class PingTestEndpoint(SynchronousEndpoint):
+class PingTestEndpoint(Endpoint):
     def __init__(self,
-                 factory: Factory,
+                 factory: FactoryBase,
                  parent_node: Node,
                  name: str):
         super().__init__(factory,
@@ -52,7 +52,7 @@ class PingTestFactory(EndpointFactory):
     def __init__(self):
         super().__init__("Ping test factory")
 
-    def get(self, parent: Node) -> Endpoint:
+    def get(self, parent: Node) -> EndpointBase:
         return PingTestEndpoint(self,
                                 parent,
                                 "ping_test_endpoint")
@@ -61,12 +61,12 @@ class PingTestFactory(EndpointFactory):
 class TestInternalDatastorePing(SNRTestBase):
 
     def test_internal_dds_ping(self):
-        with Expector({
-                (TaskType.event, "ping_test"): 1,
-                (TaskType.process_data, "ping_test"): 1,
-                TaskType.terminate: 1,
-        },
-                self) as expector:
+        with Expector(
+                {
+                    (TaskType.event, "ping_test"): 1,
+                    (TaskType.process_data, "ping_test"): 1,
+                    TaskType.terminate: 1,
+                }, self) as expector:
             config = self.get_config([
                 PingTestFactory(),
                 ExpectorEndpointFactory(expector),

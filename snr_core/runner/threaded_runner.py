@@ -2,11 +2,11 @@
 # from threading import Thread
 # from typing import List
 
-# from snr.config import Config, Mode
-# from snr.context.root_context import RootContext
-# from snr.runner.multi_runner import MultiRunner
-# from snr.runner.runner import Runner
-# from snr.runner.synchronus_runner import SynchronousRunner
+# from snr_core.config import Config, Mode
+# from snr_core.context.root_context import RootContext
+# from snr_core.runner.multi_runner import MultiRunner
+# from snr_core.runner.runner import Runner
+# from snr_core.runner.synchronus_runner import SynchronousRunner
 
 
 # class ThreadedRunner(MultiRunner):

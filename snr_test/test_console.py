@@ -15,7 +15,7 @@ class TestConsole(SNRTestBase):
             console = LocalConsole(CONSOLE_PORT,
                                    commands,
                                    retry_wait_s=0.001)
-            # Console constructor blocks
+            # Console constructor should block and raise
             console.join()
 
         self.assertRaises(ConnectionRefusedError, try_console)

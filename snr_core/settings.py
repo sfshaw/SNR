@@ -2,6 +2,9 @@
 """
 
 
+from typing import Dict, List, Union
+
+
 class Settings:
     # Debugging printing and logging
     # TODO: Track debugging for server and client separately
@@ -136,9 +139,9 @@ class Settings:
     }
 
     # XBox Controller
-    USE_CONTROLLER = True
+    USE_CONTROLLER: bool = True
     REQUIRE_CONTROLLER = False
-    SIMULATE_INPUT = False
+    SIMULATE_INPUT: bool = False
     CONTROLLER_NAME = "topside_xbox_controller"
     CONTROLLER_INIT_TICK_RATE = 1
     CONTROLLER_TICK_RATE = 30  # Hz (Times per second)
@@ -153,7 +156,7 @@ class Settings:
                     dead_zone],
     to drop a value use "pygame_name": [None],
     '''
-    control_mappings = {
+    control_mappings: Dict[str, List[Union[None, str, type, int]]] = {
         "number": [None],
         "name": ["controller_name"],
         "axis_0": ["stick_left_x", int,  100, 0, 10],

@@ -1,53 +1,36 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Tuple
+from typing import Any, Callable, List
 
-from snr_core.context.context import Context
-from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskId, TaskSource
+from snr_core.endpoint.endpoint_base import EndpointBase
+from snr_core.factory.factory_base import FactoryBase
+from snr_core.node import Node
+from snr_core.task import TaskHandlerMap, TaskSource
+from snr_core.utils.utils import no_op
 
 
-class Endpoint(Context):
+class Endpoint(EndpointBase):
     def __init__(self,
-                 factory: Any,
-                 parent_node: Any,
+                 factory: FactoryBase,
+                 parent: Node,
                  name: str,
                  task_producers: List[TaskSource] = [],
-                 task_handlers: TaskHandlerMap = {}
+                 task_handlers: TaskHandlerMap = {},
+                 start: Callable[[], None] = no_op,
+                 terminate: Callable[[], None] = no_op,
                  ) -> None:
-        super().__init__(name, parent_node)
-        self.factory = factory
-        self.parent_node = parent_node
-        self.task_producers = task_producers
-        self.task_handlers = task_handlers
+        super().__init__(factory, parent, name,
+                         start, terminate,
+                         task_producers, task_handlers)
+        self.parent = parent
 
     def start(self) -> None:
-        # Stub for synchronous endpoints
-        raise NotImplementedError
+        pass
 
     def terminate(self) -> None:
-        # Stub for synchronous endpoints
-        raise NotImplementedError
+        pass
 
-    def join(self) -> None:
-        # Stub for synchronous endpoints
-        raise NotImplementedError
-
-    def set_terminate_flag(self) -> None:
-        # Stub for synchronous endpoints
-        raise NotImplementedError
-
-    def get_task_handler(self,
-                         t: Task
-                         ) -> Tuple[Optional[TaskHandler], TaskId]:
-        id = t.id()
-        (handler, key) = (self.task_handlers.get(id), id)
-        if not handler:
-            (handler, key) = (self.task_handlers.get(t.type), t.type)
-            # self.dbg("Handler for {} not found, using type handler {}",
-            #          [t.id(), handler])
-        return (handler, key)
-
-    def reload(self, parent_node: Any) -> Endpoint:
+    def reload(self, parent_node: Any) -> EndpointBase:
         self.factory.reload()
         new_endpoint = self.factory.get(parent_node)
         return new_endpoint

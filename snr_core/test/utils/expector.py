@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict
 from unittest.case import TestCase
 
-Expectations = Dict[Any, int]
+Expectations = Dict[str, int]
 
 
 class Expector:

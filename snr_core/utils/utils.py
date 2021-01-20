@@ -3,7 +3,7 @@ Attempts to document propper usage of such functions
 """
 
 import sys
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 
 def print_usage() -> None:
@@ -48,11 +48,14 @@ def init_dict(keys: List[str], val: Any) -> Dict[str, Any]:
     return d
 
 
-def attempt(action: Callable[[], bool],
+T = TypeVar("T")
+
+
+def attempt(action: Callable[[], Optional[T]],
             tries: int,
             fail_once: Callable[[Exception], None],
             failure: Callable[[Exception], None]
-            ) -> None:
+            ) -> T:
     """Wrapper for trying to complete and action with a number of tries
     Should follow this prototype:
     def attempt_action():

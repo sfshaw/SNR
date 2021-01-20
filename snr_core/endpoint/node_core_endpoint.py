@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from snr_core.endpoint import Endpoint
+from snr_core.endpoint.endpoint_base import EndpointBase
 from snr_core.task import SomeTasks, Task, TaskId, TaskType
+from snr_core.utils.utils import no_op
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
 TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 
 
-class NodeCore(Endpoint):
+class NodeCore(EndpointBase):
     def __init__(self,
                  factory: Any,
                  parent_node: Any
@@ -18,6 +19,8 @@ class NodeCore(Endpoint):
         super().__init__(factory,
                          parent_node,
                          parent_node.name + NODE_CORE_NAME_SUFFIX,
+                         self.start,
+                         no_op,
                          task_handlers={
                              TaskType.terminate: self.task_handler_terminate,
                              TaskType.reload: self.task_handler_reload,
@@ -43,7 +46,7 @@ class NodeCore(Endpoint):
     def task_handler_reload(self, t: Task, key: TaskId) -> SomeTasks:
         endpoint_name = t.val_list[0]
         endpoint = self.parent_node.endpoints.get(endpoint_name)
-        if isinstance(endpoint, Endpoint):
+        if isinstance(endpoint, EndpointBase):
             self.info("Reloading endoint: {}", [endpoint_name])
             self.parent_node.endpoints[endpoint_name] = endpoint.reload(self)
         else:
@@ -56,6 +59,3 @@ class NodeCore(Endpoint):
         for name in self.parent_node.endpoints.keys():
             self.info("\t{}", [name])
         self.debugger.flush()
-
-    def set_terminate_flag(self) -> None:
-        pass

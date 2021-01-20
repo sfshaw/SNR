@@ -1,13 +1,13 @@
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.endpoint.factory import Factory
+from snr_core.endpoint.endpoint import EndpointBase
+from snr_core.factory.factory_base import FactoryBase
 from snr_core.node import Node
 
 
-class EndpointFactory(Factory):
+class EndpointFactory(FactoryBase):
     def __init__(self, name: str) -> None:
         super().__init__(name)
 
-    def get(self, parent: Node) -> Endpoint:
+    def get(self, parent: Node) -> EndpointBase:
         raise NotImplementedError
 
     def reload(self) -> None:
@@ -23,7 +23,7 @@ class EndpointFactory(Factory):
 # import my_endpoint
 #
 # class FactoryTemplate(EndpointFactory):
-#     def __init__(self, stuff: str):
+#     def __init__(self, stuff: str) -> None:
 #         super().__init__("my_endpoint_factory")
 #         self.stuff = stuff
 #

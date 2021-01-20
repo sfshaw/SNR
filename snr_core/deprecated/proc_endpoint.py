@@ -1,40 +1,22 @@
-""" SNR framework for scheduling and task management
-
-Node: Task queue driven host for data and endpoints
-AsyncEndpoint: Generate and process data for Nodes
-Relay: Server data to other nodes
-"""
-# import signal
-from snr.endpoint.factory import EndpointFactory
-from typing import Callable
 from multiprocessing import Process
+from typing import Any
 
-from snr.endpoint.endpoint import Endpoint
-from snr.node import Node
+from snr_core.endpoint.factory import FactoryBase
+from snr_core.endpoint.synchronous_endpoint import Endpoint
+from snr_core.node import Node
 
 JOIN_TIMEOUT = 0.5
 
 
 class ProcEndpoint(Endpoint):
-    """An Asynchronous (Thread) endpoint for a node
-
-    An AsyncEndpoint is part of a node, and runs in its own thread. An
-    endpoint may produce data to be stored in the Node or retreive data from
-    the Node. The endpoint has its loop handler function run according to its
-    tick_rate (Hz).
-    """
 
     def __init__(self,
-                 factory: EndpointFactory,
+                 factory: FactoryBase,
                  parent: Node,
                  name: str,
-                 setup_handler: Callable[[], None],
-                 loop_handler: Callable[[], None],
                  tick_rate_hz: float
                  ) -> None:
         super().__init__(factory, parent, name)
-        self.setup = setup_handler
-        self.loop_handler = loop_handler
         self.terminate_flag = False
         self.set_delay(tick_rate_hz)
         if parent:
@@ -69,7 +51,9 @@ class ProcEndpoint(Endpoint):
                 if self.profiler is None:
                     self.loop_handler()
                 else:
-                    self.time(self.name, self.loop_handler, None)
+                    self.time(self.name,
+                              self.loop_handler,
+                              None)
 
                     # self.dbg("profiling_endpoint",
                     #       "Ran {} task in {:6.3f} us",
@@ -83,6 +67,12 @@ class ProcEndpoint(Endpoint):
                  [self.name])
         self.terminate()
         return
+
+    def setup(self) -> None:
+        pass
+
+    def loop_handler(self, *args: Any) -> None:
+        raise NotImplementedError
 
     def get_name(self):
         return self.name
