@@ -1,14 +1,22 @@
-from setuptools import setup, find_packages
+import setuptools
 
-setup(
+with open('README.md') as f:
+    long_description = f.read()
+
+with open("requirements.txt") as f:
+    requirements = [l for l in f]
+
+setuptools.setup(
     name='SNR',
     version='0.3.0',
     author='Spencer Shaw',
-    author_email='sfshaw@calpoly.edu',
-    packages=find_packages(),
-    url='http://calpoly.edu',
+    author_email='calpolyroboticsclub@gmail.com',
+    packages=setuptools.find_packages(),
+    url='http://github.com/sfshaw-calpoly/SNR',
     license='LICENSE.txt',
     description='Soft-realtime robotics framework for education',
-    long_description=open('README.txt').read(),
-    install_requires=[line for line in open("requirements.txt")],
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    install_requires=requirements,
+    python_requires='>=3.7'
 )
