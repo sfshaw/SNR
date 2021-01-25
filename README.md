@@ -1,6 +1,6 @@
 # SNR
 
-![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20package/badge.svg)
+![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 SNR provides a soft-realtime robotics framework for education. It was
