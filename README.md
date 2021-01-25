@@ -1,52 +1,22 @@
-===
-SNR
-===
+# SNR
 
-SNR provides a soft-realtime robotics framework for education. It was 
+[![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20package/badge.svg)]
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+SNR provides a soft-realtime robotics framework for education. It was
 originally developed for the Cal Poly Robotics Club Underwater
-Remote Operated Vehicle (UROV). Typical usage often looks like this:
+Remote Operated Vehicle (UROV).
+
+## Get Started
+
+Typical usage often looks like this:
 
     #!/usr/bin/env python
 
-    from snr import *  // TODO: Export user facing classes and types
+    from snr import *
 
     # TODO: Sample code
 
-
-
-
-Markdown cheatsheet:
-
-(Note the double-colon and 4-space indent formatting above.)
-
-Paragraphs are separated by blank lines. *Italics*, **bold**,
-and ``monospace`` look like this.
-
-
-A Section
-=========
-
-Lists look like this:
-
-* First
-
-* Second. Can be multiple lines
-  but must be indented properly.
-
-A Sub-Section
--------------
-
-Numbered lists look like you'd expect:
-
-1. hi there
-
-2. must be going
-
-Urls are http://like.this and links can be
-written `like this <http://www.example.com/foo/bar>`_.
-
-
-Contributors
-============
+## Contributors
 
 * Spencer Shaw
