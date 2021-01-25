@@ -6,7 +6,7 @@ from snr_core.node import Node
 from snr_core.utils.utils import no_op
 
 
-class TimeoutEndpoint(ThreadLoop):
+class TimeoutLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent_node: Node,
@@ -14,7 +14,7 @@ class TimeoutEndpoint(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent_node,
-                         "timeout_endpoint",
+                         "timeout_loop",
                          no_op)
         self.timeout_s = timeout_s
 
@@ -23,12 +23,12 @@ class TimeoutEndpoint(ThreadLoop):
         self.parent_node.schedule(task.terminate("Timeout"))
 
 
-class TimeoutEndpointFactory(LoopFactory):
+class TimeoutLoopFactory(LoopFactory):
     def __init__(self, seconds: float = 0, ms: float = 0):
-        super().__init__("Ping test factory")
+        super().__init__("Timeout loop factory")
         self.timeout_s = seconds + (ms / 1000)
 
     def get(self, parent: Node) -> LoopBase:
-        return TimeoutEndpoint(self,
-                               parent,
-                               self.timeout_s)
+        return TimeoutLoop(self,
+                           parent,
+                           self.timeout_s)
