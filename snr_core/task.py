@@ -37,6 +37,9 @@ class Task:
     def id(self) -> TaskId:
         return (self.type, self.name)
 
+    # def to_json(self) -> str:
+    #     return jsons.dumps(self)
+
     def __eq__(self, other: Any):
         return (
             (self.__class__ == other.__class__) and

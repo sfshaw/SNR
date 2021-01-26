@@ -1,10 +1,9 @@
-from snr.endpoint import Endpoint
-from snr.endpoint.endpoint_factory import EndpointFactory
-from snr.io.replayer import replayer
-from snr.node import Node
+from snr_core.loop.loop_factory import LoopBase, LoopFactory
+from snr_core.node import Node
+from snr_std.io.replayer import replayer
 
 
-class ReplayerFactory(EndpointFactory):
+class ReplayerFactory(LoopFactory):
     def __init__(self,
                  input_filename: str,
                  exit: bool = False
@@ -13,7 +12,7 @@ class ReplayerFactory(EndpointFactory):
         self.input_filename = input_filename
         self.exit = exit
 
-    def get(self, parent: Node) -> Endpoint:
+    def get(self, parent: Node) -> LoopBase:
         return replayer.Replayer(self,
                                  parent,
                                  self.input_filename,

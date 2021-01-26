@@ -2,16 +2,16 @@ from typing import Optional
 
 from snr_core import task
 from snr_core.datastore.page import Page
-from snr_core.endpoint.factory import FactoryBase
-from snr_core.endpoint.thread_endpoint import ThreadEndpoint
+from snr_core.loop.loop_factory import LoopFactory
+from snr_core.loop.thread_loop import ThreadLoop
 from snr_core.node import Node
 from snr_core.utils.timer import Timer
 
 
-class Replayer(ThreadEndpoint):
+class Replayer(ThreadLoop):
 
     def __init__(self,
-                 factory: FactoryBase,
+                 factory: LoopFactory,
                  parent: Node,
                  filename: str,
                  exit_when_done: bool

@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from typing import Any, Callable
 
+from dataclasses_json import DataClassJsonMixin
+
 MAX_PRINTABLE_DATA_LEN = 60
 
 
 @dataclass
-class Page:
+class Page(DataClassJsonMixin):
     key: str
     data: Any
     origin: str
