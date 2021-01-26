@@ -1,4 +1,3 @@
-import logging
 from typing import Optional, TextIO
 
 from snr_core import task
