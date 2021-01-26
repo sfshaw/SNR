@@ -5,6 +5,8 @@ from snr_core.loop.thread_loop import ThreadLoop
 from snr_core.node import Node
 from snr_core.utils.utils import no_op
 
+FAST_TEST_TIMEOUT: float = 0.01
+
 
 class TimeoutLoop(ThreadLoop):
     def __init__(self,

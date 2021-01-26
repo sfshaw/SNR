@@ -3,7 +3,8 @@ from snr_core.task import TaskType
 from snr_core.test.utils.expector import Expectations, Expector
 from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 from snr_core.test.utils.test_base import *
-from snr_core.test.utils.timeout_loop import TimeoutLoopFactory
+from snr_core.test.utils.timeout_loop import (FAST_TEST_TIMEOUT,
+                                              TimeoutLoopFactory)
 
 raw_data_filename = "snr/test/test_data/raw_data.txt"
 
@@ -14,7 +15,7 @@ class TestExpectorEndpoint(SNRTestBase):
         with Expector({}, self) as expector:
             config = self.get_config([
                 ExpectorEndpointFactory(expector),
-                TimeoutLoopFactory(seconds=0.5)
+                TimeoutLoopFactory(seconds=FAST_TEST_TIMEOUT)
             ])
             config.mode = Mode.DEBUG
             runner = SynchronusTestRunner(config)
@@ -27,7 +28,7 @@ class TestExpectorEndpoint(SNRTestBase):
         with Expector(expectations, self) as expector:
             config = self.get_config([
                 ExpectorEndpointFactory(expector),
-                TimeoutLoopFactory(seconds=0.5)
+                TimeoutLoopFactory(seconds=FAST_TEST_TIMEOUT)
             ])
             runner = SynchronusTestRunner(config)
             runner.run()
