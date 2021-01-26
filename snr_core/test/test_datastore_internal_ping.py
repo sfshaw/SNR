@@ -1,15 +1,12 @@
-from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 from time import time
 
 from snr_core import task
-from snr_core.endpoint.endpoint import EndpointBase
+from snr_core.endpoint.endpoint import Endpoint, EndpointBase
 from snr_core.endpoint.endpoint_factory import EndpointFactory
 from snr_core.factory.factory_base import FactoryBase
-from snr_core.endpoint.endpoint import Endpoint
 from snr_core.node import Node
-from snr_core.runner.test_runner import SynchronusTestRunner
 from snr_core.task import SomeTasks, Task, TaskId, TaskType
-from snr_core.test.utils.expector import Expector
+from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 from snr_core.test.utils.test_base import *
 
 
@@ -61,20 +58,15 @@ class PingTestFactory(EndpointFactory):
 class TestInternalDatastorePing(SNRTestBase):
 
     def test_internal_dds_ping(self):
-        with Expector(
-                {
-                    (TaskType.event, "ping_test"): 1,
-                    (TaskType.process_data, "ping_test"): 1,
-                    TaskType.terminate: 1,
-                }, self) as expector:
-            config = self.get_config([
+        with self.expector({
+            (TaskType.event, "ping_test"): 1,
+            (TaskType.process_data, "ping_test"): 1,
+            TaskType.terminate: 1,
+        }) as expector:
+            self.run_test([
                 PingTestFactory(),
                 ExpectorEndpointFactory(expector),
-                # RecorderFactory("ping_recorder",
-                #                 ["ping_test", "process_ping_test"])
             ])
-            runner = SynchronusTestRunner(config)
-            runner.run()
 
 
 if __name__ == '__main__':
