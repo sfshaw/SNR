@@ -3,12 +3,12 @@ from __future__ import annotations
 import functools
 import operator
 from threading import Event
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from snr_core.config import Mode, Role
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.datastore.datastore import Datastore
+from snr_core.datastore.datastore import Datastore, Page
 from snr_core.endpoint.endpoint_base import EndpointBase
 from snr_core.endpoint.node_core_endpoint import NodeCore
 from snr_core.factory.factory_base import FactoryBase
@@ -164,5 +164,8 @@ class Node(Context):
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
         self.__datastore.store(key, data, process)
 
-    def get_data(self, key: str) -> Union[Any, None]:
+    def get_data(self, key: str) -> Optional[Any]:
         return self.__datastore.get_data(key)
+
+    def get_page(self, key: str) -> Optional[Page]:
+        return self.__datastore.get_page(key)
