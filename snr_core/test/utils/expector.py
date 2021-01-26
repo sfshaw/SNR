@@ -1,15 +1,17 @@
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict
 from unittest.case import TestCase
 
-Expectations = Dict[str, int]
+Expectations = Dict[Any, int]
 
 
 class Expector:
     def __init__(self, expectations: Expectations, testcase: TestCase) -> None:
         self.expectations = expectations
         self.testcase = testcase
+        self.log = logging.getLogger()
         self.times_called: Expectations = {}
         for key in expectations:
             self.times_called[str(key)] = 0
@@ -30,7 +32,7 @@ class Expector:
         self.testcase.assertTrue(True)
 
     def dump(self) -> None:
-        print(self.times_called)
+        self.log.debug(self.times_called)
 
     def __enter__(self) -> Expector:
         return self

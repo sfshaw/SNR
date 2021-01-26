@@ -1,11 +1,11 @@
+import logging
 from multiprocessing import Queue
 from queue import Empty
 from threading import Event, Thread
 from time import sleep
-from typing import Any, Callable, Generic, List, Optional, TypeVar, Union
+from typing import Callable, Generic, Optional, TypeVar
 
 from snr_core.utils.debug.channels import *
-from snr_core.utils.utils import format_message
 
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
@@ -18,13 +18,12 @@ class Consumer(Thread, Generic[T]):
                  parent_name: str,
                  action: Callable[[T], None],
                  sleep_time: float,
-                 stdout_print: Callable[..., None] = print
                  ) -> None:
         super().__init__(target=self.__loop,
                          name=parent_name + CONSUMER_THREAD_NAME_SUFFIX)
+        self.log = logging.getLogger(self.name)
         self.action = action
         self.sleep_time = sleep_time
-        self.stdout_print = stdout_print
         self.queue: Queue[T] = Queue()
         self.__terminate_flag = Event()
         self.flushed = Event()
@@ -37,12 +36,12 @@ class Consumer(Thread, Generic[T]):
             self.queue.put(item)
             self.flushed.clear()
         else:
-            self.dbg(ERROR_CHANNEL,
-                     "Consumer fed but thread is not alive ({})",
-                     [item])
+            self.log.error(
+                "Consumer fed but thread is not alive ({})",
+                item)
 
     def __loop(self) -> None:
-        self.dbg(DEBUG_CHANNEL, "Thread now running")
+        self.log.debug("Thread now running")
         while not self.__terminate_flag.is_set():
             self.__iterate()
 
@@ -53,7 +52,7 @@ class Consumer(Thread, Generic[T]):
         while not self.flushed.is_set():
             self.__iterate()
         self.flushed.set()
-        self.dbg(DEBUG_CHANNEL, "Thread exited loop")
+        self.log.debug("Thread exited loop")
 
     def __iterate(self) -> None:
         item: Optional[T] = None
@@ -64,8 +63,7 @@ class Consumer(Thread, Generic[T]):
         except Empty:
             pass
         except EOFError as e:
-            msg = f"EOFError: {e}"
-            self.dbg(ERROR_CHANNEL, msg)
+            self.log.error("EOFError: {}", e)
             self.set_terminate_flag()
         item = None
         if self.queue.empty():
@@ -75,26 +73,17 @@ class Consumer(Thread, Generic[T]):
         return self.queue.get_nowait()
 
     def join_from(self, joiner: str):
-        self.dbg(INFO_CHANNEL, "Preparing to join thread from {}", [joiner])
+        self.log.info("Preparing to join thread from %s", joiner)
         self.set_terminate_flag()
         super().join()
         if self.is_alive():
-            self.dbg(WARNING_CHANNEL, "Thread just won't die.")
+            self.log.warn("Thread just won't die.")
 
     def flush(self) -> None:
         if self.is_alive():
             self.flushed.wait()
         else:
-            self.dbg(ERROR_CHANNEL, "Cannot flush dead consumer")
+            self.log.error("Cannot flush dead consumer")
 
     def set_terminate_flag(self):
         self.__terminate_flag.set()
-
-    def dbg(self,
-            level: str,
-            message: str,
-            format_args: Union[List[Any], None] = None) -> None:
-        self.stdout_print(format_message(self.name,
-                                         level,
-                                         message,
-                                         format_args))

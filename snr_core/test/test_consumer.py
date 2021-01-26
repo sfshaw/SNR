@@ -29,8 +29,7 @@ class TestConsumer(SNRTestBase):
         CATCH_UP_TIME = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
                                  no_op,
-                                 SLEEP_TIME_S,
-                                 self.stdout.print)
+                                 SLEEP_TIME_S)
 
         sleep(CATCH_UP_TIME)
         self.assertTrue(consumer.is_alive())
@@ -57,14 +56,14 @@ class TestConsumer(SNRTestBase):
                 self.assertEqual(value, self.num)
         consumer = Consumer("test_put",
                             increment,
-                            SLEEP_TIME_S,
-                            self.stdout.print)
+                            SLEEP_TIME_S)
 
         def flush() -> None:
-            sleep(SLEEP_TIME_S * 10)
-            consumer.flush()
-            sleep(SLEEP_TIME_S * 10)
-            consumer.flush()
+            if consumer.is_alive():
+                sleep(SLEEP_TIME_S * 10)
+                consumer.flush()
+                sleep(SLEEP_TIME_S * 10)
+                consumer.flush()
 
         try:
 

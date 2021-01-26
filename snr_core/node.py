@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import functools
+import operator
 from threading import Event
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -8,9 +10,9 @@ from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
 from snr_core.datastore.datastore import Datastore
 from snr_core.endpoint.endpoint_base import EndpointBase
-from snr_core.loop.loop_base import LoopBase
-from snr_core.factory.factory_base import FactoryBase
 from snr_core.endpoint.node_core_endpoint import NodeCore
+from snr_core.factory.factory_base import FactoryBase
+from snr_core.loop.loop_base import LoopBase
 from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
 from snr_core.task_queue import TaskQueue
 from snr_core.utils.profiler import Profiler
@@ -27,7 +29,7 @@ class Node(Context):
                  ) -> None:
         super().__init__(role + "_node",
                          parent,
-                         Profiler(parent.debugger, parent.settings))
+                         Profiler(parent.settings))
         self.role = role
         self.mode = mode
 
@@ -36,8 +38,8 @@ class Node(Context):
         self.endpoints, self.loops = self.__get_components(factories)
         self.__terminate_flag = Event()
         self.is_terminated = Event()
-        self.info("Initialized with {} endpoints",
-                  [len(self.endpoints)])
+        self.info("Initialized with %s endpoints",
+                  len(self.endpoints))
 
     def loop(self):
         for endpoint in self.endpoints.values():
@@ -68,51 +70,50 @@ class Node(Context):
                         new_tasks.append(t)
                     else:
                         new_tasks.extend(t)
-                    self.dbg("Produced task: {} from {}",
-                             [t, endpoint])
+                    self.dbg("Produced task: %s from %s",
+                             t, endpoint)
         return new_tasks
+
+    def __handle_task(self,
+                      handler: TaskHandler,
+                      t: Task,
+                      k: TaskId
+                      ) -> Optional[List[Task]]:
+        self.dbg("Executing %s task with %s",
+                 t.name, handler)
+        result = self.time(t.name, handler, [t, k])
+        if isinstance(result, Task):
+            return [result]
+        else:
+            return result
 
     def __execute_task(self, t: Task):
         if not t:
             self.dbg("execute_task", "Tried to execute None")
             return
-
-        new_tasks: List[Task] = []
         handlers = self.get_task_handlers(t)
-
-        self.dbg("Got {} handlers for {} task: {}",
-                 [len(handlers), t.name, handlers])
-        new_tasks: List[Task] = []
-        for (handler, key) in handlers:
-            self.dbg("Executing {} task with {}", [t.name, handler])
-            result = self.time(t.name, handler, [t, key])
-            if result:
-                if isinstance(result, Task):
-                    new_tasks.append(result)
-                else:
-                    new_tasks.extend(result)
-        self.dbg("Task execution resulted in {} new tasks",
-                 [len(new_tasks)])
+        self.dbg("Got %s handlers for %s task",
+                 len(handlers), t.name)
+        results: List[List[Task]] = list(filter(None,
+                                                [self.__handle_task(h, t, k)
+                                                 for (h, k) in handlers]))
+        new_tasks = functools.reduce(operator.iconcat, results, [])
+        self.dbg("Task execution resulted in %s new tasks",
+                 len(new_tasks))
         if new_tasks:
             self.__task_queue.schedule(new_tasks)
-        self.__datastore.flush()
+        # self.__datastore.flush()
 
     def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
-        maybe_handlers_and_keys = [e.get_task_handler(t)
-                                   for e in self.endpoints.values()]
-        return [(handler, key)
-                for (handler, key) in maybe_handlers_and_keys
-                if handler]
+        return list(filter(None, map(lambda e: e.get_task_handler(t),
+                                     self.endpoints.values())))
 
     def set_terminate_flag(self, reason: str):
-        self.info("Setting terminate flag for: {}", [reason])
+        self.info("Setting terminate flag for: %s", reason)
         self.__datastore.store("node_exit_reason", reason, False)
         self.__datastore.flush()
         self.__terminate_flag.set()
-        # for e in self.endpoints.values():
-        #     e.set_terminate_flag()
-        for l in self.loops.values():
-            l.set_terminate_flag()
+        map(lambda l: l.set_terminate_flag(), self.loops.values())
 
     def terminate(self):
         """Execute actions needed to deconstruct a Node.
@@ -125,28 +126,26 @@ class Node(Context):
             self.set_terminate_flag("terminate")
         if self.is_terminated.is_set():
             self.err("Already terminated")
-        self.stdout.flush()
 
         for e in self.endpoints.values():
             e.terminate()
         for l in self.loops.values():
             l.join()
-
-        self.info("Terminated all endpoints")
+        self.info("Terminated all %s endpoints and %s loops",
+                  len(self.endpoints), len(self.loops))
 
         self.__datastore.join()
         self.__datastore.dump_data()
 
-        self.stdout.flush()
         super().terminate()
         self.is_terminated.set()
-        self.info("Node {} finished terminating", [self.role])
+        self.info("Node %s finished terminating", self.role)
 
     def __get_components(self,
                          factories: List[FactoryBase]
                          ) -> Tuple[Dict[str, EndpointBase],
                                     Dict[str, LoopBase]]:
-        self.info("Adding components from {} factories", [len(factories)])
+        self.info("Adding components from %s factories", len(factories))
         endpoints: Dict[str, EndpointBase] = {
             "node_core": NodeCore(None, self)}
         loops: Dict[str, LoopBase] = {}
@@ -156,10 +155,10 @@ class Node(Context):
                 endpoints[component.name] = component
             else:
                 loops[component.name] = component
-            self.info("{} added {}", [factory, component])
+            self.info("%s added %s", factory, component)
         return endpoints, loops
 
-    def schedule(self, t: Task) -> None:
+    def schedule(self, t: SomeTasks) -> None:
         self.__task_queue.schedule(t)
 
     def store_data(self, key: str, data: Any, process: bool = True) -> None:

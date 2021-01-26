@@ -40,38 +40,38 @@ class TestNode(SNRTestBase):
         self.assertIsNone(get((Type.c, "1")))
 
     def test_get_task_handlers(self):
-        with RootContext("test", self.stdout) as root_context:
-            node = None
-            try:
-                node = Node(root_context, "test", Mode.TEST, [
-                    DummyEndpointFactory("dummy_endpoint_1", {
-                        (TaskType.event, "by_type_and_name"): no_op,
-                        TaskType.process_data: no_op
-                    }),
-                    DummyEndpointFactory("dummy_endpoint_2", {
-                        TaskType.process_data: no_op
-                    })])
+        root_context = RootContext("test")
+        node = None
+        try:
+            node = Node(root_context, "test", Mode.TEST, [
+                DummyEndpointFactory("dummy_endpoint_1", {
+                    (TaskType.event, "by_type_and_name"): no_op,
+                    TaskType.process_data: no_op
+                }),
+                DummyEndpointFactory("dummy_endpoint_2", {
+                    TaskType.process_data: no_op
+                })])
 
-                handlers = node.get_task_handlers(task.terminate("test"))
-                self.assertEqual(1, len(handlers))
+            handlers = node.get_task_handlers(task.terminate("test"))
+            self.assertEqual(1, len(handlers))
 
-                handlers = node.get_task_handlers(task.event("none"))
-                self.assertEqual(0, len(handlers))
+            handlers = node.get_task_handlers(task.event("none"))
+            self.assertEqual(0, len(handlers))
 
-                handlers = node.get_task_handlers(
-                    task.process_data("by_type"))
-                self.assertEqual(2, len(handlers))
+            handlers = node.get_task_handlers(
+                task.process_data("by_type"))
+            self.assertEqual(2, len(handlers))
 
+            node.set_terminate_flag("test done")
+            node.terminate()
+
+        except KeyboardInterrupt:
+            pass
+        finally:
+            if node and not node.is_terminated.is_set():
                 node.set_terminate_flag("test done")
                 node.terminate()
-
-            except KeyboardInterrupt:
-                pass
-            finally:
-                if node and not node.is_terminated.is_set():
-                    node.set_terminate_flag("test done")
-                    node.terminate()
-                    node = None
+                node = None
 
 
 if __name__ == '__main__':

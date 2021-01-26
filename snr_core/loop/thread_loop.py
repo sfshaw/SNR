@@ -6,6 +6,7 @@ from typing import Callable
 from snr_core.loop.loop_base import LoopBase
 from snr_core.loop.loop_factory import LoopFactory
 from snr_core.node import Node
+from snr_core.utils.utils import no_op
 
 DEFAULT_TICK_RATE = 24
 JOIN_TIMEOUT = None
@@ -25,11 +26,15 @@ class ThreadLoop(LoopBase):
                  parent: Node,
                  name: str,
                  loop_handler: Callable[[], None],
+                 setup: Callable[[], None] = no_op,
+                 terminate: Callable[[], None] = no_op,
                  tick_rate_hz: float = DEFAULT_TICK_RATE
                  ) -> None:
         super().__init__(parent, name)
         self.parent = parent
+        self.setup = setup
         self.loop_handler = loop_handler
+        self.terminate = terminate
         self.set_delay(tick_rate_hz)
         self.__terminate_flag = Event()
         self.__thread = Thread(target=self.threaded_method,
@@ -41,16 +46,12 @@ class ThreadLoop(LoopBase):
         else:
             self.delay_s = 1.0 / tick_rate_hz
 
-    def setup(self) -> None:
-        pass
-
     def start(self):
-        self.dbg("Starting async endpoint {} thread",
-                 [self.name])
+        self.dbg("Starting %s loop thread", self.name)
         self.__thread.start()
 
     def join(self):
-        """Externaly wait to shutdown a threaded endpoint
+        """Externaly wait to shutdown a thread loop
         """
         self.set_terminate_flag()
         if self.__thread.is_alive():
@@ -70,14 +71,13 @@ class ThreadLoop(LoopBase):
         except KeyboardInterrupt:
             pass
 
-        self.dbg("Thread Loop {} exited loop", [self.name])
+        self.dbg("Thread Loop %s exited loop", self.name)
         self.terminate()
 
     def tick(self):
         if (self.delay_s == 0.0):
-            self.warn("Thread {} does not sleep (max tick rate)",
-                      [self.name],
-                      flush=True)
+            self.warn("Thread %s does not sleep (max tick rate)",
+                      self.name)
         else:
             self.sleep(self.delay_s)
 
@@ -86,6 +86,3 @@ class ThreadLoop(LoopBase):
 
     def set_terminate_flag(self) -> None:
         self.__terminate_flag.set()
-
-    def terminate(self):
-        pass

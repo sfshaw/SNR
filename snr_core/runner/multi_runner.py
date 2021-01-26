@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from snr_core.config import Mode
-from snr_core.endpoint.factory import FactoryBase
+from snr_core.factory.factory_base import FactoryBase
 from snr_core.runner import Runner
 
 

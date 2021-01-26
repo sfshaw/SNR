@@ -2,7 +2,8 @@ from typing import Any, Callable, Dict, Optional
 
 from snr_core.context.context import Context
 from snr_core.datastore.page import Page
-from snr_core.task import Task, process_data
+from snr_core.task import Task
+from snr_core import task
 from snr_core.utils.consumer import Consumer
 from snr_core.utils.timer import Timer
 from snr_core.utils.utils import no_op
@@ -28,8 +29,7 @@ class Datastore(Context):
         self.inbound_consumer = Consumer[Page](
             parent_node.name + "_dds_inbound",
             self.write,
-            SLEEP_TIME_S,
-            self.stdout.print)
+            SLEEP_TIME_S)
         self.info("Datastore initialized")
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
@@ -57,12 +57,11 @@ class Datastore(Context):
     def dump_data(self) -> None:
         for page in self.data_dict.values():
             self.dump("{}", [page])
-        super().flush()
 
     def write(self, page: Page):
         self.data_dict[page.key] = page
         if page.process:
-            t = process_data(page.key)
+            t = task.process_data(page.key)
             self.schedule_task(t)
 
     def set_terminate_flag(self, reason: str):

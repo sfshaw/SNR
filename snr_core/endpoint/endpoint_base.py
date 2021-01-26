@@ -26,13 +26,15 @@ class EndpointBase(Context):
 
     def get_task_handler(self,
                          t: Task
-                         ) -> Tuple[Optional[TaskHandler], TaskId]:
+                         ) -> Optional[Tuple[TaskHandler, TaskId]]:
         id = t.id()
         (handler, key) = (self.task_handlers.get(id), id)
         if not handler:
             (handler, key) = (self.task_handlers.get(t.type), t.type)
             # self.dbg("Handler for {} not found, using type handler {}",
             #          [t.id(), handler])
+        if not handler:
+            return None
         return (handler, key)
 
     def reload(self, parent_node: Any) -> EndpointBase:

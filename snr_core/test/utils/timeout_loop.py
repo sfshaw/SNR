@@ -15,7 +15,8 @@ class TimeoutLoop(ThreadLoop):
         super().__init__(factory,
                          parent_node,
                          "timeout_loop",
-                         no_op)
+                         no_op,
+                         setup=self.setup)
         self.timeout_s = timeout_s
 
     def setup(self) -> None:
