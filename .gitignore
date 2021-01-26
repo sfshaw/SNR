@@ -4,3 +4,4 @@ dist
 MANIFEST
 *.egg-info
 typings
+*.temp
