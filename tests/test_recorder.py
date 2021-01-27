@@ -7,7 +7,7 @@ RAW_DATA_PATH = "tests/test_data/in/raw_data.txt"
 class TestRecorder(SNRTestBase):
 
     def test_recorder_encoding(self):
-        with self.temp_file(overwrite=True, cleanup=False) as temp_file:
+        with self.temp_file() as temp_file:
             with self.expector({(
                 TaskType.process_data, "raw_data"): 1,
                 TaskType.terminate: 1
