@@ -1,7 +1,7 @@
-from snr_core.datastore.datastore import Datastore
 from typing import Optional
 
 from snr_core.config import Config
+from snr_core.datastore.datastore import Datastore
 from snr_core.modes import Role
 from snr_core.node import Node
 

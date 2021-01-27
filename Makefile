@@ -2,7 +2,7 @@ CPYTHON=python3
 CPYTHON38=python3.8
 CPYTHON39=python3.9
 PYPY=pypy3
-PYTHON=$(CPYTHON)
+PYTHON=$(CPYTHON39)
 
 SETUP_PY=setup.py
 PY_SETUP=$(PYTHON) $(SETUP_PY)
@@ -15,7 +15,7 @@ TEST_DIR=$(SRC_DIR)/test
 
 TEST_FLAGS=test -d
 
-.PHONY: dev develop check build install dist test
+.PHONY: dev develop check build install dist test test_all
 d: dev
 dev: develop
 	$(PYTHON) $(SRC_DIR)/dev.py
@@ -42,6 +42,7 @@ t: test
 test: check
 	$(PYTHON) -m unittest
 
+ta: test_all
 test_all: check
 	$(CPYTHON38) -m unittest
 	$(CPYTHON39) -m unittest

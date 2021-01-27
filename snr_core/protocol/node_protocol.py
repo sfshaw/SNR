@@ -1,16 +1,18 @@
 from threading import Event
 from typing import Any, Dict, List, Optional, Protocol, Tuple
 
-from snr_core.context.context import Context
 from snr_core.datastore.page import Page
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.loop.loop_protocol import LoopProtocol
 from snr_core.modes import Mode, Role
+from snr_core.protocol.endpoint_protocol import EndpointProtocol
+from snr_core.protocol.loop_protocol import LoopProtocol
+from snr_core.protocol.settings_provider import SettingsProvider
+from snr_core.settings import Settings
 from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
 
 
-class NodeProtocol(Protocol):
-    context: Context
+class NodeProtocol(SettingsProvider, Protocol):
+    settings: Settings
+    name: str
     role: Role
     mode: Mode
     endpoints: Dict[str, EndpointProtocol]

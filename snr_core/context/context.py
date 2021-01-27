@@ -2,12 +2,12 @@ import logging
 import time
 from typing import Any, Callable, List, Optional, TypeVar
 
-from snr_core.context.settings_provider import SettingsProvider
+from snr_core.protocol.settings_provider import SettingsProvider
 from snr_core.settings import Settings
 from snr_core.utils.profiler import Profiler
 
 
-class Context:
+class Context(SettingsProvider):
 
     def __init__(self,
                  name: str,

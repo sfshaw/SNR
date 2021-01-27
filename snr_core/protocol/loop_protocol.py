@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from snr_core.factory.factory_protocol import Component
+from snr_core.protocol.component_protocol import Component
 
 DEFAULT_TICK_RATE = 24
 JOIN_TIMEOUT = None

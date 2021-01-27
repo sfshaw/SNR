@@ -1,8 +1,6 @@
 from typing import Any, Protocol
 
-
-class Component(Protocol):
-    name: str
+from snr_core.protocol.component_protocol import Component
 
 
 class FactoryProtocol(Protocol):

@@ -1,11 +1,9 @@
-from __future__ import annotations
-from snr_core.context.context import Context
-
 from threading import Event, Thread
 from typing import Callable
 
+from snr_core.context.context import Context
 from snr_core.loop.loop_factory import LoopFactory
-from snr_core.node import Node
+from snr_core.protocol.node_protocol import NodeProtocol
 from snr_core.utils.utils import no_op
 
 DEFAULT_TICK_RATE = 24
@@ -23,7 +21,7 @@ class ThreadLoop(Context):
 
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  loop_handler: Callable[[], None],
                  setup: Callable[[], None] = no_op,

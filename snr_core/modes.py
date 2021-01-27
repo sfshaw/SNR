@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Callable, Dict, List
 
-from snr_core.factory.factory_protocol import FactoryProtocol
+from snr_core.protocol.factory_protocol import FactoryProtocol
 
 
 class Mode(Enum):

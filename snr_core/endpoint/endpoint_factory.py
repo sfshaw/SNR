@@ -1,9 +1,9 @@
 import importlib
 from typing import Optional
 
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.factory.factory_protocol import FactoryProtocol
-from snr_core.node import Node
+from snr_core.protocol.endpoint_protocol import EndpointProtocol
+from snr_core.protocol.factory_protocol import FactoryProtocol
+from snr_core.protocol.node_protocol import NodeProtocol
 
 
 class EndpointFactory(FactoryProtocol):
@@ -13,7 +13,7 @@ class EndpointFactory(FactoryProtocol):
         self.name = name
         self.child_module = child_module
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         raise NotImplementedError
 
     def reload(self) -> None:

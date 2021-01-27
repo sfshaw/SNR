@@ -5,9 +5,9 @@ from snr_core.context.root_context import RootContext
 from snr_core.datastore.page import Page
 from snr_core.endpoint.endpoint import Endpoint
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.factory.factory_protocol import FactoryProtocol
-from snr_core.loop.loop_protocol import LoopProtocol
+from snr_core.protocol.endpoint_protocol import EndpointProtocol
+from snr_core.protocol.factory_protocol import FactoryProtocol
+from snr_core.protocol.loop_protocol import LoopProtocol
 from snr_core.loop.loop_factory import LoopFactory
 from snr_core.loop.thread_loop import ThreadLoop
 from snr_core.node import Node

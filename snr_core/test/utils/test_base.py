@@ -5,7 +5,7 @@ from typing import List, Optional
 from snr_core.config import Config, Mode
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.factory.factory_protocol import FactoryProtocol
+from snr_core.protocol.factory_protocol import FactoryProtocol
 from snr_core.runner.test_runner import SynchronusTestRunner
 from snr_core.test.utils.expector import Expectations, Expector
 from snr_core.test.utils.temp_file import TempFile

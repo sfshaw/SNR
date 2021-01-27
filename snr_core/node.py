@@ -5,13 +5,13 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.datastore.datastore_protocol import DatastoreProtocol
 from snr_core.datastore.page import Page
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.factory.factory_protocol import FactoryProtocol
-from snr_core.loop.loop_protocol import LoopProtocol
 from snr_core.modes import Mode, Role
-from snr_core.node_protocol import NodeProtocol
+from snr_core.protocol.datastore_protocol import DatastoreProtocol
+from snr_core.protocol.endpoint_protocol import EndpointProtocol
+from snr_core.protocol.factory_protocol import FactoryProtocol
+from snr_core.protocol.loop_protocol import LoopProtocol
+from snr_core.protocol.node_protocol import NodeProtocol
 from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
 from snr_core.task_queue import TaskQueue, TaskScheduler
 from snr_core.utils.profiler import Profiler
@@ -30,7 +30,7 @@ class Node(Context):
                  ) -> None:
         super().__init__(role + "_node",
                          parent,
-                         Profiler(parent.get_settings))
+                         Profiler(parent.settings))
         self.role = role
         self.mode = mode
         self.context = self

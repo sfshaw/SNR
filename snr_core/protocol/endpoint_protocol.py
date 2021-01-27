@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, List, Optional, Protocol, Tuple, runtime_checkable
 
-from snr_core.factory.factory_protocol import Component
+from snr_core.protocol.factory_protocol import Component
 from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskId, TaskSource
 
 

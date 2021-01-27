@@ -1,4 +1,5 @@
 import pickle
+from snr_core.protocol.node_protocol import NodeProtocol
 import socket
 import sys
 from socket import socket as Socket
@@ -9,7 +10,7 @@ from snr_core.base import *
 class CommandReceiver(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  port: int
                  ) -> None:

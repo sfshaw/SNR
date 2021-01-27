@@ -1,10 +1,9 @@
-from snr_core.node_protocol import NodeProtocol
 from typing import Any, Callable, Dict, Optional
 
 from snr_core import task
 from snr_core.context.context import Context
 from snr_core.datastore.page import Page
-from snr_core.node import Node
+from snr_core.protocol.node_protocol import NodeProtocol
 from snr_core.task import Task
 from snr_core.utils.consumer import Consumer
 from snr_core.utils.timer import Timer
@@ -57,7 +56,7 @@ class Datastore(Context):
 
     def dump_data(self) -> None:
         for page in self.data_dict.values():
-            self.dump("{}", [page])
+            self.dump("%s", page)
 
     def write(self, page: Page) -> None:
         self.data_dict[page.key] = page
@@ -67,7 +66,7 @@ class Datastore(Context):
 
     def set_terminate_flag(self, reason: str):
         self.inbound_consumer.set_terminate_flag()
-        self.info("Preparing to terminate datastore for {}", [reason])
+        self.info("Preparing to terminate datastore for %s", reason)
 
     def join(self) -> None:
         """Shutdown datastore threads
