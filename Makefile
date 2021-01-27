@@ -10,22 +10,21 @@ PY_SETUP=$(PYTHON) $(SETUP_PY)
 BUILD_DIR=build
 DIST_DIR=dist
 EGG_INFO_DIR=SNR.egg-info
-SRC_DIR=snr
-TEST_DIR=$(SRC_DIR)/test
-
+LIB_DIR=snr
+STD_DIR=snr_std
 
 TEST_FLAGS=test -d
 
 .PHONY: dev develop check build install dist test test_all
 d: dev
 dev: develop
-	$(PYTHON) $(SRC_DIR)/dev.py
+	$(PYTHON) $(LIB_DIR)/dev.py
 
 develop:
 	$(PY_SETUP) develop --user
 
 console:
-	$(PYTHON) $(SRC_DIR)/io/console/console.py
+	$(PYTHON) $(STD_DIR)/io/console/console.py
 
 check:
 	$(PY_SETUP) check
