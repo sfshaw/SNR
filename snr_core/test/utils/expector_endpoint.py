@@ -5,7 +5,7 @@ from snr_core.test.utils.expector import Expector
 class ExpectorEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  expector: Expector
                  ) -> None:
         task_handlers = {}
@@ -34,7 +34,7 @@ class ExpectorEndpointFactory(EndpointFactory):
         super().__init__(None, "Ping test factory")
         self.expector = expector
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return ExpectorEndpoint(self,
                                 parent,
                                 self.expector)

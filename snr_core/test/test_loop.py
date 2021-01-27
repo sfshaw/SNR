@@ -1,7 +1,6 @@
 
 from snr_core.base import *
-from snr_core.test.utils.timeout_loop import (FAST_TEST_TIMEOUT_MS,
-                                              TimeoutLoopFactory)
+from snr_core.test.utils.base import *
 from snr_core.utils.utils import no_op
 
 
@@ -9,7 +8,7 @@ class LoopUnderTest(ThreadLoop):
     def __init__(self,
                  fac: LoopFactory,
                  parent: NodeProtocol,
-                 expector: Expector
+                 expector: Expector,
                  ) -> None:
         super().__init__(fac, parent, "test_loop",
                          no_op,

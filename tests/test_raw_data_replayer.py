@@ -1,5 +1,4 @@
 from snr import *
-from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 
 raw_data_filename = "tests/test_data/in/raw_data.txt"
 

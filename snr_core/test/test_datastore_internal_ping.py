@@ -1,7 +1,7 @@
 from time import time
 
 from snr_core.base import *
-from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
+from snr_core.test.utils.base import *
 
 
 class PingTestEndpoint(Endpoint):

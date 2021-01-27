@@ -6,7 +6,7 @@ DEFAULT_NAME = "dummy_endpoint"
 class DummyEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str = DEFAULT_NAME,
                  task_handlers: TaskHandlerMap = {},
                  ) -> None:
@@ -31,7 +31,7 @@ class DummyEndpointFactory(EndpointFactory):
         self.endpoint_name = name
         self.task_handlers = task_handlers
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return DummyEndpoint(self,
                              parent,
                              self.endpoint_name,

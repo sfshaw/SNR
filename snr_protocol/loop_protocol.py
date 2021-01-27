@@ -19,6 +19,9 @@ class LoopProtocol(ComponentProtocol, Protocol):
     def join(self) -> None:
         ...
 
+    def loop_handler(self) -> None:
+        ...
+
     def is_terminated(self) -> bool:
         ...
 
