@@ -5,14 +5,13 @@ import operator
 from threading import Event
 from typing import Any, Dict, List, Optional, Tuple
 
-from snr_core.config import Mode, Role
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
 from snr_core.datastore.datastore import Datastore, Page
-from snr_core.endpoint.endpoint_base import EndpointBase
-from snr_core.endpoint.node_core_endpoint import NodeCore
-from snr_core.factory.factory_base import FactoryBase
-from snr_core.loop.loop_base import LoopBase
+from snr_core.endpoint.endpoint_protocol import EndpointProtocol
+from snr_core.factory.factory_protocol import FactoryProtocol
+from snr_core.loop.loop_protocol import LoopProtocol
+from snr_core.modes import Mode, Role
 from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
 from snr_core.task_queue import TaskQueue
 from snr_core.utils.profiler import Profiler
@@ -25,7 +24,7 @@ class Node(Context):
                  parent: RootContext,
                  role: Role,
                  mode: Mode,
-                 factories: List[FactoryBase]
+                 factories: List[FactoryProtocol]
                  ) -> None:
         super().__init__(role + "_node",
                          parent,
@@ -142,19 +141,20 @@ class Node(Context):
         self.info("Node %s finished terminating", self.role)
 
     def __get_components(self,
-                         factories: List[FactoryBase]
-                         ) -> Tuple[Dict[str, EndpointBase],
-                                    Dict[str, LoopBase]]:
+                         factories: List[FactoryProtocol]
+                         ) -> Tuple[Dict[str, EndpointProtocol],
+                                    Dict[str, LoopProtocol]]:
         self.info("Adding components from %s factories", len(factories))
-        endpoints: Dict[str, EndpointBase] = {
-            "node_core": NodeCore(None, self)}
-        loops: Dict[str, LoopBase] = {}
+        endpoints: Dict[str, EndpointProtocol] = {}
+        loops: Dict[str, LoopProtocol] = {}
         for factory in factories:
             component = factory.get(self)
-            if isinstance(component, EndpointBase):
+            if isinstance(component, EndpointProtocol):
                 endpoints[component.name] = component
-            else:
+            elif isinstance(component, LoopProtocol):
                 loops[component.name] = component
+            else:
+                self.err("Unknown component type: %s", component)
             self.info("%s added %s", factory, component)
         return endpoints, loops
 

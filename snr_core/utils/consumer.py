@@ -63,7 +63,7 @@ class Consumer(Thread, Generic[T]):
         except Empty:
             pass
         except EOFError as e:
-            self.log.error("EOFError: {}", e)
+            self.log.error("EOFError: %s", e)
             self.set_terminate_flag()
         item = None
         if self.queue.empty():

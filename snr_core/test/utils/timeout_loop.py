@@ -1,11 +1,11 @@
 from snr_core import task
-from snr_core.loop.loop_base import LoopBase
 from snr_core.loop.loop_factory import LoopFactory
+from snr_core.loop.loop_protocol import LoopProtocol
 from snr_core.loop.thread_loop import ThreadLoop
 from snr_core.node import Node
 from snr_core.utils.utils import no_op
 
-FAST_TEST_TIMEOUT: float = 0.01
+FAST_TEST_TIMEOUT_MS: float = 10.0
 
 
 class TimeoutLoop(ThreadLoop):
@@ -23,7 +23,7 @@ class TimeoutLoop(ThreadLoop):
 
     def setup(self) -> None:
         self.sleep(self.timeout_s)
-        self.parent_node.schedule(task.terminate("Timeout"))
+        self.parent.schedule(task.terminate("Timeout"))
 
 
 class TimeoutLoopFactory(LoopFactory):
@@ -31,7 +31,7 @@ class TimeoutLoopFactory(LoopFactory):
         super().__init__("Timeout loop factory")
         self.timeout_s = seconds + (ms / 1000)
 
-    def get(self, parent: Node) -> LoopBase:
+    def get(self, parent: Node) -> LoopProtocol:
         return TimeoutLoop(self,
                            parent,
                            self.timeout_s)

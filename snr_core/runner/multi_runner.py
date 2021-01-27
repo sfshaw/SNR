@@ -1,15 +1,13 @@
-from typing import Dict, List
+from typing import List, Protocol
 
 from snr_core.config import Mode
-from snr_core.factory.factory_base import FactoryBase
-from snr_core.runner import Runner
+from snr_core.modes import ComponentsByRole, Role
 
 
-class MultiRunner(Runner):
+class MultiRunner(Protocol):
 
-    def __init__(self,
-                 mode: Mode,
-                 factories_by_role: Dict[str, List[FactoryBase]] = {}
-                 ) -> None:
-        self.mode = mode
-        self.factories_by_role = factories_by_role
+    mode: Mode
+    factories_by_role: ComponentsByRole
+
+    def run(self, roles: List[Role]) -> None:
+        ...

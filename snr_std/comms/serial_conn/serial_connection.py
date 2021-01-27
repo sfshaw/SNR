@@ -8,12 +8,7 @@ from typing import Any, List, Optional, Union
 
 import serial
 from serial.serialutil import SerialBase, SerialException
-from snr_core import task
-from snr_core.endpoint.factory import FactoryBase
-from snr_core.endpoint.synchronous_endpoint import Endpoint
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId, TaskType
-from snr_core.utils.utils import attempt
+from snr_core.base import *
 from snr_std.comms.serial_conn.packet import *
 from snr_std.comms.serial_conn.serial_finder import SerialFinder
 
@@ -21,11 +16,10 @@ from snr_std.comms.serial_conn.serial_finder import SerialFinder
 class SerialConnection(Endpoint):
     # Default port arg finds a serial port for the arduino/Teensy
     def __init__(self,
-                 factory: FactoryBase,
+                 factory: EndpointFactory,
                  parent: Node,
                  name: str,
                  input: str,
-                 output: str
                  ) -> None:
         super().__init__(factory,
                          parent,

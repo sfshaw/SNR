@@ -1,33 +1,32 @@
-import logging
 from typing import List
 
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.factory.factory_base import FactoryBase
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskHandlerMap, TaskId, TaskType
+from snr_core.base import *
 
 
 class RecorderEndpoint(Endpoint):
     def __init__(self,
-                 factory: FactoryBase,
+                 factory: EndpointFactory,
                  parent: Node,
                  name: str,
+                 filename: str,
                  data_names: List[str]):
         super().__init__(factory, parent, name,
                          task_handlers=self.map_handlers(data_names))
-        self.file = open(self.name, "w")
-        self.log.setLevel(logging.DEBUG)
+        self.filename = filename
+        self.file = open(filename, "w")
 
     def task_handler(self, t: Task, k: TaskId) -> SomeTasks:
         self.dbg("Recording task: %s", [t])
         if t.type is TaskType.process_data:
             page = self.parent.get_page(t.name)
             if page:
-                self.file.write(page.to_json())
+                json_data: str = page.to_json()
+                self.file.write(json_data)
+                self.dbg("Wrote '%s' to %s", json_data, self.filename)
             else:
                 self.err("Tried to read non-existant page: %s", t.name)
         else:
-            self.file.write(t.to_json())
+            self.err("Tried non-data processing task: %s", t.name)
         return None
 
     def map_handlers(self,

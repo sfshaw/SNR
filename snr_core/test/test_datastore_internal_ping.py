@@ -1,18 +1,12 @@
 from time import time
 
-from snr_core import task
-from snr_core.endpoint.endpoint import Endpoint, EndpointBase
-from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.factory.factory_base import FactoryBase
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId, TaskType
+from snr_core.base import *
 from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
-from snr_core.test.utils.test_base import *
 
 
 class PingTestEndpoint(Endpoint):
     def __init__(self,
-                 factory: FactoryBase,
+                 factory: EndpointFactory,
                  parent_node: Node,
                  name: str):
         super().__init__(factory,
@@ -47,9 +41,9 @@ class PingTestEndpoint(Endpoint):
 
 class PingTestFactory(EndpointFactory):
     def __init__(self):
-        super().__init__("Ping test factory")
+        super().__init__(None, "Ping test factory")
 
-    def get(self, parent: Node) -> EndpointBase:
+    def get(self, parent: Node) -> EndpointProtocol:
         return PingTestEndpoint(self,
                                 parent,
                                 "ping_test_endpoint")

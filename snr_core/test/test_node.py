@@ -1,14 +1,9 @@
 from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
-from snr_core import task
-from snr_core.config import Mode
-from snr_core.context.root_context import RootContext
-from snr_core.node import Node
-from snr_core.task import TaskType
+from snr_core.base import *
+from snr_core.endpoint.node_core_factory import NodeCoreFactory
 from snr_core.test.utils.dummy_endpoint import DummyEndpointFactory
-from snr_core.test.utils.test_base import *
-from snr_core.utils.utils import no_op
 
 
 class TestNode(SNRTestBase):
@@ -44,6 +39,7 @@ class TestNode(SNRTestBase):
         node = None
         try:
             node = Node(root_context, "test", Mode.TEST, [
+                NodeCoreFactory(),
                 DummyEndpointFactory("dummy_endpoint_1", {
                     (TaskType.event, "by_type_and_name"): no_op,
                     TaskType.process_data: no_op

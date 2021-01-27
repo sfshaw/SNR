@@ -1,10 +1,7 @@
-from snr_core.loop.loop_factory import LoopFactory
-from snr_core.loop.thread_loop import ThreadLoop
-from snr_core.node import Node
-from snr_core.runner.test_runner import SynchronusTestRunner
-from snr_core.test.utils.expector import Expectations, Expector
-from snr_core.test.utils.test_base import *
-from snr_core.test.utils.timeout_loop import TimeoutLoopFactory
+
+from snr_core.base import *
+from snr_core.test.utils.timeout_loop import (FAST_TEST_TIMEOUT_MS,
+                                              TimeoutLoopFactory)
 from snr_core.utils.utils import no_op
 
 
@@ -46,7 +43,7 @@ class TestLoop(SNRTestBase):
         with Expector(expectations, self) as expector:
             config = self.get_config([
                 LUTFactory(expector),
-                TimeoutLoopFactory(0.1)
+                TimeoutLoopFactory(ms=FAST_TEST_TIMEOUT_MS)
             ])
             runner = SynchronusTestRunner(config)
             runner.run()

@@ -3,10 +3,7 @@ import socket
 import sys
 from socket import socket as Socket
 
-from snr_core.datastore.page import Page
-from snr_core.loop.loop_factory import LoopFactory
-from snr_core.loop.thread_loop import ThreadLoop
-from snr_core.node import Node
+from snr_core.base import *
 
 
 class CommandReceiver(ThreadLoop):

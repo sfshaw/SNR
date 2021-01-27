@@ -1,9 +1,9 @@
 from __future__ import annotations
+from snr_core.context.context import Context
 
 from threading import Event, Thread
 from typing import Callable
 
-from snr_core.loop.loop_base import LoopBase
 from snr_core.loop.loop_factory import LoopFactory
 from snr_core.node import Node
 from snr_core.utils.utils import no_op
@@ -12,7 +12,7 @@ DEFAULT_TICK_RATE = 24
 JOIN_TIMEOUT = None
 
 
-class ThreadLoop(LoopBase):
+class ThreadLoop(Context):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An
@@ -30,7 +30,7 @@ class ThreadLoop(LoopBase):
                  terminate: Callable[[], None] = no_op,
                  tick_rate_hz: float = DEFAULT_TICK_RATE
                  ) -> None:
-        super().__init__(parent, name)
+        super().__init__(name, parent)
         self.parent = parent
         self.setup = setup
         self.loop_handler = loop_handler

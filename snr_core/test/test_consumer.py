@@ -2,9 +2,7 @@
 from threading import Lock
 from time import sleep
 
-from snr_core.test.utils.test_base import *
-from snr_core.utils.consumer import Consumer
-from snr_core.utils.utils import no_op
+from snr_core.base import *
 
 SLEEP_TIME_S = 0.0001
 

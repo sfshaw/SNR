@@ -1,16 +1,17 @@
 from typing import Optional
 
-from snr_core.config import Config, Role
+from snr_core.config import Config
+from snr_core.modes import Role
 from snr_core.node import Node
-from snr_core.runner import Runner
 
 
-class SynchronousRunner(Runner):
+class SynchronousRunner:
 
     def __init__(self, role: Role, config: Config):
-        super().__init__(role, config)
+        self.role = role
+        self.config = config
 
-    def run(self):
+    def run(self) -> None:
         context = self.config.root_context("synchronous_runner")
         node: Optional[Node] = None
         try:

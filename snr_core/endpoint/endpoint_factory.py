@@ -1,31 +1,21 @@
-from snr_core.endpoint.endpoint import EndpointBase
-from snr_core.factory.factory_base import FactoryBase
+import importlib
+from typing import Optional
+
+from snr_core.endpoint.endpoint_protocol import EndpointProtocol
+from snr_core.factory.factory_protocol import FactoryProtocol
 from snr_core.node import Node
 
 
-class EndpointFactory(FactoryBase):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+class EndpointFactory(FactoryProtocol):
+    def __init__(self,
+                 child_module: Optional[importlib.types.ModuleType],
+                 name: str) -> None:
+        self.name = name
+        self.child_module = child_module
 
-    def get(self, parent: Node) -> EndpointBase:
+    def get(self, parent: Node) -> EndpointProtocol:
         raise NotImplementedError
 
     def reload(self) -> None:
-        # Stub for reloadable endpoints
-        pass
-
-
-"""Example factory that might be implemented for an endpoint
-"""
-
-# from snr import *
-#
-# import my_endpoint
-#
-# class FactoryTemplate(EndpointFactory):
-#     def __init__(self, stuff: str) -> None:
-#         super().__init__("my_endpoint_factory")
-#         self.stuff = stuff
-#
-#     def get(self, parent: Node) -> Endpoint:
-#         return my_endpoint.MyEndpoint(self, parent, self.stuff)
+        if self.child_module:
+            importlib.reload(self.child_module)

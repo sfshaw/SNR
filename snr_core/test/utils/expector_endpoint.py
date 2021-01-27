@@ -1,24 +1,27 @@
-from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId
+from snr_core.base import *
 from snr_core.test.utils.expector import Expector
 
 
 class ExpectorEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent_node: Node,
+                 parent: Node,
                  expector: Expector
                  ) -> None:
         task_handlers = {}
         for key in expector.expectations:
             task_handlers[key] = self.call
         super().__init__(factory,
-                         parent_node,
+                         parent,
                          "expector",
                          task_handlers=task_handlers)
         self.expector = expector
+
+    def start(self) -> None:
+        pass
+
+    def terminate(self) -> None:
+        pass
 
     def call(self, task: Task, key: TaskId) -> SomeTasks:
         self.dbg(f"Expector called for: {key}")
@@ -28,10 +31,10 @@ class ExpectorEndpoint(Endpoint):
 
 class ExpectorEndpointFactory(EndpointFactory):
     def __init__(self, expector: Expector):
-        super().__init__("Ping test factory")
+        super().__init__(None, "Ping test factory")
         self.expector = expector
 
-    def get(self, parent: Node) -> Endpoint:
+    def get(self, parent: Node) -> EndpointProtocol:
         return ExpectorEndpoint(self,
                                 parent,
                                 self.expector)

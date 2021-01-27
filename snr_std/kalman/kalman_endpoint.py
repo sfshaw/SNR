@@ -1,7 +1,5 @@
-from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId, TaskType
+
+from snr_core.base import *
 
 
 class KalmanEndpoint(Endpoint):

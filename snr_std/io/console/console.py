@@ -5,8 +5,7 @@ from sys import stdin, stdout
 from threading import Event, Thread
 from typing import List, Optional, Tuple
 
-from snr_core.datastore.page import Page
-from snr_core.utils.sockets.tcp_connection import TCPConnection
+from snr_core.base import *
 
 PROMPT = "> "
 

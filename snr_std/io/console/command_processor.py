@@ -1,10 +1,6 @@
 from typing import Callable, Dict, List
 
-from snr_core import task
-from snr_core.endpoint.endpoint import Endpoint
-from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId, TaskType
+from snr_core.base import *
 
 Command = Callable[[List[str]], SomeTasks]
 
@@ -29,7 +25,7 @@ class CommandProcessor(Endpoint):
 
     def process_command(self, cmd_task: Task, key: TaskId) -> SomeTasks:
         args: List[str] = cmd_task.val_list
-        self.dbg("Processing command: {}", [str(args)])
+        self.dbg("Processing command: %s", args)
         if args:
             command = self.commands.get(args[0])
             if command:
@@ -48,8 +44,7 @@ class CommandProcessor(Endpoint):
         if len(args) == 1:
             return task.reload(args[1])
         else:
-            self.warn("Invalid reload args: {}", [args])
-            self.debugger.flush()
+            self.warn("Invalid reload args: %s", args)
 
     def cmd_list(self, args: List[str]) -> SomeTasks:
         options = {

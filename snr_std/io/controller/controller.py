@@ -7,22 +7,21 @@ import random
 from typing import Any, Dict, Tuple, Union
 
 import pygame
-from snr_core.endpoint.thread_endpoint import ThreadEndpoint
-from snr_core.endpoint.factory import FactoryBase
-from snr_core.node import Node
+from snr_core.base import *
 
 
-class Controller(ThreadEndpoint):
+class Controller(ThreadLoop):
     def __init__(self,
-                 factory: FactoryBase,
+                 factory: LoopFactory,
                  parent: Node,
                  name: str
                  ) -> None:
-        super().__init__(factory,
-                         parent,
-                         name,
-                         self.loop_handler,
-                         parent.settings.CONTROLLER_INIT_TICK_RATE)
+        super().__init__(
+            factory,
+            parent,
+            name,
+            self.loop_handler,
+            tick_rate_hz=parent.settings.CONTROLLER_INIT_TICK_RATE)
 
         if not self.settings.USE_CONTROLLER:
             self.dbg("controller", "Controller disabled by self.settings")
@@ -40,7 +39,7 @@ class Controller(ThreadEndpoint):
         self.joystick_data = {}
 
     def store_data(self, data: Dict[str, Any]):
-        self.parent_node.store_data(self.name, data)
+        self.parent.store_data(self.name, data)
 
     def setup(self) -> None:
         if self.settings.SIMULATE_INPUT:

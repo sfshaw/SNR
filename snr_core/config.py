@@ -1,20 +1,8 @@
-from enum import Enum
-from typing import Callable, Dict, List
+
+from snr_core.modes import Components, ComponentsByRole, Mode
+from snr_core.endpoint.node_core_factory import NodeCoreFactory
 
 from snr_core.context.root_context import RootContext
-from snr_core.factory.factory_base import FactoryBase
-
-
-class Mode(Enum):
-    DEBUG = "debug"
-    DEPLOYED = "deployed"
-    TEST = "test"
-
-
-Role = str
-Components = List[FactoryBase]
-ComponentsByRole = Dict[Role, Components]
-ComponentsGetter = Callable[[str], ComponentsByRole]
 
 
 class Config:
@@ -28,7 +16,9 @@ class Config:
             raise Exception("No factories provided")
 
     def get(self, role: str) -> Components:
-        return self.factories[role]
+        factories = self.factories[role]
+        factories.append(NodeCoreFactory())
+        return factories
 
     def root_context(self,
                      name: str

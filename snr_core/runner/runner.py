@@ -1,16 +1,13 @@
 
-from typing import Any
+from typing import Protocol
 
-from snr_core.config import Config, Role
+from snr_core.config import Config
+from snr_core.modes import Role
 
 
-class Runner():
+class Runner(Protocol):
+    role: Role
+    config: Config
 
-    def __init__(self,
-                 role: Role,
-                 config: Config) -> None:
-        self.role = role
-        self.config = config
-
-    def run(self) -> Any:
-        raise NotImplementedError
+    def run(self) -> None:
+        ...
