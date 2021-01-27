@@ -7,7 +7,7 @@ from snr_core.test.utils.expector_endpoint import ExpectorEndpointFactory
 class PingTestEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent_node: Node,
+                 parent_node: NodeProtocol,
                  name: str):
         super().__init__(factory,
                          parent_node,
@@ -43,7 +43,7 @@ class PingTestFactory(EndpointFactory):
     def __init__(self):
         super().__init__(None, "Ping test factory")
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return PingTestEndpoint(self,
                                 parent,
                                 "ping_test_endpoint")
