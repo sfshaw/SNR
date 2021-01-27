@@ -40,7 +40,7 @@ install: check
 
 t: test
 test: check
-	$(PYTHON) -m unittest
+	$(PYTHON) -m unittest -v
 
 ta: test_all
 test_all: check
