@@ -6,9 +6,12 @@ from dataclasses_json import DataClassJsonMixin
 MAX_PRINTABLE_DATA_LEN = 60
 
 
+DataKey = str
+
+
 @dataclass
 class Page(DataClassJsonMixin):
-    key: str
+    key: DataKey
     data: Any
     origin: str
     created_at: float

@@ -3,7 +3,7 @@ Attempts to document propper usage of such functions
 """
 
 import sys
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List
 
 
 def print_usage() -> None:

@@ -9,7 +9,7 @@ from snr_core.base import *
 class CommandReceiver(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  port: int
                  ) -> None:

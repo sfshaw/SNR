@@ -2,13 +2,14 @@ import unittest
 from sys import stdout
 from typing import List, Optional
 
-from snr_core.config import Config, Mode
+from snr_core.config import Config
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.factory.factory_protocol import FactoryProtocol
+from snr_core.protocols import *
 from snr_core.runner.test_runner import SynchronusTestRunner
 from snr_core.test.utils.expector import Expectations, Expector
 from snr_core.test.utils.temp_file import TempFile
+from snr_types import *
 
 
 class SNRTestBase(unittest.TestCase):
@@ -17,6 +18,9 @@ class SNRTestBase(unittest.TestCase):
         stdout.flush()
         self.test_name = self.id().split(".")[-1]
         self.root_context = RootContext(self.test_name)
+
+    def tearDown(self) -> None:
+        pass
 
     def context(self):
         return Context(self.id(), self.root_context)

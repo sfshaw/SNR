@@ -1,12 +1,9 @@
-from __future__ import annotations
-
 from typing import Any
 
 from snr_core.endpoint.endpoint import Endpoint
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.node import Node
-from snr_core.task import SomeTasks, Task, TaskId, TaskType
+from snr_core.protocols import *
+from snr_types import*
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
@@ -16,7 +13,7 @@ TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 class NodeCore(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node
+                 parent: NodeProtocol
                  ) -> None:
         super().__init__(factory,
                          parent,

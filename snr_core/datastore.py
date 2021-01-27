@@ -1,40 +1,39 @@
 from typing import Any, Callable, Dict, Optional
 
+from snr_types import *
+
 from snr_core.context.context import Context
-from snr_core.datastore.page import Page
-from snr_core.task import Task
-from snr_core import task
+from snr_core.protocols import *
 from snr_core.utils.consumer import Consumer
 from snr_core.utils.timer import Timer
 from snr_core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.0005
-JOIN_TIMEOUT = 0.5
 
-DataDict = Dict[str, Page]
+DataDict = Dict[DataKey, Page]
 
 
 class Datastore(Context):
     def __init__(self,
-                 parent_node: Any,
+                 parent: NodeProtocol,
                  task_scheduler: Callable[[Task], None] = no_op
                  ) -> None:
-        super().__init__("datastore", parent_node)
+        super().__init__("datastore", parent)
 
-        self.parent_node = parent_node
+        self.parent = parent
         self.timer = Timer()
         self.data_dict: DataDict = {}
         self.schedule_task = task_scheduler
 
         self.inbound_consumer = Consumer[Page](
-            parent_node.name + "_dds_inbound",
+            parent.name + "_dds_inbound",
             self.write,
             SLEEP_TIME_S)
         self.info("Datastore initialized")
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
-        page = Page(key, value, self.parent_node.name, created_at, process)
+        page = Page(key, value, self.parent.name, created_at, process)
         self.inbound_store(page)
 
     def get_data(self, key: str) -> Optional[Any]:
@@ -56,9 +55,9 @@ class Datastore(Context):
 
     def dump_data(self) -> None:
         for page in self.data_dict.values():
-            self.dump("{}", [page])
+            self.dump("%s", page)
 
-    def write(self, page: Page):
+    def write(self, page: Page) -> None:
         self.data_dict[page.key] = page
         if page.process:
             t = task.process_data(page.key)
@@ -66,9 +65,9 @@ class Datastore(Context):
 
     def set_terminate_flag(self, reason: str):
         self.inbound_consumer.set_terminate_flag()
-        self.info("Preparing to terminate datastore for {}", [reason])
+        self.info("Preparing to terminate datastore for %s", reason)
 
-    def join(self):
+    def join(self) -> None:
         """Shutdown datastore threads
         """
         self.set_terminate_flag("join")

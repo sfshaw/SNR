@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
 from snr_core.base import *
+from snr_core.datastore import Datastore
 from snr_core.endpoint.node_core_factory import NodeCoreFactory
 from snr_core.test.utils.dummy_endpoint import DummyEndpointFactory
 
@@ -38,15 +39,21 @@ class TestNode(SNRTestBase):
         root_context = RootContext("test")
         node = None
         try:
-            node = Node(root_context, "test", Mode.TEST, [
-                NodeCoreFactory(),
-                DummyEndpointFactory("dummy_endpoint_1", {
-                    (TaskType.event, "by_type_and_name"): no_op,
-                    TaskType.process_data: no_op
-                }),
-                DummyEndpointFactory("dummy_endpoint_2", {
-                    TaskType.process_data: no_op
-                })])
+            node = Node(root_context,
+                        "test",
+                        Mode.TEST,
+                        [
+                            NodeCoreFactory(),
+                            DummyEndpointFactory("dummy_endpoint_1", {
+                                (TaskType.event, "by_type_and_name"): no_op,
+                                TaskType.process_data: no_op
+                            }),
+                            DummyEndpointFactory("dummy_endpoint_2", {
+                                TaskType.process_data: no_op
+                            }),
+                        ],
+                        lambda n, s: Datastore(n, s),
+                        )
 
             handlers = node.get_task_handlers(task.terminate("test"))
             self.assertEqual(1, len(handlers))

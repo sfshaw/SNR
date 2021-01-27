@@ -8,7 +8,7 @@ from snr_core.utils.utils import no_op
 class LoopUnderTest(ThreadLoop):
     def __init__(self,
                  fac: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  expector: Expector
                  ) -> None:
         super().__init__(fac, parent, "test_loop",
@@ -29,7 +29,7 @@ class LUTFactory(LoopFactory):
         super().__init__("test_factory")
         self.expector = expector
 
-    def get(self, parent: Node) -> ThreadLoop:
+    def get(self, parent: NodeProtocol) -> ThreadLoop:
         return LoopUnderTest(self, parent, self.expector)
 
 

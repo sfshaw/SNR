@@ -1,7 +1,5 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
-from __future__ import annotations
-
 from enum import Enum
 from typing import Any, Callable, Dict, List, Tuple, Union
 
@@ -26,7 +24,7 @@ class Task:
     def __init__(self,
                  type: TaskType,
                  name: str,
-                 priority: TaskPriority = TaskPriority.normal,  # unused
+                 priority: TaskPriority = TaskPriority.normal,
                  val_list: List[Any] = []
                  ) -> None:
         self.type = type
@@ -72,3 +70,4 @@ SomeTasks = Union[None, Task, List[Task]]
 TaskHandler = Callable[[Task, TaskId], SomeTasks]
 TaskHandlerMap = Dict[TaskId, TaskHandler]
 TaskSource = Callable[[], SomeTasks]
+TaskScheduler = Callable[[Task], None]

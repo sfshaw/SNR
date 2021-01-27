@@ -1,8 +1,9 @@
 from queue import Queue
 from typing import List, Union
 
+from snr_types import *
+
 from snr_core.context.context import Context
-from snr_core.task import SomeTasks, Task, TaskSource
 
 
 class TaskQueue(Context):

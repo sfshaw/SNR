@@ -8,7 +8,7 @@ Command = Callable[[List[str]], SomeTasks]
 class CommandProcessor(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node
+                 parent: NodeProtocol,
                  ) -> None:
         super().__init__(factory,
                          parent,

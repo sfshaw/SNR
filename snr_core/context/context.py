@@ -1,19 +1,16 @@
-from __future__ import annotations
-
 import logging
 import time
-from typing import Any, Callable, List, Optional, TypeVar, Union
+from typing import Any, Callable, List, Optional, TypeVar
 
-from snr_core.context.root_context import RootContext
-from snr_core.settings import Settings
+from snr_core.protocols import *
 from snr_core.utils.profiler import Profiler
 
 
-class Context:
+class Context(SettingsProvider):
 
     def __init__(self,
                  name: str,
-                 parent: Union[RootContext, Context],
+                 parent: SettingsProvider,
                  profiler: Optional[Profiler] = None
                  ) -> None:
         self.name = name

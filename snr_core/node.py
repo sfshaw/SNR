@@ -1,18 +1,13 @@
-from __future__ import annotations
-
 import functools
 import operator
 from threading import Event
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from snr_types import *
 
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.datastore.datastore import Datastore, Page
-from snr_core.endpoint.endpoint_protocol import EndpointProtocol
-from snr_core.factory.factory_protocol import FactoryProtocol
-from snr_core.loop.loop_protocol import LoopProtocol
-from snr_core.modes import Mode, Role
-from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
+from snr_core.protocols import *
 from snr_core.task_queue import TaskQueue
 from snr_core.utils.profiler import Profiler
 
@@ -24,23 +19,25 @@ class Node(Context):
                  parent: RootContext,
                  role: Role,
                  mode: Mode,
-                 factories: List[FactoryProtocol]
+                 factories: List[FactoryProtocol],
+                 datastore_constructor: Callable[[NodeProtocol, TaskScheduler],
+                                                 DatastoreProtocol],
                  ) -> None:
         super().__init__(role + "_node",
                          parent,
                          Profiler(parent.settings))
         self.role = role
         self.mode = mode
-
+        self.context = self
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
-        self.__datastore = Datastore(self, self.schedule)
-        self.endpoints, self.loops = self.__get_components(factories)
+        self.__datastore = datastore_constructor(self, self.schedule)
+        self.endpoints, self.loops = self.get_components(factories)
         self.__terminate_flag = Event()
         self.is_terminated = Event()
         self.info("Initialized with %s endpoints",
                   len(self.endpoints))
 
-    def loop(self):
+    def loop(self) -> None:
         for endpoint in self.endpoints.values():
             endpoint.start()
         for loop in self.loops.values():
@@ -57,7 +54,7 @@ class Node(Context):
         self.dbg("Node exiting main loop")
         self.terminate()
 
-    def __get_new_tasks(self):
+    def __get_new_tasks(self) -> SomeTasks:
         """Retrieve tasks from endpoints and queue them.
         """
         new_tasks: List[Task] = []
@@ -86,10 +83,7 @@ class Node(Context):
         else:
             return result
 
-    def __execute_task(self, t: Task):
-        if not t:
-            self.dbg("execute_task", "Tried to execute None")
-            return
+    def __execute_task(self, t: Task) -> None:
         handlers = self.get_task_handlers(t)
         self.dbg("Got %s handlers for %s task",
                  len(handlers), t.name)
@@ -101,20 +95,19 @@ class Node(Context):
                  len(new_tasks))
         if new_tasks:
             self.__task_queue.schedule(new_tasks)
-        # self.__datastore.flush()
 
     def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
         return list(filter(None, map(lambda e: e.get_task_handler(t),
                                      self.endpoints.values())))
 
-    def set_terminate_flag(self, reason: str):
+    def set_terminate_flag(self, reason: str) -> None:
         self.info("Setting terminate flag for: %s", reason)
         self.__datastore.store("node_exit_reason", reason, False)
         self.__datastore.flush()
         self.__terminate_flag.set()
         map(lambda l: l.set_terminate_flag(), self.loops.values())
 
-    def terminate(self):
+    def terminate(self) -> None:
         """Execute actions needed to deconstruct a Node.
         Terminate is executed the main thread or process of an object.
         Conversely, join may be called from an external context such as
@@ -140,10 +133,10 @@ class Node(Context):
         self.is_terminated.set()
         self.info("Node %s finished terminating", self.role)
 
-    def __get_components(self,
-                         factories: List[FactoryProtocol]
-                         ) -> Tuple[Dict[str, EndpointProtocol],
-                                    Dict[str, LoopProtocol]]:
+    def get_components(self,
+                       factories: List[FactoryProtocol]
+                       ) -> Tuple[Dict[str, EndpointProtocol],
+                                  Dict[str, LoopProtocol]]:
         self.info("Adding components from %s factories", len(factories))
         endpoints: Dict[str, EndpointProtocol] = {}
         loops: Dict[str, LoopProtocol] = {}
