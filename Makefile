@@ -1,4 +1,5 @@
 CPYTHON=python3
+CPYTHON38=python3.8
 CPYTHON39=python3.9
 PYPY=pypy3
 PYTHON=$(CPYTHON)
@@ -39,7 +40,12 @@ install: check
 
 t: test
 test: check
-	$(PYTHON) -m unittest -v
+	$(PYTHON) -m unittest
+
+test_all: check
+	$(PYTHON) -m unittest
+	$(CPYTHON38) -m unittest
+	$(CPYTHON39) -m unittest
 
 clean:
 	$(PY_SETUP) clean
