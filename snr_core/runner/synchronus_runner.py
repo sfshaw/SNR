@@ -1,3 +1,4 @@
+from snr_core.datastore.datastore import Datastore
 from typing import Optional
 
 from snr_core.config import Config
@@ -18,7 +19,8 @@ class SynchronousRunner:
             node = Node(context,
                         self.role,
                         self.config.mode,
-                        self.config.get(self.role))
+                        self.config.get(self.role),
+                        lambda n, s: Datastore(n, s))
             node.loop()  # Blocking loop
         except KeyboardInterrupt:
             if node:

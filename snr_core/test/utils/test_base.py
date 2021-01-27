@@ -18,6 +18,9 @@ class SNRTestBase(unittest.TestCase):
         self.test_name = self.id().split(".")[-1]
         self.root_context = RootContext(self.test_name)
 
+    def tearDown(self) -> None:
+        pass
+
     def context(self):
         return Context(self.id(), self.root_context)
 

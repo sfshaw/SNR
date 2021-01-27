@@ -43,7 +43,6 @@ test: check
 	$(PYTHON) -m unittest
 
 test_all: check
-	$(PYTHON) -m unittest
 	$(CPYTHON38) -m unittest
 	$(CPYTHON39) -m unittest
 

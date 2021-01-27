@@ -1,19 +1,19 @@
-from __future__ import annotations
-
 import functools
 import operator
 from threading import Event
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from snr_core.context.context import Context
 from snr_core.context.root_context import RootContext
-from snr_core.datastore.datastore import Datastore, Page
+from snr_core.datastore.datastore_protocol import DatastoreProtocol
+from snr_core.datastore.page import Page
 from snr_core.endpoint.endpoint_protocol import EndpointProtocol
 from snr_core.factory.factory_protocol import FactoryProtocol
 from snr_core.loop.loop_protocol import LoopProtocol
 from snr_core.modes import Mode, Role
+from snr_core.node_protocol import NodeProtocol
 from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
-from snr_core.task_queue import TaskQueue
+from snr_core.task_queue import TaskQueue, TaskScheduler
 from snr_core.utils.profiler import Profiler
 
 SLEEP_TIME = 0.001
@@ -24,16 +24,18 @@ class Node(Context):
                  parent: RootContext,
                  role: Role,
                  mode: Mode,
-                 factories: List[FactoryProtocol]
+                 factories: List[FactoryProtocol],
+                 datastore_constructor: Callable[[NodeProtocol, TaskScheduler],
+                                                 DatastoreProtocol],
                  ) -> None:
         super().__init__(role + "_node",
                          parent,
-                         Profiler(parent.settings))
+                         Profiler(parent.get_settings))
         self.role = role
         self.mode = mode
-
+        self.context = self
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
-        self.__datastore = Datastore(self, self.schedule)
+        self.__datastore = datastore_constructor(self, self.schedule)
         self.endpoints, self.loops = self.__get_components(factories)
         self.__terminate_flag = Event()
         self.is_terminated = Event()
@@ -101,7 +103,6 @@ class Node(Context):
                  len(new_tasks))
         if new_tasks:
             self.__task_queue.schedule(new_tasks)
-        # self.__datastore.flush()
 
     def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
         return list(filter(None, map(lambda e: e.get_task_handler(t),
