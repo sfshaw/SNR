@@ -10,7 +10,7 @@ class RecorderFactory(EndpointFactory):
         self.filename = filename
         self.data_names = data_names
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return recorder_endpoint.RecorderEndpoint(self,
                                                   parent,
                                                   "recorder",

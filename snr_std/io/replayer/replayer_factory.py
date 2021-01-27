@@ -12,7 +12,7 @@ class ReplayerFactory(LoopFactory):
         self.input_filename = input_filename
         self.exit = exit
 
-    def get(self, parent: Node) -> LoopProtocol:
+    def get(self, parent: NodeProtocol) -> LoopProtocol:
         return replayer.Replayer(self,
                                  parent,
                                  self.input_filename,

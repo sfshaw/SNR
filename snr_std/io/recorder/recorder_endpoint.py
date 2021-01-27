@@ -6,7 +6,7 @@ from snr_core.base import *
 class RecorderEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  filename: str,
                  data_names: List[str]):

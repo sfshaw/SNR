@@ -7,7 +7,7 @@ class Replayer(ThreadLoop):
 
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  filename: str,
                  exit_when_done: bool
                  ) -> None:

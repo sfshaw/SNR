@@ -8,11 +8,9 @@ import struct
 
 import cv2
 import numpy as np
-
-from snr.cv import find_plants
-from snr.cv.boxes import apply_boxes
-from snr.node import Node
-from snr.proc_endpoint import ProcEndpoint
+from snr_core.base import *
+from snr_std.cv import find_plants
+from snr_std.cv.boxes import apply_boxes
 
 HOST = "localhost"
 
@@ -30,9 +28,13 @@ class VideoReceiver(ProcEndpoint):
     Shows video received over IP in window.
     """
 
-    def __init__(self, parent: Node, name: str,
-                 receiver_port: int):
-        super().__init__(parent, name,
+    def __init__(self,
+                 factory: EndpointFactory,
+                 parent: NodeProtocol,
+                 name: str,
+                 receiver_port: int
+                 ) -> None:
+        super().__init__(factory, parent, name,
                          self.init_receiver, self.monitor_stream,
                          TICK_RATE_HZ)
         self.receiver_port = receiver_port

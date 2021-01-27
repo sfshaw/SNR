@@ -1,27 +1,26 @@
 import pickle
 import socket
 from socket import socket as Socket
-from typing import Any, Optional
+from typing import Optional
 
-from snr.datastore.page import InboundStoreFn, Page
-from snr.comms.sockets.config import SocketsConfig
-from snr.endpoint.thread_endpoint import ThreadEndpoint
-from snr.node import Node
+from snr_core.base import *
+from snr_std.comms.sockets.config import SocketsConfig
 
 
-class SocketsServer(ThreadEndpoint):
+class SocketsServer(ThreadLoop):
     """Asynchronous sockets server which sends commands to robot
     """
 
     def __init__(self,
-                 factory: Any,
-                 parent: Node,
+                 factory: LoopFactory,
+                 parent: NodeProtocol,
                  config: SocketsConfig,
                  inbound_store: InboundStoreFn
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         name="dds_sockets_server",
+                         "sockets_server",
+                         self.loop_handler,
                          tick_rate_hz=0)
         self.config: SocketsConfig = config
         self.inbound_store: InboundStoreFn = inbound_store

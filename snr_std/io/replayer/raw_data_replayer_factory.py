@@ -13,7 +13,7 @@ class RawDataReplayerFactory(LoopFactory):
         self.output_data_name = output_data_name
         self.exit = exit
 
-    def get(self, parent: Node) -> ThreadLoop:
+    def get(self, parent: NodeProtocol) -> ThreadLoop:
         return raw_data_replayer.RawDataReplayer(self,
                                                  parent,
                                                  self.input_filename,

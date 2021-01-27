@@ -7,12 +7,10 @@ import sys
 from sys import platform
 from typing import Callable, List, Optional
 
-from serial.serialutil import SerialBase
-
-from snr_core.context.context import Context
-from snr_core.utils.utils import attempt
-
 import serial
+from serial.serialutil import SerialBase
+from snr_core.base import *
+from snr_core.utils.utils import attempt
 
 
 class SerialFinder(Context):
@@ -31,7 +29,7 @@ class SerialFinder(Context):
         for serial ports
         """
         attempt(self.try_find_port,
-                self.get_settings.SERIAL_MAX_ATTEMPTS,
+                self.settings.SERIAL_MAX_ATTEMPTS,
                 self.fail_once,
                 self.failure)
 
@@ -57,13 +55,13 @@ class SerialFinder(Context):
 
     def failure(self,  e: Exception) -> None:
         self.dbg("Could not find serial port after {} attempts: {}",
-                 [self.get_settings.SERIAL_MAX_ATTEMPTS, e])
+                 [self.settings.SERIAL_MAX_ATTEMPTS, e])
         exit("Could not find port")
 
     def fail_once(self, e: Exception) -> None:
         self.dbg("Failed to find serial port, trying again.")
         # Wait a second before retrying
-        self.sleep(self.get_settings.SERIAL_RETRY_WAIT)
+        self.sleep(self.settings.SERIAL_RETRY_WAIT)
 
         # return port
 

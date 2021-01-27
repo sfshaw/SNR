@@ -5,7 +5,7 @@ from snr_core.base import *
 class KalmanEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  input_data_name: str,
                  output_data_name: str

@@ -1,19 +1,17 @@
-from snr.endpoint.factory import EndpointFactory
 from typing import Any, Dict
 
-from snr.camera.config import CameraConfig, ManagerRole
-from snr.endpoint.endpoint import SynchronousEndpoint
-from snr.node import Node
-from snr.utils.utils import no_op
+from snr_core.base import *
+from snr_std.camera.config import CameraConfig, ManagerRole
+from snr_std.camera.factory import VideoReceiverFactory, VideoSourceFactory
 
 INITIAL_PORT = 8000
 CAMERA_MANAGER_TICK_HZ = 1
 
 
-class CameraManager(SynchronousEndpoint):
+class CameraManager(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  role: ManagerRole,
                  camera_map: Dict[str, int]
@@ -44,7 +42,6 @@ class CameraManager(SynchronousEndpoint):
         self.setup_handler()
 
     def setup_handler(self):
-        from snr.camera.factory import VideoReceiverFactory, VideoSourceFactory
         fac: Any = no_op
         if self.role is ManagerRole.Source:
             fac = VideoSourceFactory
@@ -57,7 +54,7 @@ class CameraManager(SynchronousEndpoint):
                                   self.next_port(),
                                   self.camera_map[camera_name])
             f = fac(config)
-            cam = f.get(self, self.parent_node)
+            cam = f.get(self, self.parent)
             self.cameras.append(cam)
             self.dbg("Created camera {}", [cam])
 

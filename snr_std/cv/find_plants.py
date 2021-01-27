@@ -3,6 +3,8 @@ from typing import List, Tuple
 import cv2
 import numpy as np
 
+from snr_std.cv.boxes import Rect
+
 # Minimim area threshold that is boxed
 AREA_THRESHHOLD = 1000
 
@@ -13,7 +15,7 @@ color = green
 # Function that takes in a image and draws boxes around suspicious plants
 
 
-def box_image(image: np.array) -> List[Tuple[int, int, int, int]]:
+def box_image(image: np.array) -> List[Rect]:
     """Sample CV method courtesy of the BIG_J
     """
     # Converting image from BGR to HSV color space

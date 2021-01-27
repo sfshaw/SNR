@@ -13,7 +13,7 @@ class SerialConnectionFactory(EndpointFactory):
         # TODO: Support updating Arduino firmware on startup
         self.firmware_path = firmware_path
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return serial_connection.SerialConnection(self,
                                                   parent,
                                                   "Serial Connection",

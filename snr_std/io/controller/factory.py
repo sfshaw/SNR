@@ -7,5 +7,7 @@ class ControllerFactory(LoopFactory):
         super().__init__("Controller Factory")
         self.output_data_name = output_data_name
 
-    def get(self, parent: Node) -> LoopProtocol:
-        return controller.Controller(self, parent, self.output_data_name)
+    def get(self, parent: NodeProtocol) -> LoopProtocol:
+        return controller.Controller(self,
+                                     parent,
+                                     self.output_data_name)

@@ -1,10 +1,16 @@
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import cv2
 
+Rect = Tuple[int, int, int, int]
 
-def apply_boxes(frame: np.array, rects: List, color, thickness) -> np.array:
+
+def apply_boxes(frame: np.array,
+                rects: List[Rect],
+                color,
+                thickness: int,
+                ) -> np.array:
     # Demo rectangles
     for r in rects:
         x, y, w, h = r

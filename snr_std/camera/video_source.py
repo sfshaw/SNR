@@ -7,8 +7,7 @@ import socket
 import struct
 
 import cv2
-from snr.endpoint.proc_endpoint import ProcEndpoint
-from snr.node import Node
+from snr_core.base import *
 
 # IP Address of the computer (Find using $ifconfig)
 # IP_ADDRESS = "10.155.115.129"
@@ -26,11 +25,17 @@ class VideoSource(ProcEndpoint):
     """USB camera video source for robot. Serves video over IP.
     """
 
-    def __init__(self, parent: Node, name: str,
-                 receiver_ip: str, receiver_port: int, camera_num: int):
+    def __init__(self,
+                 factory: EndpointFactory,
+                 parent: NodeProtocol,
+                 name: str,
+                 receiver_ip: str,
+                 receiver_port: int,
+                 camera_num: int
+                 ) -> None:
         self.task_producers = []
         self.task_handlers = {}
-        super().__init__(None,
+        super().__init__(factory,
                          parent,
                          name,
                          TICK_RATE_HZ)

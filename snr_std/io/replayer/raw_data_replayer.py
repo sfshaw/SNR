@@ -43,7 +43,7 @@ class RawReader(Context):
 class RawDataReplayer(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  filename: str,
                  data_name: str,
                  exit_when_done: bool

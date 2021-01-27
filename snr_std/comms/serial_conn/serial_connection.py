@@ -17,7 +17,7 @@ class SerialConnection(Endpoint):
     # Default port arg finds a serial port for the arduino/Teensy
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str,
                  input: str,
                  ) -> None:
@@ -32,7 +32,7 @@ class SerialConnection(Endpoint):
                          })
         self.parent = parent
         self.serial_connection: Optional[SerialBase] = None
-        if self.get_settings.SIMULATE_SERIAL:
+        if self.settings.SIMULATE_SERIAL:
             self.simulated_bytes = None
             return
 
@@ -49,13 +49,13 @@ class SerialConnection(Endpoint):
 
         def failure(e: Exception) -> None:
             self.err("Could not open serial port after {} tries: {}",
-                     [self.get_settings.SERIAL_MAX_ATTEMPTS, e])
+                     [self.settings.SERIAL_MAX_ATTEMPTS, e])
             self.parent.schedule(
                 task.terminate("serial_error"))
 
         self.serial_connection = attempt(
             self.try_open_serial,
-            self.get_settings.SERIAL_MAX_ATTEMPTS,
+            self.settings.SERIAL_MAX_ATTEMPTS,
             fail_once,
             failure)
 
@@ -77,22 +77,22 @@ class SerialConnection(Endpoint):
         self.serial_port = port
 
     def try_open_serial(self) -> SerialBase:
-        if self.get_settings.SIMULATE_SERIAL:
+        if self.settings.SIMULATE_SERIAL:
             self.dbg("serial_sim",
                      "Not opening port", [])
             raise Exception("Not opening serial port if simulating")
-        self.sleep(self.get_settings.SERIAL_SETUP_WAIT_PRE)
+        self.sleep(self.settings.SERIAL_SETUP_WAIT_PRE)
         conn: SerialBase = serial.Serial(
             port=self.serial_port,
-            baudrate=self.get_settings.SERIAL_BAUD,
+            baudrate=self.settings.SERIAL_BAUD,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS,
-            timeout=self.get_settings.SERIAL_TIMEOUT)
+            timeout=self.settings.SERIAL_TIMEOUT)
         if conn.isOpen():
             self.info("Opened serial connection on {} at baud {}",
-                      [self.serial_port, self.get_settings.SERIAL_BAUD])
-            sleep(self.get_settings.SERIAL_SETUP_WAIT_POST)
+                      [self.serial_port, self.settings.SERIAL_BAUD])
+            sleep(self.settings.SERIAL_SETUP_WAIT_POST)
             waiting: int = conn.inWaiting()
             while waiting > 0:
                 if waiting > PACKET_SIZE:
@@ -150,7 +150,7 @@ class SerialConnection(Endpoint):
                  [expected_size])
         sent_bytes = 0
 
-        if self.get_settings.SIMULATE_SERIAL:
+        if self.settings.SIMULATE_SERIAL:
             self.dbg("Sending bytes {}", [data_bytes])
             self.simulated_bytes = data_bytes
             return
@@ -175,7 +175,7 @@ class SerialConnection(Endpoint):
     # Read in a packet from serial
     # TODO: ensure that this effectively recieves data over serial
     def read_packet(self) -> Union[Packet, None]:
-        if self.get_settings.SIMULATE_SERIAL:
+        if self.settings.SIMULATE_SERIAL:
             self.dbg("Receiving packet of simulated bytes")
             recv_bytes = self.simulated_bytes
         else:

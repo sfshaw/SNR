@@ -13,7 +13,7 @@ from snr_core.base import *
 class Controller(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: Node,
+                 parent: NodeProtocol,
                  name: str
                  ) -> None:
         super().__init__(
@@ -21,9 +21,9 @@ class Controller(ThreadLoop):
             parent,
             name,
             self.loop_handler,
-            tick_rate_hz=parent.get_settings.CONTROLLER_INIT_TICK_RATE)
+            tick_rate_hz=parent.settings.CONTROLLER_INIT_TICK_RATE)
 
-        if not self.get_settings.USE_CONTROLLER:
+        if not self.settings.USE_CONTROLLER:
             self.dbg("controller", "Controller disabled by self.settings")
             # This early return might break things
             return
@@ -35,14 +35,14 @@ class Controller(ThreadLoop):
         # Initial value is inverse of setting
         # Triggers zerod indicated whether the triggers no longer need to be
         # zeroed
-        self.triggers_zeroed = not self.get_settings.CONTROLLER_ZERO_TRIGGERS
+        self.triggers_zeroed = not self.settings.CONTROLLER_ZERO_TRIGGERS
         self.joystick_data = {}
 
     def store_data(self, data: Dict[str, Any]):
         self.parent.store_data(self.name, data)
 
     def setup(self) -> None:
-        if self.get_settings.SIMULATE_INPUT:
+        if self.settings.SIMULATE_INPUT:
             self.dbg("controller_event",
                      "Simulating input without pygame and XBox controller")
             self.triggers_zeroed = True
@@ -58,18 +58,18 @@ class Controller(ThreadLoop):
                       [num_controllers])
             print_controller_warning()
             # TODO: Handle pygame's segfault when the controller disconnects
-        elif self.get_settings.REQUIRE_CONTROLLER:
+        elif self.settings.REQUIRE_CONTROLLER:
             self.fatal("Controller required by settings, {} found",
                        [num_controllers])
             exit("Required XBox controller absent")
         else:
             self.err("Controller not found but not required, simulating input")
-            self.get_settings.SIMULATE_INPUT = True
+            self.settings.SIMULATE_INPUT = True
             return
 
     def loop_handler(self) -> None:
         joystick_data: Dict[str, Any] = {}
-        if self.get_settings.SIMULATE_INPUT:
+        if self.settings.SIMULATE_INPUT:
             self.dbg("Simulating input")
             joystick_data = self.simulate_input()
         else:
@@ -85,7 +85,7 @@ class Controller(ThreadLoop):
             except pygame.error as error:
                 self.err("Controller error: {}",
                          [error.__repr__()])
-                if not self.get_settings.REQUIRE_CONTROLLER:
+                if not self.settings.REQUIRE_CONTROLLER:
                     self.err("Optional controller missing, simulating input")
                     joystick_data = self.simulate_input()
                 else:
@@ -110,9 +110,9 @@ class Controller(ThreadLoop):
         left = data.get("trigger_left")
         right = data.get("trigger_right")
 
-        if ((left == 0) and (right == 0)) or self.get_settings.SIMULATE_INPUT:
+        if ((left == 0) and (right == 0)) or self.settings.SIMULATE_INPUT:
             self.triggers_zeroed = True
-            self.set_delay(self.get_settings.CONTROLLER_TICK_RATE)
+            self.set_delay(self.settings.CONTROLLER_TICK_RATE)
             self.info(
                 "Triggers successfully zeroed. Controller ready.")
             return data
@@ -135,7 +135,7 @@ class Controller(ThreadLoop):
         """Maps an individual KV pair to our controls
         """
         old_value = value
-        map_list = self.get_settings.control_mappings.get(key)
+        map_list = self.settings.control_mappings.get(key)
 
         if not isinstance(map_list, list):
             return key, value
@@ -198,7 +198,7 @@ class Controller(ThreadLoop):
         """Function run in separate thread to update control data
         Updates instance variable without using main thread CPU time
         """
-        if (not self.get_settings.USE_CONTROLLER) or self.get_settings.SIMULATE_INPUT:
+        if (not self.settings.USE_CONTROLLER) or self.settings.SIMULATE_INPUT:
             return {}
 
         pygame.event.get()
@@ -255,9 +255,9 @@ class Controller(ThreadLoop):
         # Close the window and quit.
         # If you forget this line, the program will 'hang'
         # on exit if running from IDLE.
-        if(not self.get_settings.SIMULATE_INPUT):
+        if(not self.settings.SIMULATE_INPUT):
             self.dbg("exiting pygame")
-            self.get_settings.USE_CONTROLLER = False
+            self.settings.USE_CONTROLLER = False
             pygame.quit()
             self.dbg("Exited pygame")
         else:
@@ -269,7 +269,7 @@ class Controller(ThreadLoop):
         """
         self.dbg("Simulating control input")
         sim_data = {}
-        for key in self.get_settings.control_mappings:
+        for key in self.settings.control_mappings:
             self.dbg("Simulating key: {}",
                      [key])
             sim_data[key] = random_val()

@@ -11,7 +11,7 @@ class KalmanFilterFactory(EndpointFactory):
         self.input_data_name = input_data_name
         self.output_data_name = output_data_name
 
-    def get(self, parent: Node) -> EndpointProtocol:
+    def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return kalman_endpoint.KalmanEndpoint(self,
                                               parent,
                                               "kalman_filter_endpoint",

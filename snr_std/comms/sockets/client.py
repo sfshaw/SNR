@@ -1,11 +1,8 @@
-
 import pickle
 import socket
 
-from snr.context.context import Context
-from snr.datastore.page import Page
-from snr.comms.sockets.config import SocketsConfig
-from snr.utils.utils import attempt
+from snr_core.base import *
+from snr_std.comms.sockets.config import SocketsConfig
 
 
 class SocketsClient(Context):
