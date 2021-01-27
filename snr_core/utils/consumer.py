@@ -1,6 +1,5 @@
 import logging
-from multiprocessing import Queue
-from queue import Empty
+from queue import Empty, Queue
 from threading import Event, Thread
 from time import sleep
 from typing import Callable, Generic, Optional, TypeVar
@@ -24,7 +23,7 @@ class Consumer(Thread, Generic[T]):
         self.log = logging.getLogger(self.name)
         self.action = action
         self.sleep_time = sleep_time
-        self.queue: Queue[T] = Queue()
+        self.queue: "Queue[T]" = Queue()
         self.__terminate_flag = Event()
         self.flushed = Event()
         self.flushed.set()
