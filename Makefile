@@ -9,6 +9,7 @@ PY_SETUP=$(PYTHON) $(SETUP_PY)
 
 BUILD_DIR=build
 DIST_DIR=dist
+EGG_INFO_DIR=SNR.egg-info
 SRC_DIR=snr
 TEST_DIR=$(SRC_DIR)/test
 
@@ -49,7 +50,8 @@ test_all: check
 
 clean:
 	$(PY_SETUP) clean
-	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR)
+	py3clean .
+	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
 
 py:
 	$(PYTHON)
