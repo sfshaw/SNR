@@ -1,9 +1,9 @@
 import importlib
 from typing import Optional
 
-from snr_core.protocol.endpoint_protocol import EndpointProtocol
-from snr_core.protocol.factory_protocol import FactoryProtocol
-from snr_core.protocol.node_protocol import NodeProtocol
+from snr_protocol.endpoint_protocol import EndpointProtocol
+from snr_protocol.factory_protocol import FactoryProtocol
+from snr_protocol.node_protocol import NodeProtocol
 
 
 class EndpointFactory(FactoryProtocol):

@@ -1,13 +1,12 @@
 from threading import Event
 from typing import Any, Dict, List, Optional, Protocol, Tuple
 
-from snr_core.datastore.page import Page
-from snr_core.modes import Mode, Role
-from snr_core.protocol.endpoint_protocol import EndpointProtocol
-from snr_core.protocol.loop_protocol import LoopProtocol
-from snr_core.protocol.settings_provider import SettingsProvider
-from snr_core.settings import Settings
-from snr_core.task import SomeTasks, Task, TaskHandler, TaskId
+from snr_types import *
+
+from snr_protocol.endpoint_protocol import EndpointProtocol
+from snr_protocol.factory_protocol import FactoryProtocol
+from snr_protocol.loop_protocol import LoopProtocol
+from snr_protocol.settings_provider import SettingsProvider
 
 
 class NodeProtocol(SettingsProvider, Protocol):
@@ -19,7 +18,7 @@ class NodeProtocol(SettingsProvider, Protocol):
     loops: Dict[str, LoopProtocol]
     is_terminated: Event
 
-    def loop(self):
+    def loop(self) -> None:
         ...
 
     def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
@@ -34,6 +33,12 @@ class NodeProtocol(SettingsProvider, Protocol):
         Conversely, join may be called from an external context such as
         another thread or process.
         """
+        ...
+
+    def get_components(self,
+                       factories: List[FactoryProtocol]
+                       ) -> Tuple[Dict[str, EndpointProtocol],
+                                  Dict[str, LoopProtocol]]:
         ...
 
     def schedule(self, t: SomeTasks) -> None:

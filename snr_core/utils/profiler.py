@@ -2,9 +2,9 @@ import logging
 from collections import deque
 from typing import Any, Callable, Deque, Dict, List, Tuple, TypeVar
 
-from snr_core.settings import Settings
 from snr_core.utils.consumer import Consumer
 from snr_core.utils.timer import Timer
+from snr_types import *
 
 DAEMON_THREAD = False
 SLEEP_TIME_S = 0.01
@@ -48,20 +48,20 @@ class Profiler(Consumer[ProfilingResult]):
             self.init_task_type(task_type)
         self.time_dict[task_type].append(runtime)
         self.log.debug("Task {} has average runtime {}",
-                       task_type, self.avg_time(task_type))
+                       task_type,
+                       self.avg_time(task_type, self.time_dict[task_type]))
 
     def init_task_type(self, task_type: str):
         self.time_dict[task_type] = deque(maxlen=self.moving_avg_len)
 
     def dump(self):
         self.log.info("Task/Loop type:\t\tAvg runtime: ")
-        for k in self.time_dict.keys():
+        for k, deque in self.time_dict.items():
             self.log.info("{}:\t\t{}",
-                          k, self.avg_time(k))
+                          k, self.avg_time(k, deque))
 
-    def avg_time(self, key: str) -> str:
-        q = self.time_dict[key]
-        return self.format_time(float(sum(q)) / float(len(q)))
+    def avg_time(self, key: str, deque: Deque[float]) -> str:
+        return self.format_time(float(sum(deque)) / float(len(deque)))
 
     def format_time(self, time_s: float) -> str:
         if time_s > 1:

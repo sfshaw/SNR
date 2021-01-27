@@ -3,7 +3,7 @@ from typing import Callable
 
 from snr_core.context.context import Context
 from snr_core.loop.loop_factory import LoopFactory
-from snr_core.protocol.node_protocol import NodeProtocol
+from snr_core.protocols import *
 from snr_core.utils.utils import no_op
 
 DEFAULT_TICK_RATE = 24

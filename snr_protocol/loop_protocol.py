@@ -1,15 +1,10 @@
-from __future__ import annotations
-
 from typing import Protocol, runtime_checkable
 
-from snr_core.protocol.component_protocol import Component
-
-DEFAULT_TICK_RATE = 24
-JOIN_TIMEOUT = None
+from snr_protocol.component_protocol import ComponentProtocol
 
 
 @runtime_checkable
-class LoopProtocol(Component, Protocol):
+class LoopProtocol(ComponentProtocol, Protocol):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An

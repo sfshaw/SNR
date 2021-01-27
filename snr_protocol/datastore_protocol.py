@@ -1,6 +1,6 @@
 from typing import Any, Optional, Protocol
 
-from snr_core.datastore.page import Page
+from snr_types import *
 
 
 class DatastoreProtocol(Protocol):

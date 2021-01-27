@@ -1,7 +1,7 @@
-from snr_core.protocol.node_protocol import NodeProtocol
 from snr_core.endpoint import node_core_endpoint
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.protocol.endpoint_protocol import EndpointProtocol
+from snr_protocol.endpoint_protocol import EndpointProtocol
+from snr_protocol.node_protocol import NodeProtocol
 
 
 class NodeCoreFactory(EndpointFactory):

@@ -1,5 +1,4 @@
 import pickle
-from snr_core.protocol.node_protocol import NodeProtocol
 import socket
 import sys
 from socket import socket as Socket

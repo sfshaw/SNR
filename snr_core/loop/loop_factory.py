@@ -1,6 +1,6 @@
-from snr_core.protocol.factory_protocol import FactoryProtocol
-from snr_core.protocol.loop_protocol import LoopProtocol
-from snr_core.protocol.node_protocol import NodeProtocol
+from snr_protocol.factory_protocol import FactoryProtocol
+from snr_protocol.loop_protocol import LoopProtocol
+from snr_protocol.node_protocol import NodeProtocol
 
 
 class LoopFactory(FactoryProtocol):

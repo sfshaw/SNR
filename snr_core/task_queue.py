@@ -1,10 +1,9 @@
 from queue import Queue
-from typing import Callable, List, Union
+from typing import List, Union
+
+from snr_types import *
 
 from snr_core.context.context import Context
-from snr_core.task import SomeTasks, Task, TaskSource
-
-TaskScheduler = Callable[[Task], None]
 
 
 class TaskQueue(Context):

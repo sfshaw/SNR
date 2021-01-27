@@ -1,17 +1,16 @@
 from typing import Any, Callable, Dict, Optional
 
-from snr_core import task
+from snr_types import *
+
 from snr_core.context.context import Context
-from snr_core.datastore.page import Page
-from snr_core.protocol.node_protocol import NodeProtocol
-from snr_core.task import Task
+from snr_core.protocols import *
 from snr_core.utils.consumer import Consumer
 from snr_core.utils.timer import Timer
 from snr_core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.0005
 
-DataDict = Dict[str, Page]
+DataDict = Dict[DataKey, Page]
 
 
 class Datastore(Context):

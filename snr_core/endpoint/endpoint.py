@@ -2,9 +2,8 @@ from typing import List
 
 from snr_core.context.context import Context
 from snr_core.endpoint.endpoint_factory import EndpointFactory
-from snr_core.protocol.endpoint_protocol import EndpointProtocol
-from snr_core.protocol.node_protocol import NodeProtocol
-from snr_core.task import TaskHandlerMap, TaskSource
+from snr_core.protocols import *
+from snr_types import *
 
 
 class Endpoint(Context, EndpointProtocol):

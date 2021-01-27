@@ -1,7 +1,8 @@
 from typing import List, Protocol
 
-from snr_core.config import Mode
-from snr_core.modes import ComponentsByRole, Role
+from snr_types import *
+
+from snr_protocol.factory_protocol import ComponentsByRole
 
 
 class MultiRunner(Protocol):

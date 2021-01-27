@@ -1,7 +1,6 @@
 from typing import Callable, Dict, List
 
 from snr_core.base import *
-from snr_core.protocol.node_protocol import NodeProtocol
 
 Command = Callable[[List[str]], SomeTasks]
 

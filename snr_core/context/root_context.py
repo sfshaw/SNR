@@ -1,7 +1,6 @@
 import logging
 
-from snr_core.protocol.settings_provider import SettingsProvider
-from snr_core.settings import Settings
+from snr_core.protocols import *
 
 LOG_FORMAT = "[%(name)s:\t%(levelname)s]\t%(message)s\t"
 LOG_LEVEL = logging.WARNING

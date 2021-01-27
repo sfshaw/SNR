@@ -1,6 +1,4 @@
 from snr_core.base import *
-from snr_core.protocol.loop_protocol import LoopProtocol
-from snr_core.protocol.node_protocol import NodeProtocol
 from snr_std.io.console import command_processor, command_receiver
 
 

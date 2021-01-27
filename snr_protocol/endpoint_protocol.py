@@ -1,13 +1,12 @@
-from __future__ import annotations
-
 from typing import Any, List, Optional, Protocol, Tuple, runtime_checkable
 
-from snr_core.protocol.factory_protocol import Component
-from snr_core.task import Task, TaskHandler, TaskHandlerMap, TaskId, TaskSource
+from snr_types import *
+
+from snr_protocol.component_protocol import ComponentProtocol
 
 
 @runtime_checkable
-class EndpointProtocol(Component, Protocol):
+class EndpointProtocol(ComponentProtocol, Protocol):
 
     name: str
     task_producers: List[TaskSource]
@@ -23,8 +22,6 @@ class EndpointProtocol(Component, Protocol):
         (handler, key) = (self.task_handlers.get(id), id)
         if not handler:
             (handler, key) = (self.task_handlers.get(t.type), t.type)
-            # self.dbg("Handler for {} not found, using type handler {}",
-            #          [t.id(), handler])
         if not handler:
             return None
         return (handler, key)
@@ -35,5 +32,5 @@ class EndpointProtocol(Component, Protocol):
     def terminate(self) -> None:
         ...
 
-    def reload(self, parent: Any) -> EndpointProtocol:
+    def reload(self, parent: Any) -> Any:
         ...

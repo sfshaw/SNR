@@ -1,9 +1,8 @@
-from snr_core.protocol.node_protocol import NodeProtocol
-from snr_core import task
 from snr_core.loop.loop_factory import LoopFactory
 from snr_core.loop.thread_loop import ThreadLoop
-from snr_core.protocol.loop_protocol import LoopProtocol
 from snr_core.utils.utils import no_op
+from snr_core.protocols import *
+from snr_types import*
 
 FAST_TEST_TIMEOUT_MS: float = 10.0
 

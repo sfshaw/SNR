@@ -1,5 +1,6 @@
 from typing import Protocol
-from snr_core.settings import Settings
+
+from snr_types import *
 
 
 class SettingsProvider(Protocol):

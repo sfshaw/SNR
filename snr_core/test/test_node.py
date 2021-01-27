@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
 from snr_core.base import *
-from snr_core.datastore.datastore import Datastore
+from snr_core.datastore import Datastore
 from snr_core.endpoint.node_core_factory import NodeCoreFactory
 from snr_core.test.utils.dummy_endpoint import DummyEndpointFactory
 
