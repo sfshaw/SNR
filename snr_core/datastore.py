@@ -34,6 +34,9 @@ class Datastore(Context):
     def store(self, key: str, value: Any, process: bool = True) -> None:
         created_at = self.timer.current()
         page = Page(key, value, self.parent.name, created_at, process)
+        self.store_page(page)
+
+    def store_page(self, page: Page) -> None:
         self.inbound_store(page)
 
     def get_data(self, key: str) -> Optional[Any]:

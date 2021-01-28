@@ -158,6 +158,9 @@ class Node(Context):
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
         self.__datastore.store(key, data, process)
 
+    def store_page(self, page: Page) -> None:
+        self.__datastore.store_page(page)
+
     def get_data(self, key: str) -> Optional[Any]:
         return self.__datastore.get_data(key)
 
