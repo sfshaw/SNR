@@ -45,7 +45,8 @@ class SNRTestBase(unittest.TestCase):
     def temp_file(self,
                   filename: Optional[str] = None,
                   overwrite: bool = False,
-                  cleanup: bool = True):
+                  cleanup: bool = True
+                  ) -> TempFile:
         if not filename:
             filename = self.test_name + ".tmp"
         return TempFile(self, filename, overwrite, cleanup)
