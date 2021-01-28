@@ -1,71 +1,75 @@
-from typing import Optional
+from typing import Optional, TextIO
 
 from snr_core.base import *
 
+NAME_PREFIX = "raw_replayer_"
+
+
+class PageReader(Context):
+    def __init__(self,
+                 parent: Context,
+                 name: str,
+                 filename: str,
+                 ) -> None:
+        super().__init__(name, parent)
+
+        self.filename = filename
+        self.file: Optional[TextIO] = None
+        try:
+            self.file = open(self.filename)
+            self.dbg(f"File {self.filename} opened")
+        except Exception as e:
+            self.err(f"Error opening file: {e}")
+            self.close()
+
+    def read(self) -> Optional[Page]:
+        if self.file:
+            try:
+                raw_line = self.file.readline()
+                self.dbg(f"Read line: {raw_line}")
+                line = raw_line.rstrip()
+                if len(line) > 0:
+                    return line
+            except Exception as e:
+                self.err("Error reading file: %s", e)
+                return None
+        return None
+
+    def close(self) -> None:
+        if self.file:
+            self.file.close()
+
 
 class Replayer(ThreadLoop):
-
     def __init__(self,
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  filename: str,
+                 data_name: str,
                  exit_when_done: bool
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "replayer",
-                         self.loop_handler)
-        self.file = open(filename)
+                         NAME_PREFIX + data_name,
+                         self.loop_handler,
+                         terminate=self.terminate)
+        self.data_name = data_name
+        self.reader = PageReader(self, "raw_reader", filename)
+        self.done: bool = False
         self.exit_when_done = exit_when_done
-        self.timer = Timer()
         self.next_page: Optional[Page] = None
 
     def loop_handler(self) -> None:
-        if (self.prepare_page() and self.next_page):
-            self.handle_page(self.next_page)
-        else:
-            self.set_terminate_flag()
-            if self.exit_when_done:
-                self.parent.schedule(
-                    task.terminate("replayer_done"))
-
-    def prepare_page(self) -> bool:
-        if not self.next_page:
-            return self.read_page()
-        return True
+        if not self.done:
+            line = self.reader.read()
+            if line:
+                self.parent.store_data(self.data_name, line)
+            elif not self.done:
+                self.dbg("Reader Done")
+                self.done = True
+                if self.exit_when_done:
+                    self.dbg("Reader scheduling terminate task")
+                    self.parent.schedule(task.terminate("replayer done"))
 
     def terminate(self) -> None:
-        if self.file:
-            self.file.close()
-            self.file = None
-
-    def handle_page(self, page: Page) -> None:
-        if self.is_ready():
-            self.store_page()
-        else:
-            self.set_sleep()
-
-    def set_sleep(self) -> None:
-        if isinstance(self.next_page, Page):
-            time_to_sleep = self.next_page.created_at - self.timer.current()
-            self.set_delay(1.0/time_to_sleep)
-        else:
-            raise Exception("Cannot sleep on non-Page data")
-
-    def read_page(self) -> bool:
-        self.next_page = None   # todo: read file
-        return self.next_page is not None
-
-    def store_page(self) -> None:
-        if isinstance(self.next_page, Page):
-            self.parent.store_data(self.next_page.key,
-                                   self.next_page.data)
-            self.next_page = None
-        else:
-            raise Exception("Cannot store non-Page data")
-
-    def is_ready(self) -> bool:
-        if isinstance(self.next_page, Page):
-            return self.next_page.created_at < self.timer.current()
-        else:
-            raise Exception("Not ready, non-Page data read")
+        self.reader.close()
