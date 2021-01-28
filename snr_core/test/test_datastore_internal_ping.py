@@ -33,7 +33,11 @@ class PingTestEndpoint(Endpoint):
         return None
 
     def handle_recv_ping(self, t: Task, key: TaskId) -> SomeTasks:
-        start = self.parent_node.get_data("ping_test")
+        data = self.parent_node.get_data("ping_test")
+        if not isinstance(data, float):
+            self.err("Stored ping data %s was not a float", data)
+            return None
+        start: float = data
         self.info("Datastore ping latency: {} ms",
                   [(time() - float(start)) * 1000])
         return task.terminate("test_endpoint_done")
