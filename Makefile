@@ -52,5 +52,8 @@ clean:
 	py3clean .
 	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
 
+mypy:
+	mypy $(LIB_DIR)
+
 py:
 	$(PYTHON)
