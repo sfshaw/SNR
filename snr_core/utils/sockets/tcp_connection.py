@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 import pickle
 import struct
 from socket import AF_INET, SOCK_STREAM
 from socket import socket as Socket
 from time import sleep
-from typing import Generic, Tuple, TypeVar
+from typing import Any, Generic, Tuple, TypeVar
 
 MAX_RETRIES = 10
 RETRY_WAIT_S = 0.5
@@ -24,14 +22,13 @@ class TCPConnection(Generic[T]):
         self.retry_wait_s = retry_wait_s
         while tries > 0:
             try:
-                self.inner: Socket = Socket(AF_INET, SOCK_STREAM)
+                self.inner = Socket(AF_INET, SOCK_STREAM)
                 self.inner.connect(server_tuple)
                 return
             except Exception as e:
                 self.inner.close()
                 tries -= 1
                 if not tries > 0:
-                    self.inner = None
                     raise e
                 else:
                     sleep(self.retry_wait_s)
@@ -44,8 +41,8 @@ class TCPConnection(Generic[T]):
     def is_alive(self) -> bool:
         return self.inner is not None
 
-    def __enter__(self) -> TCPConnection[T]:
+    def __enter__(self) -> "TCPConnection[T]":
         return self
 
-    def __exit__(self):
+    def __exit__(self, *args: Any):
         self.inner.close()

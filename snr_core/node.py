@@ -59,15 +59,14 @@ class Node(Context):
         """
         new_tasks: List[Task] = []
         for endpoint in self.endpoints.values():
-            for task_producer in endpoint.task_producers:
-                t: SomeTasks = task_producer()
-                if t:
-                    if isinstance(t, Task):
-                        new_tasks.append(t)
-                    else:
-                        new_tasks.extend(t)
-                    self.dbg("Produced task: %s from %s",
-                             t, endpoint)
+            t: SomeTasks = endpoint.task_source()
+            if t:
+                if isinstance(t, Task):
+                    new_tasks.append(t)
+                else:
+                    new_tasks.extend(t)
+                self.dbg("Produced task: %s from %s",
+                         t, endpoint)
         return new_tasks
 
     def __handle_task(self,
@@ -90,7 +89,9 @@ class Node(Context):
         results: List[List[Task]] = list(filter(None,
                                                 [self.__handle_task(h, t, k)
                                                  for (h, k) in handlers]))
-        new_tasks = functools.reduce(operator.iconcat, results, [])
+        new_tasks: List[Task] = functools.reduce(operator.iconcat,
+                                                 results,
+                                                 [])
         self.dbg("Task execution resulted in %s new tasks",
                  len(new_tasks))
         if new_tasks:

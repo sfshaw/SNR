@@ -17,14 +17,13 @@ class NodeCore(Endpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         parent.name + NODE_CORE_NAME_SUFFIX,
-                         task_producers=[],
-                         task_handlers={
-                             TaskType.terminate: self.task_handler_terminate,
-                             TaskType.reload: self.task_handler_reload,
-                             (TaskType.event, "cmd_list_endpoints"):
-                             self.task_handler_list_endpoints,
-                         })
+                         parent.name + NODE_CORE_NAME_SUFFIX)
+        self.task_handlers = {
+            TaskType.terminate: self.task_handler_terminate,
+            TaskType.reload: self.task_handler_reload,
+            (TaskType.event, "cmd_list_endpoints"):
+            self.task_handler_list_endpoints,
+        }
 
     def start(self) -> None:
         pass
@@ -35,8 +34,7 @@ class NodeCore(Endpoint):
     def reload(self, parent: Any) -> EndpointProtocol:
         return self
 
-    def task_producer(self) -> SomeTasks:
-        # Must implement interface since SynchronousEndpoint cannot be imported
+    def task_source(self) -> SomeTasks:
         return None
 
     def task_handler_terminate(self, t: Task, key: TaskId) -> SomeTasks:

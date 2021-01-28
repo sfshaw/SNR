@@ -50,9 +50,7 @@ class RawDataReplayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         NAME_PREFIX + data_name,
-                         self.loop_handler,
-                         terminate=self.terminate)
+                         NAME_PREFIX + data_name)
         self.data_name = data_name
         self.reader = RawReader(self, "raw_reader", filename)
         self.done: bool = False
@@ -69,7 +67,7 @@ class RawDataReplayer(ThreadLoop):
                 self.done = True
                 if self.exit_when_done:
                     self.dbg("Reader scheduling terminate task")
-                    self.parent.schedule(task.terminate("replayer done"))
+                    self.parent.schedule(task.terminate("replayer_done"))
 
     def terminate(self) -> None:
         self.reader.close()

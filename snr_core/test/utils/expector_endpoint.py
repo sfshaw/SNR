@@ -8,14 +8,16 @@ class ExpectorEndpoint(Endpoint):
                  parent: NodeProtocol,
                  expector: Expector
                  ) -> None:
-        task_handlers = {}
-        for key in expector.expectations:
-            task_handlers[key] = self.call
         super().__init__(factory,
                          parent,
-                         "expector",
-                         task_handlers=task_handlers)
+                         "expector")
+        self.task_handlers: TaskHandlerMap = {}
+        for key in expector.expectations:
+            self.task_handlers[key] = self.call
         self.expector = expector
+
+    def task_source(self) -> None:
+        return None
 
     def start(self) -> None:
         pass

@@ -31,4 +31,5 @@ jobs:
     - name: Create Package distribution
       run: |
         python setup.py check
+        python setup.py build
         python setup.py sdist

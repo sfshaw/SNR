@@ -1,11 +1,15 @@
-from typing import Any, Optional, Protocol
+from typing import Any, Optional
 
 from snr_types import *
 
 
+@runtime_checkable
 class DatastoreProtocol(Protocol):
 
     def store(self, key: str, value: Any, process: bool = True) -> None:
+        ...
+
+    def store_page(self, page: Page) -> None:
         ...
 
     def get_data(self, key: str) -> Optional[Any]:

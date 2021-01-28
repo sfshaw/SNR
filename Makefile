@@ -1,11 +1,15 @@
 CPYTHON=python3
+CPYTHON36=python3.6
+CPYTHON37=python3.7
 CPYTHON38=python3.8
 CPYTHON39=python3.9
+CPYTHON310=python3.10
 PYPY=pypy3
 PYTHON=$(CPYTHON39)
 
 SETUP_PY=setup.py
 PY_SETUP=$(PYTHON) $(SETUP_PY)
+UNITTEST_MOD=-m unittest
 
 BUILD_DIR=build
 DIST_DIR=dist
@@ -15,7 +19,7 @@ STD_DIR=snr_std
 
 TEST_FLAGS=test -d
 
-.PHONY: dev develop check build install dist test test_all
+.PHONY: dev develop console check build install dist test test_all clean pygame_deps
 d: dev
 dev: develop
 	$(PYTHON) $(LIB_DIR)/dev.py
@@ -32,21 +36,26 @@ check:
 build: check
 	$(PY_SETUP) build
 
-dist: check
+dist: build
 	$(PY_SETUP) sdist
 
-install: check
+install: build
 	$(PY_SETUP) install --user
 
 t: test
 test: check
-	$(PYTHON) -m unittest -v
+	$(PYTHON) $(UNITTEST_MOD) -v
 
 ta: test_all
-test_all: check
-	$(CPYTHON38) -m unittest
-	$(CPYTHON39) -m unittest
+test_all:
+	$(CPYTHON36) $(UNITTEST_MOD)
+	$(CPYTHON37) $(UNITTEST_MOD)
+	$(CPYTHON38) $(UNITTEST_MOD)
+	$(CPYTHON39) $(UNITTEST_MOD)
+	$(CPYTHON310) $(UNITTEST_MOD)
+	$(PYPY) $(UNITTEST_MOD)
 
+c: clean
 clean:
 	$(PY_SETUP) clean
 	py3clean .
@@ -57,3 +66,8 @@ mypy:
 
 py:
 	$(PYTHON)
+
+pygame_deps: 
+	sudo apt update
+	sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev
+	sudo apt-get build-dep libsdl2 libsdl2-image libsdl2-mixer libsdl2-ttf libfreetype6 libportmidi0

@@ -7,7 +7,7 @@ NAME_PREFIX = "raw_replayer_"
 
 class PageReader(Context):
     def __init__(self,
-                 parent: Context,
+                 parent: SettingsProvider,
                  name: str,
                  filename: str,
                  ) -> None:

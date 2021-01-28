@@ -1,5 +1,5 @@
 from threading import Event
-from typing import Any, Dict, List, Optional, Protocol, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from snr_types import *
 
@@ -9,6 +9,7 @@ from snr_protocol.loop_protocol import LoopProtocol
 from snr_protocol.settings_provider import SettingsProvider
 
 
+@runtime_checkable
 class NodeProtocol(SettingsProvider, Protocol):
     settings: Settings
     name: str
@@ -45,6 +46,9 @@ class NodeProtocol(SettingsProvider, Protocol):
         ...
 
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
+        ...
+
+    def store_page(self, page: Page) -> None:
         ...
 
     def get_data(self, key: str) -> Optional[Any]:

@@ -1,3 +1,5 @@
+from typing_extensions import Protocol, runtime_checkable
+
 from snr_types import task
 from snr_types.mode import *
 from snr_types.page import *

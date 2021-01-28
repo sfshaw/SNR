@@ -1,14 +1,16 @@
 import importlib
+from types import ModuleType
 from typing import Optional
 
 from snr_protocol.endpoint_protocol import EndpointProtocol
 from snr_protocol.factory_protocol import FactoryProtocol
 from snr_protocol.node_protocol import NodeProtocol
+from snr_types import *
 
 
 class EndpointFactory(FactoryProtocol):
     def __init__(self,
-                 child_module: Optional[importlib.types.ModuleType],
+                 child_module: Optional[ModuleType],
                  name: str) -> None:
         self.name = name
         self.child_module = child_module

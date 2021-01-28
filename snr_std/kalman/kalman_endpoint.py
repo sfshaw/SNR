@@ -12,13 +12,16 @@ class KalmanEndpoint(Endpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         name,
-                         task_handlers={
-                             (TaskType.process_data, input_data_name):
-                             self.filter
-                         })
+                         name)
+        self.task_handlers = {
+            (TaskType.process_data, input_data_name):
+            self.filter
+        }
         self.input_data_name = input_data_name
         self.output_data_name = output_data_name
+
+    def task_source(self) -> None:
+        return None
 
     def filter(self, t: Task, k: TaskId) -> SomeTasks:
         input = self.parent.get_data(self.input_data_name)

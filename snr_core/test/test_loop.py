@@ -1,7 +1,5 @@
-
 from snr_core.base import *
 from snr_core.test.utils.base import *
-from snr_core.utils.utils import no_op
 
 
 class LoopUnderTest(ThreadLoop):
@@ -10,10 +8,9 @@ class LoopUnderTest(ThreadLoop):
                  parent: NodeProtocol,
                  expector: Expector,
                  ) -> None:
-        super().__init__(fac, parent, "test_loop",
-                         no_op,
-                         self.setup,
-                         self.terminate)
+        super().__init__(fac,
+                         parent,
+                         "test_loop",)
         self.expector = expector
 
     def setup(self) -> None:

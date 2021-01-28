@@ -16,7 +16,6 @@ class CommandReceiver(ThreadLoop):
         super().__init__(factory,
                          parent,
                          name,
-                         self.loop_handler,
                          tick_rate_hz=0)
         self.port = port
 

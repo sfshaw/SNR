@@ -11,29 +11,27 @@ class PingTestEndpoint(Endpoint):
                  name: str):
         super().__init__(factory,
                          parent_node,
-                         name,
-                         task_producers=[self.produce_task],
-                         task_handlers={
-                             (TaskType.event, "ping_test"):
-                             self.handle_ping_test,
-                             (TaskType.process_data, "ping_test"):
-                             self.handle_recv_ping
-                         })
-        self.parent_node = parent_node
+                         name)
+        self.                    task_handlers = {
+            (TaskType.event, "ping_test"):
+            self.handle_ping_test,
+            (TaskType.process_data, "ping_test"):
+            self.handle_recv_ping
+        }
         self.produced_task: bool = False
 
-    def produce_task(self) -> SomeTasks:
+    def task_source(self) -> SomeTasks:
         if not self.produced_task:
             self.produced_task = True
             return task.event("ping_test")
         return None
 
     def handle_ping_test(self, t: Task, key: TaskId) -> SomeTasks:
-        self.parent_node.store_data("ping_test", time())
+        self.parent.store_data("ping_test", time())
         return None
 
     def handle_recv_ping(self, t: Task, key: TaskId) -> SomeTasks:
-        data = self.parent_node.get_data("ping_test")
+        data = self.parent.get_data("ping_test")
         if not isinstance(data, float):
             self.err("Stored ping data %s was not a float", data)
             return None

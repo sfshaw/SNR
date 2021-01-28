@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Protocol, Tuple, runtime_checkable
+from typing import Any, Optional, Tuple
 
 from snr_types import *
 
@@ -9,8 +9,10 @@ from snr_protocol.component_protocol import ComponentProtocol
 class EndpointProtocol(ComponentProtocol, Protocol):
 
     name: str
-    task_producers: List[TaskSource]
     task_handlers: TaskHandlerMap
+
+    def task_source(self) -> SomeTasks:
+        ...
 
     def get_task_handler(self,
                          t: Task

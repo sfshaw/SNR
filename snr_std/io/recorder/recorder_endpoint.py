@@ -10,10 +10,13 @@ class RecorderEndpoint(Endpoint):
                  name: str,
                  filename: str,
                  data_names: List[str]):
-        super().__init__(factory, parent, name,
-                         task_handlers=self.map_handlers(data_names))
+        super().__init__(factory, parent, name)
+        self.task_handlers = self.map_handlers(data_names)
         self.filename = filename
         self.file = open(filename, "w")
+
+    def task_source(self) -> None:
+        return None
 
     def task_handler(self, t: Task, k: TaskId) -> SomeTasks:
         self.dbg("Recording task: %s", [t])

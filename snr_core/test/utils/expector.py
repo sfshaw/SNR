@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from typing import Any, Dict
 from unittest.case import TestCase
@@ -34,7 +32,7 @@ class Expector:
     def dump(self) -> None:
         self.log.debug(self.times_called)
 
-    def __enter__(self) -> Expector:
+    def __enter__(self) -> "Expector":
         return self
 
     def __exit__(self, *args: Any) -> None:

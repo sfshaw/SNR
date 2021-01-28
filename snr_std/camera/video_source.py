@@ -21,7 +21,7 @@ DISPLAY_LOCALLY = False
 USE_SOCKETS = True
 
 
-class VideoSource(ProcEndpoint):
+class VideoSource(ThreadLoop):
     """USB camera video source for robot. Serves video over IP.
     """
 
@@ -33,7 +33,6 @@ class VideoSource(ProcEndpoint):
                  receiver_port: int,
                  camera_num: int
                  ) -> None:
-        self.task_producers = []
         self.task_handlers = {}
         super().__init__(factory,
                          parent,
@@ -50,7 +49,7 @@ class VideoSource(ProcEndpoint):
 
         self.start()
 
-    def setup()(self):
+    def setup(self):
         if USE_SOCKETS:
             try:
                 self.client_socket = socket.socket(socket.AF_INET,

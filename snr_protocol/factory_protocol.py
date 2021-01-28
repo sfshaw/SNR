@@ -1,10 +1,11 @@
-from typing import Any, Callable, Dict, List, Protocol
+from typing import Any, Callable, Dict, List
 
-from snr_types.role import Role
+from snr_types import *
 
 from snr_protocol.component_protocol import ComponentProtocol
 
 
+@runtime_checkable
 class FactoryProtocol(Protocol):
     name: str
 

@@ -1,8 +1,4 @@
-from snr_core.loop.loop_factory import LoopFactory
-from snr_core.loop.thread_loop import ThreadLoop
-from snr_core.utils.utils import no_op
-from snr_core.protocols import *
-from snr_types import*
+from snr_core.base import *
 
 FAST_TEST_TIMEOUT_MS: float = 10.0
 
@@ -15,9 +11,7 @@ class TimeoutLoop(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent_node,
-                         "timeout_loop",
-                         no_op,
-                         setup=self.setup)
+                         "timeout_loop")
         self.timeout_s = timeout_s
 
     def setup(self) -> None:

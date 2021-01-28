@@ -12,8 +12,11 @@ class DummyEndpoint(Endpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         name,
-                         task_handlers=task_handlers)
+                         name)
+        self.task_handlers = task_handlers
+
+    def task_source(self) -> None:
+        return None
 
     def start(self) -> None:
         pass

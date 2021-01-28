@@ -20,7 +20,6 @@ class Controller(ThreadLoop):
             factory,
             parent,
             name,
-            self.loop_handler,
             tick_rate_hz=parent.settings.CONTROLLER_INIT_TICK_RATE)
 
         if not self.settings.USE_CONTROLLER:
@@ -28,15 +27,15 @@ class Controller(ThreadLoop):
             # This early return might break things
             return
 
-        self.task_producers = []
-        self.task_handlers = {}
-
         # Require triggers to be set to zero before operation
         # Initial value is inverse of setting
         # Triggers zerod indicated whether the triggers no longer need to be
         # zeroed
         self.triggers_zeroed = not self.settings.CONTROLLER_ZERO_TRIGGERS
         self.joystick_data = {}
+
+    def task_source(self) -> None:
+        return None
 
     def store_data(self, data: Dict[str, Any]):
         self.parent.store_data(self.name, data)

@@ -1,4 +1,4 @@
-from typing import Protocol, runtime_checkable
+from snr_types import *
 
 from snr_protocol.component_protocol import ComponentProtocol
 
@@ -19,7 +19,13 @@ class LoopProtocol(ComponentProtocol, Protocol):
     def join(self) -> None:
         ...
 
+    def setup(self) -> None:
+        ...
+
     def loop_handler(self) -> None:
+        ...
+
+    def terminate(self) -> None:
         ...
 
     def is_terminated(self) -> bool:
