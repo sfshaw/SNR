@@ -23,8 +23,10 @@ class RecorderEndpoint(Endpoint):
         if t.type is TaskType.process_data:
             page = self.parent.get_page(t.name)
             if page:
-                json_data: str = page.to_json()
+                json_data: str = page.serialize()
                 self.file.write(json_data)
+                self.file.write("\n")
+                self.file.flush()
                 self.dbg("Wrote '%s' to %s", json_data, self.filename)
             else:
                 self.err("Tried to read non-existant page: %s", t.name)
@@ -42,4 +44,5 @@ class RecorderEndpoint(Endpoint):
         return handlers
 
     def terminate(self) -> None:
+        self.file.flush()
         self.file.close()

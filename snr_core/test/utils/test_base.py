@@ -34,10 +34,10 @@ class SNRTestBase(unittest.TestCase):
                    ) -> Config:
         return Config(mode, {"test": factories})
 
-    def run_test(self,
-                 factories: List[FactoryProtocol],
-                 mode: Mode = Mode.TEST
-                 ) -> None:
+    def run_test_node(self,
+                      factories: List[FactoryProtocol],
+                      mode: Mode = Mode.TEST
+                      ) -> None:
         config = self.get_config(factories, mode)
         runner = SynchronusTestRunner(config)
         runner.run()
@@ -50,3 +50,19 @@ class SNRTestBase(unittest.TestCase):
         if not filename:
             filename = self.test_name + ".tmp"
         return TempFile(self, filename, overwrite, cleanup)
+
+    def assertPage(self, page: Optional[Page],
+                   key: DataKey,
+                   data: Any,
+                   origin: str,
+                   created_at: Optional[float] = None,
+                   process: bool = True):
+        if page:
+            self.assertEqual(key, page.key)
+            self.assertEqual(data, page.data)
+            self.assertEqual(origin, page.origin)
+            if created_at:
+                self.assertAlmostEqual(created_at, page.created_at)
+            self.assertEqual(process, page.process)
+        else:
+            self.assertTrue(False, f"{page} is not a Page")

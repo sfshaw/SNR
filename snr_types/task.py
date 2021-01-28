@@ -16,6 +16,9 @@ class TaskType(Enum):
     reload = "reload"
     terminate = "terminate"
 
+    def __repr__(self) -> str:
+        return f"TaskType.{self.value}"
+
 
 TaskId = Union[TaskType, Tuple[TaskType, str]]
 

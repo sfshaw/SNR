@@ -25,7 +25,7 @@ class TestRawDataReplayer(SNRTestBase):
             with self.temp_file() as temp_file:
                 with temp_file.open() as f:
                     f.write("")
-                self.run_test([
+                self.run_test_node([
                     RawDataReplayerFactory(temp_file.path,
                                            "raw_data",
                                            exit=True),
@@ -43,7 +43,7 @@ class TestRawDataReplayer(SNRTestBase):
                 with temp_file.open() as f:
                     f.write("test_data\n")
 
-                self.run_test([
+                self.run_test_node([
                     RawDataReplayerFactory(temp_file.path,
                                            "raw_data",
                                            exit=True),
@@ -63,7 +63,7 @@ class TestRawDataReplayer(SNRTestBase):
                     f.write("test_data2\n")
                     f.write("\n")
 
-                self.run_test([
+                self.run_test_node([
                     RawDataReplayerFactory(temp_file.path,
                                            "raw_data",
                                            exit=True),

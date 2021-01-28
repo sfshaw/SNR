@@ -28,10 +28,10 @@ class PageReader(Context):
                 raw_line = self.file.readline()
                 self.dbg(f"Read line: {raw_line}")
                 line = raw_line.rstrip()
-                if len(line) > 0:
-                    return line
+                if line:
+                    return Page.deserialize(line)
             except Exception as e:
-                self.err("Error reading file: %s", e)
+                self.warn("Error reading file: %s", e)
                 return None
         return None
 
@@ -45,15 +45,11 @@ class Replayer(ThreadLoop):
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  filename: str,
-                 data_name: str,
                  exit_when_done: bool
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         NAME_PREFIX + data_name,
-                         self.loop_handler,
-                         terminate=self.terminate)
-        self.data_name = data_name
+                         "replayer")
         self.reader = PageReader(self, "raw_reader", filename)
         self.done: bool = False
         self.exit_when_done = exit_when_done
@@ -61,15 +57,15 @@ class Replayer(ThreadLoop):
 
     def loop_handler(self) -> None:
         if not self.done:
-            line = self.reader.read()
-            if line:
-                self.parent.store_data(self.data_name, line)
+            page = self.reader.read()
+            if page:
+                self.parent.store_page(page)
             elif not self.done:
                 self.dbg("Reader Done")
                 self.done = True
                 if self.exit_when_done:
                     self.dbg("Reader scheduling terminate task")
-                    self.parent.schedule(task.terminate("replayer done"))
+                    self.parent.schedule(task.terminate("replayer_done"))
 
     def terminate(self) -> None:
         self.reader.close()

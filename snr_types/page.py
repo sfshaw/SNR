@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
@@ -27,6 +28,19 @@ class Page(DataClassJsonMixin):
             self.origin,
             self.created_at,
             self.process)
+
+    def serialize(self) -> str:
+        return self.to_json()
+
+    @classmethod
+    def deserialize(cls, json: str) -> Optional["Page"]:
+        try:
+            return Page.from_json(json)
+        except Exception as e:
+            log = logging.getLogger("Page")
+            log.error("Could not deserialize Page from json: %s, e: %s",
+                      json, e)
+            return None
 
 
 InboundStoreFn = Callable[[Page], None]

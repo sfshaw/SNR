@@ -22,7 +22,7 @@ class TempFile:
         self.testcase.assertTrue(os.path.exists(self.path),
                                  f"File {self.path} does not exist")
 
-    def __enter__(self):
+    def __enter__(self) -> "TempFile":
         if not self.overwrite:
             self.testcase.assertFalse(os.path.exists(self.path),
                                       f"File {self.path} already exists")

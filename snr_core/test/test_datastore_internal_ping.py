@@ -59,7 +59,7 @@ class TestInternalDatastorePing(SNRTestBase):
             (TaskType.process_data, "ping_test"): 1,
             TaskType.terminate: 1,
         }) as expector:
-            self.run_test([
+            self.run_test_node([
                 PingTestFactory(),
                 ExpectorEndpointFactory(expector),
             ])
