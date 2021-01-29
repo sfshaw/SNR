@@ -1,7 +1,11 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
+import logging
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+from dataclasses_json import DataClassJsonMixin
 
 
 class TaskPriority(Enum):
@@ -23,7 +27,8 @@ class TaskType(Enum):
 TaskId = Union[TaskType, Tuple[TaskType, str]]
 
 
-class Task:
+@dataclass
+class Task(DataClassJsonMixin):
     def __init__(self,
                  type: TaskType,
                  name: str,
@@ -38,8 +43,18 @@ class Task:
     def id(self) -> TaskId:
         return (self.type, self.name)
 
-    # def to_json(self) -> str:
-    #     return jsons.dumps(self)
+    def serialize(self) -> str:
+        return self.to_json()
+
+    @classmethod
+    def deserialize(cls, json: str) -> Optional["Task"]:
+        try:
+            return Task.from_json(json)
+        except Exception as e:
+            log = logging.getLogger("Task")
+            log.error("Could not deserialize Task from json: %s, e: %s",
+                      json, e)
+            return None
 
     def __eq__(self, other: Any):
         return (
