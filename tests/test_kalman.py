@@ -1,4 +1,4 @@
-from snr_std.io.replayer.replayer import PageReader
+from snr.snr_std.io.replayer.replayer import PageReader
 from snr import *
 
 raw_data_filename = "tests/test_data/in/raw_kalman_data.csv"

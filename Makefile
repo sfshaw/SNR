@@ -19,7 +19,7 @@ STD_DIR=snr_std
 
 TEST_FLAGS=test -d
 
-.PHONY: dev develop console check build install dist test test_all clean pygame_deps
+.PHONY: dev develop console check build install dist test test_all clean pygame_deps mypy
 d: dev
 dev: develop
 	$(PYTHON) $(LIB_DIR)/dev.py
@@ -61,6 +61,7 @@ clean:
 	py3clean .
 	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
 
+my: mypy
 mypy:
 	mypy $(LIB_DIR)
 
