@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 with open("requirements.txt") as f:
-    requirements = [l for l in f]
+    requirements = [line for line in f]
 
 setuptools.setup(
     name='SNR',
@@ -18,5 +18,5 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=requirements,
-    python_requires='>=3.8'
+    python_requires='>=3.6'
 )
