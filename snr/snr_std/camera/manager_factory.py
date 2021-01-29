@@ -1,6 +1,6 @@
 from snr.snr_core.base import *
 from snr.snr_std.camera import manager
-from snr.snr_std.camera.config import ManagerRole
+from snr.snr_std.camera.camera_config import ManagerRole
 
 
 class CameraManagerFactory(LoopFactory):

@@ -4,7 +4,7 @@ from socket import socket as Socket
 from typing import Optional
 
 from snr.snr_core.base import *
-from snr.snr_std.comms.sockets.config import SocketsConfig
+from snr.snr_std.comms.sockets.sockets_config import SocketsConfig
 
 
 class SocketsServer(ThreadLoop):
