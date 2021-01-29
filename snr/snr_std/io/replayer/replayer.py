@@ -39,6 +39,12 @@ class PageReader(Context):
         if self.file:
             self.file.close()
 
+    def __enter__(self) -> "PageReader":
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        self.close()
+
 
 class Replayer(ThreadLoop):
     def __init__(self,

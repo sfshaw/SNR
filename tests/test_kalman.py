@@ -1,4 +1,3 @@
-from snr.snr_std.io.replayer.replayer import PageReader
 from snr import *
 
 raw_data_filename = "tests/test_data/in/raw_kalman_data.csv"
@@ -39,21 +38,20 @@ class TestKalman(SNRTestBase):
                     ])
 
                     output.assertExists()
-                    reader = PageReader(self.root_context,
-                                        "test_reader",
-                                        output.path)
-                    self.assertPage(reader.read(),
-                                    "filtered_data",
-                                    "1,2,3",
-                                    "test_node",
-                                    process=True)
-                    self.assertPage(reader.read(),
-                                    "filtered_data",
-                                    "4,5,6",
-                                    "test_node",
-                                    process=True)
-                    self.assertIsNone(reader.read())
-                    reader.close()
+                    with PageReader(self.root_context,
+                                    "test_reader",
+                                    output.path) as reader:
+                        self.assertPage(reader.read(),
+                                        "filtered_data",
+                                        "1,2,3",
+                                        "test_node",
+                                        process=True)
+                        self.assertPage(reader.read(),
+                                        "filtered_data",
+                                        "4,5,6",
+                                        "test_node",
+                                        process=True)
+                        self.assertIsNone(reader.read())
 
 
 if __name__ == '__main__':
