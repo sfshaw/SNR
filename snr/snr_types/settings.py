@@ -159,7 +159,7 @@ class Settings:
     control_mappings: Dict[str, List[Union[None, str, type, int]]] = {
         "number": [None],
         "name": ["controller_name"],
-        "axis_0": ["stick_left_x", int,  100, 0, 10],
+        "axis_0": ["stick_left_x", int, 100, 0, 10],
         "axis_1": ["stick_left_y", int, -100, 0, 10],
         "axis_2": ["trigger_left", int, 50, 50, 0],
         "axis_3": ["stick_right_x", int, 100, 0, 10],

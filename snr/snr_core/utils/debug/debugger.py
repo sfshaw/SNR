@@ -11,8 +11,8 @@
 
 # class Debugger:
 #     """Print debugging framework allowing any thread or process to send lines
-#     to be printed on stdout. Channels can be used to filter which messages are
-#     printed. Messages can be formatted.
+#     to be printed on stdout. Channels can be used to filter which messages
+#     are printed. Messages can be formatted.
 #     """
 
 #     def __init__(self, settings: Settings) -> None:

@@ -79,7 +79,7 @@ class Node(Context):
                       ) -> Optional[List[Task]]:
         self.dbg("Executing %s task with %s",
                  t.name, handler)
-        result = self.time(t.name, handler, [t, k])
+        result = self.profile(t.name, handler, [t, k])
         if isinstance(result, Task):
             return [result]
         else:

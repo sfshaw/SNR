@@ -15,7 +15,7 @@ def apply_boxes(frame: np.array,
         x, y, w, h = r
         # Draw a green rectangle to visualize the bounding rect
         cv2.rectangle(frame,
-                      (x, y), (x+w, y+h),
+                      (x, y), (x + w, y + h),
                       color,
                       thickness)
 

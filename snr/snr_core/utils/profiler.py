@@ -1,5 +1,5 @@
 import logging
-from collections import deque
+import collections
 from typing import Any, Callable, Deque, Dict, List, Tuple, TypeVar
 
 from snr.snr_core.utils.consumer import Consumer
@@ -52,13 +52,14 @@ class Profiler(Consumer[ProfilingResult]):
                        self.avg_time(task_type, self.time_dict[task_type]))
 
     def init_task_type(self, task_type: str):
-        self.time_dict[task_type] = deque(maxlen=self.moving_avg_len)
+        self.time_dict[task_type] = collections.deque(
+            maxlen=self.moving_avg_len)
 
     def dump(self):
         self.log.info("Task/Loop type:\t\tAvg runtime: ")
-        for k, deque in self.time_dict.items():
+        for k, deq in self.time_dict.items():
             self.log.info("{}:\t\t{}",
-                          k, self.avg_time(k, deque))
+                          k, self.avg_time(k, deq))
 
     def avg_time(self, key: str, deque: Deque[float]) -> str:
         return self.format_time(float(sum(deque)) / float(len(deque)))

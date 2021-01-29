@@ -1,9 +1,8 @@
 import logging
-import time
 from typing import Any, Callable, List, Optional, TypeVar
 
-from snr.snr_protocol import *
 from snr.snr_core.utils.profiler import Profiler
+from snr.snr_protocol import *
 
 
 class Context(SettingsProvider):
@@ -68,10 +67,10 @@ class Context(SettingsProvider):
 
     T = TypeVar("T")
 
-    def time(self,
-             task_name: str,
-             handler: Callable[..., T],
-             args: List[Any]) -> T:
+    def profile(self,
+                task_name: str,
+                handler: Callable[..., T],
+                args: List[Any]) -> T:
         if self.profiler:
             return self.profiler.time(f"{task_name}:{self.name}",
                                       handler, args)

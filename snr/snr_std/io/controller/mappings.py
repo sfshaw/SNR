@@ -12,7 +12,7 @@ to drop a value use "pygame_name": [None],
 lin_control_mappings = {
     "number": [None],
     "name": ["controller_name"],
-    "axis_0": ["stick_left_x", int,  100, 0, 0],
+    "axis_0": ["stick_left_x", int, 100, 0, 0],
     "axis_1": ["stick_left_y", int, -100, 0, 0],
     "axis_2": ["trigger_left", int, 50, 50, 0],
     "axis_3": ["stick_right_x", int, 100, 0, 0],
@@ -37,7 +37,7 @@ lin_control_mappings = {
 win_control_mappings = {
     "number": [None],
     "name": ["controller_name"],
-    "axis_0": ["stick_left_x", int,  100, 0, 0],
+    "axis_0": ["stick_left_x", int, 100, 0, 0],
     "axis_1": ["stick_left_y", int, -100, 0, 0],
     "axis_2": ["trigger_left", int, 100, 0, 0],
     "axis_3": ["stick_right_y", int, 100, 0, 0],

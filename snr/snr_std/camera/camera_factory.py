@@ -22,7 +22,10 @@ class VideoSourceFactory(LoopFactory):
                                         self.config.camera_num)
 
     def __repr__(self):
-        return f"Video(Cam: {self.config.camera_num}) Source Factory:{self.config.server_port}"
+        return "Video(Cam: {}) Source Factory:{}".format(
+            self.config.camera_num,
+            self.config.server_port
+        )
 
 
 class VideoReceiverFactory(LoopFactory):

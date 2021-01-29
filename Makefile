@@ -21,7 +21,10 @@ STD_DIR=snr_std
 
 TEST_FLAGS=test -d
 
-.PHONY: dev develop console check build install dist test test_all clean pygame_deps mypy
+FLAKE8_IGNORE_CODES=F401,F403,F405,W503,W504
+FLAKE8_FLAGS=snr --ignore=$(FLAKE8_IGNORE_CODES)
+
+.PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy
 d: dev
 dev: develop
 	$(PYTHON) $(LIB_DIR)/dev.py
@@ -62,6 +65,13 @@ clean:
 	$(PY_SETUP) clean
 	py3clean .
 	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
+
+l: lint
+lint: mypy flake
+
+f: flake
+flake: 
+	flake8 $(FLAKE8_FLAGS)
 
 my: mypy
 mypy:

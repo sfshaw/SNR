@@ -247,7 +247,7 @@ def pv_2d(sigma: List[float]) -> KalmanFilter:
         return (matrix([1, 0, 0, 0],
                        [0, 1, 0, 0],
                        [0, 0, 1, 0],
-                       [0, 0, 0, 1])
+                       [0, 0, 0, 1]) +
                 + (matrix([0, 1, 0, 0],
                           [0, 0, 0, 0],
                           [0, 0, 0, 1],
@@ -255,10 +255,10 @@ def pv_2d(sigma: List[float]) -> KalmanFilter:
                    * dt))
 
     def calc_q(dt: float) -> Mat:
-        return matrix([(dt**3)/3, (dt**2)/2, 0, 0],
-                      [(dt**2)/2, dt, 0, 0],
-                      [0, 0, (dt**3)/3, (dt**2)/2],
-                      [0, 0, (dt**2)/2, dt])
+        return matrix([(dt ** 3) / 3, (dt ** 2) / 2, 0, 0],
+                      [(dt ** 2) / 2, dt, 0, 0],
+                      [0, 0, (dt ** 3) / 3, (dt ** 2) / 2],
+                      [0, 0, (dt ** 2) / 2, dt])
 
     h = matrix([1, 0, 0, 0],
                [0, 0, 1, 0])
