@@ -24,7 +24,7 @@ TEST_FLAGS=test -d
 FLAKE8_IGNORE_CODES=F401,F403,F405,W503,W504
 FLAKE8_FLAGS=snr --ignore=$(FLAKE8_IGNORE_CODES)
 
-.PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy
+.PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy prep
 d: dev
 dev: develop
 	$(PYTHON) $(LIB_DIR)/dev.py
@@ -60,11 +60,7 @@ test_all:
 	$(CPYTHON310) $(UNITTEST_MOD)
 	$(PYPY) $(UNITTEST_MOD)
 
-c: clean
-clean:
-	$(PY_SETUP) clean
-	py3clean .
-	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
+prep: test_all lint
 
 l: lint
 lint: mypy flake
@@ -76,6 +72,12 @@ flake:
 my: mypy
 mypy:
 	mypy $(LIB_DIR)
+
+c: clean
+clean:
+	$(PY_SETUP) clean
+	py3clean .
+	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
 
 py:
 	$(PYTHON)
