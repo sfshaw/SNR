@@ -1,4 +1,4 @@
-from time import time
+import time
 
 from snr.snr_core.base import *
 from snr.snr_core.test.utils.base import *
@@ -27,7 +27,7 @@ class PingTestEndpoint(Endpoint):
         return None
 
     def handle_ping_test(self, t: Task, key: TaskId) -> SomeTasks:
-        self.parent.store_data("ping_test", time())
+        self.parent.store_data("ping_test", time.time())
         return None
 
     def handle_recv_ping(self, t: Task, key: TaskId) -> SomeTasks:
@@ -37,7 +37,7 @@ class PingTestEndpoint(Endpoint):
             return None
         start: float = data
         self.info("Datastore ping latency: {} ms",
-                  [(time() - float(start)) * 1000])
+                  [(time.time() - float(start)) * 1000])
         return task.terminate("test_endpoint_done")
 
 

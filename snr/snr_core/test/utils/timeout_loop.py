@@ -1,3 +1,5 @@
+import time
+
 from snr.snr_core.base import *
 
 FAST_TEST_TIMEOUT_MS: float = 10.0
@@ -15,7 +17,8 @@ class TimeoutLoop(ThreadLoop):
         self.timeout_s = timeout_s
 
     def setup(self) -> None:
-        self.sleep(self.timeout_s)
+        if self.timeout_s > 0:
+            time.sleep(self.timeout_s)
         self.parent.schedule(task.terminate("Timeout"))
 
 

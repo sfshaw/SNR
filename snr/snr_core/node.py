@@ -1,5 +1,6 @@
 import functools
 import operator
+import time
 from threading import Event
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -50,7 +51,9 @@ class Node(Context):
             if t:
                 self.__execute_task(t)
             else:
-                self.sleep(SLEEP_TIME)
+                if SLEEP_TIME > 0:
+                    time.sleep(SLEEP_TIME)
+
         self.dbg("Node exiting main loop")
         self.terminate()
 
@@ -122,8 +125,8 @@ class Node(Context):
 
         for e in self.endpoints.values():
             e.terminate()
-        for l in self.loops.values():
-            l.join()
+        for loop in self.loops.values():
+            loop.join()
         self.info("Terminated all %s endpoints and %s loops",
                   len(self.endpoints), len(self.loops))
 

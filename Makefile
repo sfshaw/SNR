@@ -1,10 +1,12 @@
 CPYTHON=python3
+
 CPYTHON36=python3.6
 CPYTHON37=python3.7
 CPYTHON38=python3.8
 CPYTHON39=python3.9
 CPYTHON310=python3.10
 PYPY=pypy3
+
 PYTHON=$(CPYTHON)
 
 SETUP_PY=setup.py
@@ -44,7 +46,7 @@ install: build
 
 t: test
 test: check
-	$(PYTHON) $(UNITTEST_MOD) -v
+	$(PYTHON) $(UNITTEST_MOD)
 
 ta: test_all
 test_all:

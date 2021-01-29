@@ -77,11 +77,3 @@ class Context(SettingsProvider):
                                       handler, args)
         else:
             return handler(*args)
-
-    def sleep(self,
-              time_s: float
-              ) -> None:
-        if time_s == 0:
-            return
-
-        time.sleep(time_s)

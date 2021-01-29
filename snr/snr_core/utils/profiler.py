@@ -7,7 +7,7 @@ from snr.snr_core.utils.timer import Timer
 from snr.snr_types import *
 
 DAEMON_THREAD = False
-SLEEP_TIME_S = 0.01
+SLEEP_TIME_S = 0.0005
 JOIN_TIMEOUT = 1
 
 ProfilingResult = Tuple[str, float]

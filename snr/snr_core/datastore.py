@@ -8,7 +8,7 @@ from snr.snr_core.utils.consumer import Consumer
 from snr.snr_core.utils.timer import Timer
 from snr.snr_core.utils.utils import no_op
 
-SLEEP_TIME_S = 0.0005
+SLEEP_TIME_S = 0.0001
 
 DataDict = Dict[DataKey, Page]
 

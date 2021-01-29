@@ -1,11 +1,11 @@
 from threading import Event, Thread
+import time
 
 from snr.snr_core.context.context import Context
 from snr.snr_core.loop.loop_factory import LoopFactory
 from snr.snr_protocol import *
 
-DEFAULT_TICK_RATE = 24
-JOIN_TIMEOUT = None
+DEFAULT_TICK_RATE = 250
 
 
 class ThreadLoop(Context, LoopProtocol):
@@ -45,7 +45,7 @@ class ThreadLoop(Context, LoopProtocol):
         """
         self.set_terminate_flag()
         if self.__thread.is_alive():
-            self.__thread.join(timeout=JOIN_TIMEOUT)
+            self.__thread.join()
         else:
             self.warn("Thread was not alive on join")
 
@@ -69,7 +69,7 @@ class ThreadLoop(Context, LoopProtocol):
             self.warn("Thread %s does not sleep (max tick rate)",
                       self.name)
         else:
-            self.sleep(self.delay_s)
+            time.sleep(self.delay_s)
 
     def is_terminated(self) -> bool:
         return self.__terminate_flag.is_set()

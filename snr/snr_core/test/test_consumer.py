@@ -5,7 +5,7 @@ from time import sleep
 from snr.snr_core.base import *
 from snr.snr_core.test.utils.base import *
 
-SLEEP_TIME_S = 0.0001
+SLEEP_TIME_S = 0.00005
 
 
 class TestConsumer(SNRTestBase):
