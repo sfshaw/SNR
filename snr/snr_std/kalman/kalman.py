@@ -2,45 +2,44 @@ from dataclasses import dataclass
 from typing import Any, Callable, List, Tuple
 
 import numpy as np
-from numpy import ndarray as Mat
 from numpy import transpose
 
-SymbolicParamGetter = Callable[[float], Mat]
+SymbolicParamGetter = Callable[[float], np.ndarray]
 
 
-def matrix(*args: Any) -> Mat:
+def matrix(*args: Any) -> np.ndarray:
     return np.array([*args])
 
 
 @dataclass
 class Correction:
-    k: Mat
-    x: Mat
-    p: Mat
+    k: np.ndarray
+    x: np.ndarray
+    p: np.ndarray
 
 
 @dataclass
 class Prediction:
-    x: Mat
-    p: Mat
+    x: np.ndarray
+    p: np.ndarray
 
 
 class KalmanFilter:
     def __init__(self,
                  calc_phi: SymbolicParamGetter,
                  calc_q: SymbolicParamGetter,
-                 h: Mat,
-                 r: Mat):
+                 h: np.ndarray,
+                 r: np.ndarray):
         self.calc_phi = calc_phi
         self.calc_q = calc_q
         self.h = h
         self.r = r
         self.I_state = np.identity(len(h[0]))
 
-    def get_phi(self, delta_t: float) -> Mat:
+    def get_phi(self, delta_t: float) -> np.ndarray:
         return self.calc_phi(delta_t)
 
-    def get_q(self, delta_t: float) -> Mat:
+    def get_q(self, delta_t: float) -> np.ndarray:
         return self.calc_q(delta_t)
 
     # % Identify number of measurements
@@ -92,7 +91,7 @@ class KalmanFilter:
 
     def correct(self,
                 delta_t: float,
-                z: Mat,
+                z: np.ndarray,
                 prediction: Prediction
                 ) -> Correction:
         #  % Kk = p_min * H' / (H * p_min * H' + R);
@@ -116,7 +115,7 @@ class KalmanFilter:
     def iterate(self,
                 prediction: Prediction,
                 dt: float,
-                measurement: Mat
+                measurement: np.ndarray
                 ) -> Tuple[Correction, Prediction]:
         # % Iterate over one cycle of the Kalman filter
         # function [Kk, x, p, x_min_1, p_min_1, e] ...
@@ -243,7 +242,7 @@ class KalmanFilter:
 
 
 def pv_2d(sigma: List[float]) -> KalmanFilter:
-    def calc_phi(dt: float) -> Mat:
+    def calc_phi(dt: float) -> np.ndarray:
         return (matrix([1, 0, 0, 0],
                        [0, 1, 0, 0],
                        [0, 0, 1, 0],
@@ -254,7 +253,7 @@ def pv_2d(sigma: List[float]) -> KalmanFilter:
                           [0, 0, 0, 0])
                    * dt))
 
-    def calc_q(dt: float) -> Mat:
+    def calc_q(dt: float) -> np.ndarray:
         return matrix([(dt ** 3) / 3, (dt ** 2) / 2, 0, 0],
                       [(dt ** 2) / 2, dt, 0, 0],
                       [0, 0, (dt ** 3) / 3, (dt ** 2) / 2],
