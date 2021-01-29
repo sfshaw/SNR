@@ -1,6 +1,6 @@
 from snr.snr_std.io.console.console import LocalConsole
-from snr.snr_std.io.console.factory import (CommandProcessorFactory,
-                                            CommandReceiverFactory)
+from snr.snr_std.io.console.console_factory import (CommandProcessorFactory,
+                                                    CommandReceiverFactory)
 from snr.snr_std.io.recorder.recorder_factory import RecorderFactory
 from snr.snr_std.io.replayer.raw_data_replayer import RawReader
 from snr.snr_std.io.replayer.raw_data_replayer_factory import \

@@ -2,7 +2,7 @@ import pickle
 import socket
 
 from snr.snr_core.base import *
-from snr.snr_std.comms.sockets.config import SocketsConfig
+from snr.snr_std.comms.sockets.sockets_config import SocketsConfig
 
 
 class SocketsClient(Context):

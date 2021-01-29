@@ -2,7 +2,7 @@ from typing import Optional
 
 from snr.snr_core.base import *
 from snr.snr_std.camera import video_receiver, video_source
-from snr.snr_std.camera.config import CameraConfig
+from snr.snr_std.camera.camera_config import CameraConfig
 
 
 class VideoSourceFactory(LoopFactory):

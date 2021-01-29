@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from snr.snr_core.base import *
-from snr.snr_std.camera.config import CameraConfig, ManagerRole
+from snr.snr_std.camera.camera_config import CameraConfig, ManagerRole
 from snr.snr_std.camera.factory import VideoReceiverFactory, VideoSourceFactory
 
 INITIAL_PORT = 8000
