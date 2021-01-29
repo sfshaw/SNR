@@ -49,7 +49,7 @@ class Task(DataClassJsonMixin):
     @classmethod
     def deserialize(cls, json: str) -> Optional["Task"]:
         try:
-            return Task.from_json(json)
+            return cls.from_json(json)
         except Exception as e:
             log = logging.getLogger("Task")
             log.error("Could not deserialize Task from json: %s, e: %s",
