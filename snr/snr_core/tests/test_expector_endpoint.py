@@ -1,6 +1,6 @@
 
 from snr.snr_core.base import *
-from snr.snr_core.test.utils.base import *
+from snr.snr_core.utils.test_base import *
 
 raw_data_filename = "snr/test/test_data/raw_data.txt"
 

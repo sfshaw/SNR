@@ -7,8 +7,8 @@ from snr.snr_core.config import Config
 from snr.snr_core.context.context import Context
 from snr.snr_core.context.root_context import RootContext
 from snr.snr_core.runner.test_runner import SynchronusTestRunner
-from snr.snr_core.test.utils.expector import Expectations, Expector
-from snr.snr_core.test.utils.temp_file import TempFile
+from snr.snr_core.utils.expector import Expectations, Expector
+from snr.snr_core.utils.temp_file import TempFile
 from snr.snr_protocol import *
 from snr.snr_types import *
 

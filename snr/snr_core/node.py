@@ -12,7 +12,7 @@ from snr.snr_protocol import *
 from snr.snr_core.task_queue import TaskQueue
 from snr.snr_core.utils.profiler import Profiler
 
-SLEEP_TIME = 0.001
+SLEEP_TIME = 0.0005
 
 
 class Node(Context):

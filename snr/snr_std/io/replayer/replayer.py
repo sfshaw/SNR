@@ -55,7 +55,8 @@ class Replayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "replayer")
+                         "replayer",
+                         tick_rate_hz=200)
         self.reader = PageReader(self, "raw_reader", filename)
         self.done: bool = False
         self.exit_when_done = exit_when_done

@@ -1,5 +1,5 @@
 from snr.snr_core.base import *
-from snr.snr_core.test.utils.expector import Expector
+from snr.snr_core.utils.expector import Expector
 
 
 class ExpectorEndpoint(Endpoint):

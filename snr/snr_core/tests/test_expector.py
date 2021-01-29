@@ -1,6 +1,6 @@
 import unittest
 
-from snr.snr_core.test.utils.expector import Expector
+from snr.snr_core.utils.expector import *
 
 
 class TestExpector(unittest.TestCase):

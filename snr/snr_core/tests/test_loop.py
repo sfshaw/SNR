@@ -1,5 +1,5 @@
 from snr.snr_core.base import *
-from snr.snr_core.test.utils.base import *
+from snr.snr_core.utils.test_base import *
 
 
 class LoopUnderTest(ThreadLoop):

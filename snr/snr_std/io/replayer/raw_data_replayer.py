@@ -50,7 +50,8 @@ class RawDataReplayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         NAME_PREFIX + data_name)
+                         NAME_PREFIX + data_name,
+                         tick_rate_hz=200)
         self.data_name = data_name
         self.reader = RawReader(self, "raw_reader", filename)
         self.done: bool = False

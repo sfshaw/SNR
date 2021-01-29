@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple, Union
 from snr.snr_core.base import *
 from snr.snr_core.datastore import Datastore
 from snr.snr_core.endpoint.node_core_factory import NodeCoreFactory
-from snr.snr_core.test.utils.base import *
+from snr.snr_core.utils.test_base import *
 
 
 class TestNode(SNRTestBase):
