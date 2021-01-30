@@ -12,6 +12,7 @@ PYTHON=$(CPYTHON)
 SETUP_PY=setup.py
 PY_SETUP=$(PYTHON) $(SETUP_PY)
 UNITTEST_MOD=-m unittest
+DIST_TARGETS=sdist bdist_wheel
 
 BUILD_DIR=build
 DIST_DIR=dist
@@ -35,6 +36,9 @@ develop:
 console:
 	$(PYTHON) $(STD_DIR)/io/console/console.py
 
+check_manifest:
+	$(PYTHON) -m check_manifest
+
 check:
 	$(PY_SETUP) check
 
@@ -42,7 +46,7 @@ build: check
 	$(PY_SETUP) build
 
 dist: build
-	$(PY_SETUP) sdist
+	$(PY_SETUP) $(DIST_TARGETS)
 
 install: build
 	$(PY_SETUP) install --user
@@ -60,7 +64,8 @@ test_all:
 	$(CPYTHON310) $(UNITTEST_MOD)
 	$(PYPY) $(UNITTEST_MOD)
 
-prep: test_all lint
+p: prep
+prep: lint test_all check
 
 l: lint
 lint: mypy flake
