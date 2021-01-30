@@ -1,8 +1,0 @@
-dataclasses; python_version < "3.7"         # Dataclasses backport
-dataclasses_json == 0.5.2                   # Serialization
-numpy # >= 1.20.0                           # Kalman filter, CV
-# pygame >= 2.0.0
-pyserial == 3.5                             # Serial connection
-# pysimplegui == 4.29.0
-typing; python_version < "3.8"              # Typing backports, Generics?
-typing-extensions; python_version < "3.8"   # Protocol backport
