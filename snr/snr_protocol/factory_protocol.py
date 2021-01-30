@@ -19,6 +19,4 @@ class FactoryProtocol(Protocol):
         return self.name
 
 
-Components = List[FactoryProtocol]
-ComponentsByRole = Dict[Role, Components]
-ComponentsGetter = Callable[[Role], ComponentsByRole]
+ComponentsByRole = Dict[Role, List[FactoryProtocol]]

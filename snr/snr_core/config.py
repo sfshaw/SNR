@@ -1,3 +1,5 @@
+from typing import List
+
 from snr.snr_protocol import *
 
 
@@ -11,6 +13,6 @@ class Config(ConfigProtocol):
         if not factories:
             raise Exception("No factories provided")
 
-    def get(self, role: str) -> Components:
+    def get(self, role: str) -> List[FactoryProtocol]:
         factories = self.factories[role]
         return factories
