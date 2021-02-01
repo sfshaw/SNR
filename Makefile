@@ -1,6 +1,5 @@
 CPYTHON=python3
 
-CPYTHON36=python3.6
 CPYTHON37=python3.7
 CPYTHON38=python3.8
 CPYTHON39=python3.9
@@ -57,7 +56,6 @@ test: check
 
 ta: test_all
 test_all:
-	$(CPYTHON36) $(UNITTEST_MOD)
 	$(CPYTHON37) $(UNITTEST_MOD)
 	$(CPYTHON38) $(UNITTEST_MOD)
 	$(CPYTHON39) $(UNITTEST_MOD)

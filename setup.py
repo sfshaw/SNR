@@ -8,7 +8,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='SNR',
-    version='0.4.2',
+    version='0.5.0',
     author='Spencer Shaw',
     author_email='calpolyroboticsclub@gmail.com',
     packages=find_packages(include=['snr']),
@@ -18,9 +18,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     install_requires=[
-        'dataclasses>=0.8',          # Dataclasses backport
         'dataclasses_json>=0.5.2',   # Serialization
-        'numpy>=1.20.0',             # Kalman filter, CV
+        # 'numpy>=1.20.0',             # Kalman filter, CV
         # 'pygame>=2.0.0'               # Controller
         'pyserial>=3.5',             # Serial connection
         # 'pysimplegui=4.29.0',       # GUI
@@ -36,5 +35,5 @@ setup(
         ],
         'test': ['check-manifest'],
     },
-    python_requires='>=3.6'
+    python_requires='>=3.7'
 )
