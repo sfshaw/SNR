@@ -1,14 +1,13 @@
+import threading
 from io import StringIO
 from sys import stdin, stdout
-from threading import Event, Thread
-from typing import List, Optional, Tuple
 
 from snr.snr_core.base import *
 
 PROMPT = "> "
 
 
-class RemoteConsole(Thread):
+class RemoteConsole(threading.Thread):
     def __init__(self,
                  server_tuple: Tuple[str, int],
                  commands: Optional[List[str]] = None,
@@ -29,7 +28,7 @@ class RemoteConsole(Thread):
         #     "reload": self.cmd_reload,
         #     "list": self.cmd_list,
         # }
-        self.__terminate_flag = Event()
+        self.__terminate_flag = threading.Event()
         self.connection = TCPConnection[Page](self.server_tuple,
                                               retry_wait_s=self.retry_wait_s)
         if self.connection.is_alive():

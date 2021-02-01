@@ -2,7 +2,7 @@
 """
 
 
-from typing import Dict, List, Union
+from .base import *
 
 
 class Settings:

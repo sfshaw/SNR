@@ -1,22 +1,18 @@
 from threading import Event
-from typing import Any, Dict, List, Optional, Tuple
 
 from snr.snr_types import *
 
-from snr.snr_protocol.endpoint_protocol import EndpointProtocol
-from snr.snr_protocol.factory_protocol import FactoryProtocol
-from snr.snr_protocol.loop_protocol import LoopProtocol
-from snr.snr_protocol.settings_provider import SettingsProvider
+from .component_protocol import ComponentProtocol
+from .context_protocol import ContextProtocol
+from .endpoint_protocol import EndpointProtocol
+from .factory_protocol import FactoryProtocol
 
 
 @runtime_checkable
-class NodeProtocol(SettingsProvider, Protocol):
-    settings: Settings
-    name: str
+class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
     role: Role
     mode: Mode
     endpoints: Dict[str, EndpointProtocol]
-    loops: Dict[str, LoopProtocol]
     is_terminated: Event
 
     def loop(self) -> None:
@@ -36,23 +32,27 @@ class NodeProtocol(SettingsProvider, Protocol):
         """
         ...
 
-    def get_components(self,
-                       factories: List[FactoryProtocol]
-                       ) -> Tuple[Dict[str, EndpointProtocol],
-                                  Dict[str, LoopProtocol]]:
+    def add_component(self, factory: FactoryProtocol) -> Optional[str]:
         ...
 
     def schedule(self, t: SomeTasks) -> None:
         ...
 
-    def store_data(self, key: str, data: Any, process: bool = True) -> None:
-        ...
-
     def store_page(self, page: Page) -> None:
         ...
 
-    def get_data(self, key: str) -> Optional[Any]:
+    def store_data(self, key: str, data: Any, process: bool = True) -> None:
+        ...
+
+    def synchronous_store(self, page: Page) -> None:
+        '''For use by node core endpoints to write pages to a the datastore.
+        Not for use by Loops running outside the main thread,
+        such as ThreadLoops
+        '''
         ...
 
     def get_page(self, key: str) -> Optional[Page]:
+        ...
+
+    def get_data(self, key: str) -> Optional[Any]:
         ...

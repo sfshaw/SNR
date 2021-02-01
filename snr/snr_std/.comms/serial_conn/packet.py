@@ -2,7 +2,8 @@
 """
 
 import struct
-from typing import Any, Tuple
+
+from snr.snr_types import *
 
 
 # encoding scheme

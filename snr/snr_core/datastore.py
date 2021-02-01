@@ -1,12 +1,6 @@
-from typing import Any, Callable, Dict, Optional
-
-from snr.snr_types import *
-
 from snr.snr_core.context.context import Context
-from snr.snr_protocol import *
-from snr.snr_core.utils.consumer import Consumer
 from snr.snr_core.utils.timer import Timer
-from snr.snr_core.utils.utils import no_op
+from snr.snr_protocol import *
 
 SLEEP_TIME_S = 0.0001
 
@@ -15,8 +9,8 @@ DataDict = Dict[DataKey, Page]
 
 class Datastore(Context):
     def __init__(self,
-                 parent: NodeProtocol,
-                 task_scheduler: Callable[[Task], None] = no_op
+                 parent: ContextProtocol,
+                 task_scheduler: TaskScheduler,
                  ) -> None:
         super().__init__("datastore", parent)
 
@@ -25,19 +19,14 @@ class Datastore(Context):
         self.data_dict: DataDict = {}
         self.schedule_task = task_scheduler
 
-        self.inbound_consumer = Consumer[Page](
-            parent.name + "_dds_inbound",
-            self.write,
-            SLEEP_TIME_S)
         self.info("Datastore initialized")
 
-    def store(self, key: str, value: Any, process: bool = True) -> None:
+    def page(self, key: str, value: Any, process: bool = True) -> Page:
         created_at = self.timer.current()
-        page = Page(key, value, self.parent.name, created_at, process)
-        self.store_page(page)
+        return Page(key, value, self.parent.name, created_at, process)
 
     def store_page(self, page: Page) -> None:
-        self.inbound_store(page)
+        self.synchronous_store(page)
 
     def get_data(self, key: str) -> Optional[Any]:
         page: Any = self.get_page(key)
@@ -46,15 +35,10 @@ class Datastore(Context):
         return None
 
     def get_page(self, key: str) -> Optional[Page]:
-        # First flush the inbound queue so we have all data
-        self.inbound_consumer.flush()
         return self.data_dict.get(key)
 
-    def inbound_store(self, page: Page) -> None:
-        self.inbound_consumer.put(page)
-
-    def flush(self) -> None:
-        self.inbound_consumer.flush
+    def synchronous_store(self, page: Page) -> None:
+        self.write(page)
 
     def dump_data(self) -> None:
         for page in self.data_dict.values():
@@ -62,17 +46,7 @@ class Datastore(Context):
 
     def write(self, page: Page) -> None:
         self.data_dict[page.key] = page
+        self.dbg("Stored Page(%s)", page.key)
         if page.process:
             t = task.process_data(page.key)
             self.schedule_task(t)
-
-    def set_terminate_flag(self, reason: str):
-        self.inbound_consumer.set_terminate_flag()
-        self.info("Preparing to terminate datastore for %s", reason)
-
-    def join(self) -> None:
-        """Shutdown datastore threads
-        """
-        self.set_terminate_flag("join")
-        self.flush()
-        self.inbound_consumer.join_from(self.name)

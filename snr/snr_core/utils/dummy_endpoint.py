@@ -30,7 +30,7 @@ class DummyEndpointFactory(EndpointFactory):
                  name: str = DEFAULT_NAME,
                  task_handlers: TaskHandlerMap = {}
                  ) -> None:
-        super().__init__(None, "dummy_endpoint_factory")
+        super().__init__()
         self.endpoint_name = name
         self.task_handlers = task_handlers
 

@@ -1,8 +1,6 @@
-from dataclasses import dataclass
-from typing import Any, Callable, List, Tuple
-
 import numpy as np
 from numpy import transpose
+from snr.snr_types.base import *
 
 SymbolicParamGetter = Callable[[float], np.ndarray]
 

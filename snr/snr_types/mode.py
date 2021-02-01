@@ -1,4 +1,4 @@
-from enum import Enum
+from .base import *
 
 
 class Mode(Enum):

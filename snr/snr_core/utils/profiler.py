@@ -1,10 +1,10 @@
-import logging
 import collections
-from typing import Any, Callable, Deque, Dict, List, Tuple, TypeVar
+import logging
 
-from snr.snr_core.utils.consumer import Consumer
-from snr.snr_core.utils.timer import Timer
 from snr.snr_types import *
+
+from .consumer import Consumer
+from .timer import Timer
 
 DAEMON_THREAD = False
 SLEEP_TIME_S = 0.0005

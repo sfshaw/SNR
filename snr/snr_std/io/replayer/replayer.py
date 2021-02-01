@@ -1,49 +1,7 @@
-from typing import Optional, TextIO
+import threading
 
 from snr.snr_core.base import *
-
-NAME_PREFIX = "raw_replayer_"
-
-
-class PageReader(Context):
-    def __init__(self,
-                 parent: SettingsProvider,
-                 name: str,
-                 filename: str,
-                 ) -> None:
-        super().__init__(name, parent)
-
-        self.filename = filename
-        self.file: Optional[TextIO] = None
-        try:
-            self.file = open(self.filename)
-            self.dbg(f"File {self.filename} opened")
-        except Exception as e:
-            self.err(f"Error opening file: {e}")
-            self.close()
-
-    def read(self) -> Optional[Page]:
-        if self.file:
-            try:
-                raw_line = self.file.readline()
-                self.dbg(f"Read line: {raw_line}")
-                line = raw_line.rstrip()
-                if line:
-                    return Page.deserialize(line)
-            except Exception as e:
-                self.warn("Error reading file: %s", e)
-                return None
-        return None
-
-    def close(self) -> None:
-        if self.file:
-            self.file.close()
-
-    def __enter__(self) -> "PageReader":
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        self.close()
+from snr.snr_std.io.replayer.page_reader import PageReader
 
 
 class Replayer(ThreadLoop):
@@ -55,18 +13,29 @@ class Replayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "replayer",
-                         tick_rate_hz=200)
-        self.reader = PageReader(self, "raw_reader", filename)
+                         "replayer")
+        self.task_handlers: TaskHandlerMap = {
+            TaskType.process_data: self.retire_data
+        }
+        self.reader = PageReader(self, "page_reader", filename)
+        self.data_in_flight = threading.Event()
+        self.last_data: Optional[DataKey] = None
         self.done: bool = False
         self.exit_when_done = exit_when_done
         self.next_page: Optional[Page] = None
 
+    def setup(self) -> None:
+        self.parent.store_data(f"{self.name}_pages_in_flight",
+                               0,
+                               process=False)
+
     def loop_handler(self) -> None:
-        if not self.done:
+        if not self.done and not self.data_in_flight.is_set():
             page = self.reader.read()
             if page:
                 self.parent.store_page(page)
+                self.data_in_flight.set()
+                self.last_data = page.key
             elif not self.done:
                 self.dbg("Reader Done")
                 self.done = True
@@ -76,3 +45,9 @@ class Replayer(ThreadLoop):
 
     def terminate(self) -> None:
         self.reader.close()
+
+    def retire_data(self, t: Task, k: TaskId) -> None:
+        if t.name == self.last_data:
+            self.dbg("Retiring last data: %s", self.last_data)
+            self.data_in_flight.clear()
+        return None

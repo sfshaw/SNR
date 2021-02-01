@@ -1,2 +1,10 @@
-include *.txt
-recursive-include docs *.txt
+include mypy.ini
+include python_version
+
+recursive-include snr *.py
+recursive-include tests *.csv
+recursive-include tests *.py
+recursive-include tests *.txt
+
+exclude Makefile
+exclude .vscode/*

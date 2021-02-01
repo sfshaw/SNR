@@ -1,5 +1,3 @@
-from typing import Callable, Dict, List
-
 from snr.snr_core.base import *
 
 Command = Callable[[List[str]], SomeTasks]

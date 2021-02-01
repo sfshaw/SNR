@@ -1,7 +1,6 @@
-from typing import List, Tuple
-
-import numpy as np
 import cv2
+import numpy as np
+from snr.snr_types.base import *
 
 Rect = Tuple[int, int, int, int]
 

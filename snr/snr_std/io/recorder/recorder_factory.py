@@ -1,12 +1,10 @@
-from typing import List
-
 from snr.snr_core.base import *
 from snr.snr_std.io.recorder import recorder_endpoint
 
 
 class RecorderFactory(EndpointFactory):
     def __init__(self, filename: str, data_names: List[str]):
-        super().__init__(recorder_endpoint, "recorder_factory")
+        super().__init__(recorder_endpoint)
         self.filename = filename
         self.data_names = data_names
 

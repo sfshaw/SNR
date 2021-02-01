@@ -1,11 +1,9 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
 import logging
-from dataclasses import dataclass
-from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from dataclasses_json import DataClassJsonMixin
+from .base import *
+from .page import Page
 
 
 class TaskPriority(Enum):
@@ -15,10 +13,11 @@ class TaskPriority(Enum):
 
 
 class TaskType(Enum):
-    event = "event"
-    process_data = "process_data"
-    reload = "reload"
-    terminate = "terminate"
+    event = 'event'
+    store_page = 'store_page'
+    process_data = 'process_data'
+    reload = 'reload'
+    terminate = 'terminate'
 
     def __repr__(self) -> str:
         return f"TaskType.{self.value}"
@@ -70,6 +69,10 @@ class Task(DataClassJsonMixin):
 
 def event(name: str, val_list: List[Any] = []) -> Task:
     return Task(TaskType.event, name, val_list=val_list)
+
+
+def store_page(page: Page) -> Task:
+    return Task(TaskType.store_page, page.key, val_list=[page])
 
 
 def process_data(name: str) -> Task:

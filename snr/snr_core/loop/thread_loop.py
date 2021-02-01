@@ -1,3 +1,4 @@
+import logging
 from threading import Event, Thread
 import time
 
@@ -5,7 +6,7 @@ from snr.snr_core.context.context import Context
 from snr.snr_core.loop.loop_factory import LoopFactory
 from snr.snr_protocol import *
 
-DEFAULT_TICK_RATE = 250
+DEFAULT_TICK_RATE = 1000
 
 
 class ThreadLoop(Context, LoopProtocol):
@@ -24,11 +25,14 @@ class ThreadLoop(Context, LoopProtocol):
                  tick_rate_hz: float = DEFAULT_TICK_RATE
                  ) -> None:
         super().__init__(name, parent)
+        self.factory = factory
+        self.task_handlers: TaskHandlerMap = {}
         self.parent = parent
         self.set_delay(tick_rate_hz)
         self.__terminate_flag = Event()
         self.__thread = Thread(target=self.threaded_method,
                                name=self.name + "_thread")
+        self.log.setLevel(logging.WARN)
 
     def set_delay(self, tick_rate_hz: float):
         if tick_rate_hz == 0:

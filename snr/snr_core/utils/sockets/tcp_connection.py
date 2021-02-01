@@ -3,7 +3,8 @@ import struct
 from socket import AF_INET, SOCK_STREAM
 from socket import socket as Socket
 from time import sleep
-from typing import Any, Generic, Tuple, TypeVar
+
+from snr.snr_types.base import *
 
 MAX_RETRIES = 10
 RETRY_WAIT_S = 0.5

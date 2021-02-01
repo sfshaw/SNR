@@ -1,11 +1,8 @@
 import logging
 from queue import Empty, Queue
 from threading import Event, Thread
-from time import sleep
-from typing import Callable, Generic, Optional, TypeVar
-
-from snr.snr_core.utils.debug.channels import *
-
+import time
+from snr.snr_types.base import *
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
 
@@ -45,7 +42,7 @@ class Consumer(Thread, Generic[T]):
             self.__iterate()
 
             # self.fed.wait(timeout=self.sleep_time)
-            sleep(self.sleep_time)
+            time.sleep(self.sleep_time)
 
         # Flush remaining lines
         while not self.flushed.is_set():
@@ -71,7 +68,7 @@ class Consumer(Thread, Generic[T]):
     def __get(self) -> Optional[T]:
         return self.queue.get_nowait()
 
-    def join_from(self, joiner: str):
+    def join_from(self, joiner: str) -> None:
         self.log.info("Preparing to join thread from %s", joiner)
         self.set_terminate_flag()
         super().join()
@@ -84,5 +81,5 @@ class Consumer(Thread, Generic[T]):
         else:
             self.log.error("Cannot flush dead consumer")
 
-    def set_terminate_flag(self):
+    def set_terminate_flag(self) -> None:
         self.__terminate_flag.set()

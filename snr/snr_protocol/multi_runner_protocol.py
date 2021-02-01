@@ -1,12 +1,10 @@
-from typing import List
-
 from snr.snr_types import *
 
 from snr.snr_protocol.factory_protocol import ComponentsByRole
 
 
 @runtime_checkable
-class MultiRunner(Protocol):
+class MultiRunnerProtocol(Protocol):
 
     mode: Mode
     factories_by_role: ComponentsByRole

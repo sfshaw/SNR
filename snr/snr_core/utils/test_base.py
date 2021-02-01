@@ -1,6 +1,7 @@
-from snr.snr_core.utils.dummy_endpoint import DummyEndpointFactory
-from snr.snr_core.utils.expector import Expector
-from snr.snr_core.utils.expector_endpoint import ExpectorEndpointFactory
-from snr.snr_core.utils.snr_test_case import SNRTestBase, unittest
-from snr.snr_core.utils.timeout_loop import (FAST_TEST_TIMEOUT_MS,
-                                             TimeoutLoopFactory)
+from .dummy_endpoint import DummyEndpointFactory
+from .expector import Expector
+from .expector_endpoint import ExpectorEndpointFactory
+from .snr_test_case import SNRTestBase, unittest
+from .timeout_loop_factory import (FAST_TEST_TIMEOUT_MS,
+                                   TimeoutLoopFactory)
+from .expector import Expectations

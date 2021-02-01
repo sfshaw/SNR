@@ -1,10 +1,9 @@
+from snr.snr_protocol.endpoint_protocol import EndpointProtocol
 from snr.snr_types import *
-
-from snr.snr_protocol.component_protocol import ComponentProtocol
 
 
 @runtime_checkable
-class LoopProtocol(ComponentProtocol, Protocol):
+class LoopProtocol(EndpointProtocol, Protocol):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An
@@ -12,12 +11,6 @@ class LoopProtocol(ComponentProtocol, Protocol):
     the Node. The endpoint has its loop handler function run according to its
     tick_rate (Hz).
     """
-
-    def start(self) -> None:
-        ...
-
-    def join(self) -> None:
-        ...
 
     def setup(self) -> None:
         ...
@@ -29,7 +22,4 @@ class LoopProtocol(ComponentProtocol, Protocol):
         ...
 
     def is_terminated(self) -> bool:
-        ...
-
-    def set_terminate_flag(self) -> None:
         ...

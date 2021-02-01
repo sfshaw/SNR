@@ -1,6 +1,6 @@
-
 from snr.snr_core.base import *
-from snr.snr_std.io.replayer import replayer
+
+from . import replayer
 
 
 class ReplayerFactory(LoopFactory):
@@ -8,7 +8,7 @@ class ReplayerFactory(LoopFactory):
                  input_filename: str,
                  exit: bool = False
                  ) -> None:
-        super().__init__("Replayer Factory")
+        super().__init__()
         self.input_filename = input_filename
         self.exit = exit
 

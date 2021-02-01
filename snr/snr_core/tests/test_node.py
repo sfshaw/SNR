@@ -1,8 +1,4 @@
-from enum import Enum
-from typing import Dict, Optional, Tuple, Union
-
 from snr.snr_core.base import *
-from snr.snr_core.datastore import Datastore
 from snr.snr_core.endpoint.node_core_factory import NodeCoreFactory
 from snr.snr_core.utils.test_base import *
 
@@ -51,9 +47,7 @@ class TestNode(SNRTestBase):
                             DummyEndpointFactory("dummy_endpoint_2", {
                                 TaskType.process_data: no_op
                             }),
-                        ],
-                        lambda n, s: Datastore(n, s),
-                        )
+                        ])
 
             handlers = node.get_task_handlers(task.terminate("test"))
             self.assertEqual(1, len(handlers))

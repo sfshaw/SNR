@@ -1,8 +1,6 @@
 import logging
-from dataclasses import dataclass
-from typing import Any, Callable, Optional
 
-from dataclasses_json import DataClassJsonMixin
+from .base import *
 
 MAX_PRINTABLE_DATA_LEN = 60
 
@@ -30,7 +28,12 @@ class Page(DataClassJsonMixin):
             self.process)
 
     def serialize(self) -> str:
-        return self.to_json()
+        json = self.to_json()
+
+        log = logging.getLogger("Page")
+        log.debug("Page serialized to json: %s",
+                  json)
+        return json
 
     @classmethod
     def deserialize(cls, json: str) -> Optional["Page"]:

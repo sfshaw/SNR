@@ -1,5 +1,5 @@
 from snr.snr_core.base import *
-from snr.snr_std.kalman import kalman_endpoint
+from . import kalman_endpoint
 
 
 class KalmanFilterFactory(EndpointFactory):
@@ -7,7 +7,7 @@ class KalmanFilterFactory(EndpointFactory):
                  input_data_name: str,
                  output_data_name: str
                  ) -> None:
-        super().__init__(kalman_endpoint, "Kalman Kilter Endpoint Factory")
+        super().__init__(kalman_endpoint)
         self.input_data_name = input_data_name
         self.output_data_name = output_data_name
 

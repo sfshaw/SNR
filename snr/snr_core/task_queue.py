@@ -1,9 +1,9 @@
-from queue import Queue
-from typing import List, Union
+import logging
+import queue
 
 from snr.snr_types import *
 
-from snr.snr_core.context.context import Context
+from .context.context import Context
 
 
 class TaskQueue(Context):
@@ -15,25 +15,27 @@ class TaskQueue(Context):
                          parent,
                          parent.profiler)
         self.get_new_tasks = task_source
-        self.queue: "Queue[Task]" = Queue()
+        self.queue: "queue.Queue[Task]" = queue.Queue()
+        self.log.setLevel(logging.WARN)
 
     def schedule(self, t: SomeTasks) -> None:
         """ Adds a Task or a list of Tasks to the node's queue
         """
         if isinstance(t, Task):
             self.__schedule_task(t)
-        elif isinstance(t, List):
+        elif t:
             # Recursively handle lists
-            self.dbg("Recursively scheduling list of {} tasks",
-                     [len(t)])
+            self.dbg("Recursively scheduling list of %s tasks",
+                     len(t))
             for item in t:
-                self.schedule(item)
+                if item:
+                    self.schedule(item)
         else:
-            self.err("Cannot schedule {} object {}", [type(t), t])
+            self.err("Cannot schedule %s object %s", type(t), t)
 
     def __schedule_task(self, t: Task) -> None:
         # Handle normal tasks
-        self.dbg("Scheduling task {}", [t])
+        self.dbg("Scheduling task %s", t)
         # Ignore Priority
         self.queue.put(t)
 
@@ -46,7 +48,10 @@ class TaskQueue(Context):
                 self.schedule(new_tasks)
             else:
                 return None
-        return self.queue.get()
+        next = self.queue.get()
+        self.dbg("Next task: %s", next)
+        self.dbg("%s tasks left in queue", self.queue.qsize())
+        return next
 
     def is_empty(self) -> bool:
         return self.queue.empty()

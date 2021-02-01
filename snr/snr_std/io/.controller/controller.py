@@ -4,7 +4,6 @@ https://www.pygame.org/docs/ref/joystick.html
 """
 
 import random
-from typing import Any, Dict, Tuple, Type, TypeVar, Union
 
 import pygame
 from snr.snr_core.base import *

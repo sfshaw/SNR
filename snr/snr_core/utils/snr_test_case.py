@@ -1,16 +1,9 @@
 import time
 import unittest
-from sys import stdout
-from typing import List, Optional
+from snr.snr_core.base import *
 
-from snr.snr_core.config import Config
-from snr.snr_core.context.context import Context
-from snr.snr_core.context.root_context import RootContext
-from snr.snr_core.runner.test_runner import SynchronusTestRunner
-from snr.snr_core.utils.expector import Expectations, Expector
-from snr.snr_core.utils.temp_file import TempFile
-from snr.snr_protocol import *
-from snr.snr_types import *
+from .expector import Expectations, Expector
+from .temp_file import TempFile
 
 PRINT_INDIVIDUAL_RUNTIME: bool = True
 
@@ -19,9 +12,9 @@ class SNRTestBase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.startTime = time.time()
-        stdout.flush()
         self.test_name = self.id().split(".")[-1]
         self.root_context = RootContext(self.test_name)
+        self.log = self.root_context.log
 
     def tearDown(self) -> None:
         t = time.time() - self.startTime
@@ -71,4 +64,4 @@ class SNRTestBase(unittest.TestCase):
                 self.assertAlmostEqual(created_at, page.created_at)
             self.assertEqual(process, page.process)
         else:
-            self.assertTrue(False, f"{page} is not a Page")
+            self.assertTrue(False, "Given page is not a Page")

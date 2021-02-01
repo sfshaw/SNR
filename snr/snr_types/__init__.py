@@ -1,8 +1,9 @@
-from typing_extensions import Protocol, runtime_checkable
-
-from snr.snr_types import task
-from snr.snr_types.mode import *
-from snr.snr_types.page import *
-from snr.snr_types.role import *
-from snr.snr_types.settings import *
-from snr.snr_types.task import *
+from . import task
+from .base import *
+from .mode import Mode
+from .page import DataKey, InboundStoreFn, Page
+from .role import Role
+from .serializable import Serializable
+from .settings import Settings
+from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
+                   TaskScheduler, TaskSource, TaskType)

@@ -1,4 +1,4 @@
-from typing import List
+import logging
 
 from snr.snr_core.base import *
 
@@ -14,6 +14,7 @@ class RecorderEndpoint(Endpoint):
         self.task_handlers = self.map_handlers(data_names)
         self.filename = filename
         self.file = open(filename, "w")
+        self.log.setLevel(logging.WARN)
 
     def task_source(self) -> None:
         return None
@@ -43,6 +44,7 @@ class RecorderEndpoint(Endpoint):
             handlers[(TaskType.event, data_name)] = self.task_handler
         return handlers
 
-    def terminate(self) -> None:
+    def join(self) -> None:
         self.file.flush()
         self.file.close()
+        self.info("Closing file %s", self.filename)

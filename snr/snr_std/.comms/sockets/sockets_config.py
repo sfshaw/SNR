@@ -1,4 +1,4 @@
-from typing import Tuple
+from snr.snr_types.base import *
 
 
 class SocketsConfig:

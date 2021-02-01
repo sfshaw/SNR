@@ -1,30 +1,28 @@
 import logging
-from typing import Any, Callable, List, Optional, TypeVar
 
-from snr.snr_core.utils.profiler import Profiler
 from snr.snr_protocol import *
 
 
-class Context(SettingsProvider):
+class Context(ContextProtocol):
 
     def __init__(self,
                  name: str,
-                 parent: SettingsProvider,
-                 profiler: Optional[Profiler] = None
+                 parent: ContextProtocol,
+                 profiler: Optional[ProfilerProtocol] = None
                  ) -> None:
         self.name = name
 
         self.log = logging.getLogger(self.name)
 
         self.settings: Settings = parent.settings
-        self.profiler: Optional[Profiler] = profiler
+        self.profiler = profiler
 
         if not self.settings:
             raise Exception(f"FATAL: Incorrectly constructed context: {name}")
 
     def terminate(self) -> None:
         self.dbg("Terminating context %s", self.name)
-        if isinstance(self.profiler, Profiler):
+        if self.profiler:
             self.profiler.join_from("context temrinate")
             self.profiler.dump()
         self.info("Context %s terminated", self.name)

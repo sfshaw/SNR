@@ -1,7 +1,6 @@
 import socket
 from socket import socket as Socket
-from threading import Thread
-from typing import Optional
+import threading
 
 from snr.snr_core.base import *
 
@@ -18,10 +17,8 @@ class DiscoveryServer(Context):
         self.s: Optional[Socket] = None
         self.__init_socket()
         self.terminate_flag = self.s is None
-        self.thread = Thread(target=self.loop,
-                             args=[],
-                             daemon=False,
-                             )
+        self.thread = threading.Thread(target=self.loop,
+                                       args=[])
         self.thread.start()
 
     def loop(self):

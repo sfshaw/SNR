@@ -1,8 +1,7 @@
-from typing import Any, Dict
-
 from snr.snr_core.base import *
-from snr.snr_std.camera.camera_config import CameraConfig, ManagerRole
-from snr.snr_std.camera.factory import VideoReceiverFactory, VideoSourceFactory
+
+from .camera_config import CameraConfig, ManagerRole
+from .camera_factory import VideoReceiverFactory, VideoSourceFactory
 
 INITIAL_PORT = 8000
 CAMERA_MANAGER_TICK_HZ = 1

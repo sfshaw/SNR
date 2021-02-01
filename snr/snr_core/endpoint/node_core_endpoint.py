@@ -1,9 +1,7 @@
-from typing import Any
-
-from snr.snr_core.endpoint.endpoint import Endpoint
-from snr.snr_core.endpoint.endpoint_factory import EndpointFactory
 from snr.snr_protocol import *
-from snr.snr_types import*
+
+from .endpoint import Endpoint
+from .endpoint_factory import EndpointFactory
 
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
@@ -13,13 +11,14 @@ TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 class NodeCore(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol
+                 parent: NodeProtocol,
                  ) -> None:
         super().__init__(factory,
                          parent,
                          parent.name + NODE_CORE_NAME_SUFFIX)
         self.task_handlers = {
             TaskType.terminate: self.task_handler_terminate,
+            TaskType.store_page: self.task_handler_store_page,
             TaskType.reload: self.task_handler_reload,
             (TaskType.event, "cmd_list_endpoints"):
             self.task_handler_list_endpoints,
@@ -31,10 +30,15 @@ class NodeCore(Endpoint):
     def terminate(self) -> None:
         pass
 
-    def reload(self, parent: Any) -> EndpointProtocol:
-        return self
-
     def task_source(self) -> SomeTasks:
+        return None
+
+    def task_handler_store_page(self, t: Task, key: TaskId) -> SomeTasks:
+        page = t.val_list[0]
+        if isinstance(page, Page):
+            self.parent.synchronous_store(page)
+        else:
+            self.err("Store page task value was not a page: %s", page)
         return None
 
     def task_handler_terminate(self, t: Task, key: TaskId) -> SomeTasks:
@@ -48,14 +52,20 @@ class NodeCore(Endpoint):
         endpoint_name = t.val_list[0]
         endpoint = self.parent.endpoints.get(endpoint_name)
         if isinstance(endpoint, EndpointProtocol):
-            self.info("Reloading endoint: {}", [endpoint_name])
-            self.parent.endpoints[endpoint_name] = endpoint.reload(self)
+            self.info("Reloading endoint: %s", endpoint_name)
+            endpoint.reload()
+            self.parent.endpoints.pop(endpoint_name)
+            new_name = self.parent.add_component(endpoint.factory)
+            if new_name:
+                self.parent.endpoints[new_name].start()
+            else:
+                self.warn("Failed to restart reloaded endpoint %s",
+                          endpoint_name)
         else:
-            self.warn("Endpoint {} not found", [endpoint_name])
+            self.warn("Endpoint %s not found", endpoint_name)
 
         return None
 
     def task_handler_list_endpoints(self, t: Task, key: TaskId):
-        self.info("Listing endpoints:")
-        for name in self.parent.endpoints.keys():
-            self.info("\t{}", [name])
+        self.info("Listing endpoints: \n%s",
+                  "\n\t".join(self.parent.endpoints.keys()))

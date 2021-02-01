@@ -3,7 +3,8 @@ Attempts to document propper usage of such functions
 """
 
 import sys
-from typing import Any, Dict, List
+
+from snr.snr_types.base import *
 
 
 def print_usage() -> None:

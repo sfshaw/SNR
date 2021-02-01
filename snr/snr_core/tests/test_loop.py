@@ -22,7 +22,7 @@ class LoopUnderTest(ThreadLoop):
 
 class LUTFactory(LoopFactory):
     def __init__(self, expector: Expector) -> None:
-        super().__init__("test_factory")
+        super().__init__()
         self.expector = expector
 
     def get(self, parent: NodeProtocol) -> ThreadLoop:

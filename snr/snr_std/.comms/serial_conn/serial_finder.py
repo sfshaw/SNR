@@ -1,12 +1,12 @@
-""" This module seaches the operating system for devices on serial ports
+""" This module seaches the operating system for devices on serial ports.
+
+Likely based on pygame example code?
 """
-# TODO: Find the origin of this code and give credit
 
 import glob
 import sys
 import time
 from sys import platform
-from typing import List, Optional
 
 import serial
 from serial.serialutil import SerialBase

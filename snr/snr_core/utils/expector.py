@@ -1,6 +1,7 @@
 import logging
-from typing import Any, Dict
 from unittest.case import TestCase
+
+from snr.snr_types.base import *
 
 Expectations = Dict[Any, int]
 
@@ -28,6 +29,15 @@ class Expector:
                                       self.times_called[str(key)],
                                       "For " + str(key))
         self.testcase.assertTrue(True)
+
+    def check(self) -> bool:
+        """Safety failable version of assertSatisfied, can be called
+        and fail without raising AssertionError
+        """
+        for (key, expected_value) in self.expectations.items():
+            if expected_value != self.times_called[str(key)]:
+                return False
+        return True
 
     def dump(self) -> None:
         self.log.debug(self.times_called)

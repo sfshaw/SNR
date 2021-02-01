@@ -1,5 +1,3 @@
-from typing import List
-
 from snr.snr_types import *
 
 from .factory_protocol import FactoryProtocol

@@ -1,7 +1,7 @@
 from snr import *
 
 
-class TestRawDataReplayer(SNRTestBase):
+class TestTextReplayer(SNRTestBase):
 
     def test_raw_reader(self):
         with self.temp_file() as file:
@@ -10,7 +10,7 @@ class TestRawDataReplayer(SNRTestBase):
                 f.write("line1\n")
                 f.write("line2\n")
 
-            reader = RawReader(self.context(), "test_reader", file.path)
+            reader = TextReader(self.context(), "test_reader", file.path)
             try:
                 self.assertEqual("line1", reader.read())
                 self.assertEqual("line2", reader.read())
@@ -26,34 +26,32 @@ class TestRawDataReplayer(SNRTestBase):
                 with temp_file.open() as f:
                     f.write("")
                 self.run_test_node([
-                    RawDataReplayerFactory(temp_file.path,
-                                           "raw_data",
-                                           exit=True),
+                    TextReplayerFactory(temp_file.path,
+                                        "raw_data",
+                                        exit=True),
                     ExpectorEndpointFactory(expector)
                 ])
 
     def test_raw_data_replayer_one(self):
         with self.expector({
             (TaskType.process_data, "raw_data"): 1,
-            TaskType.terminate: 1,
         }) as expector:
 
             with self.temp_file() as temp_file:
 
                 with temp_file.open() as f:
-                    f.write("test_data\n")
+                    f.write("whatever")
 
                 self.run_test_node([
-                    RawDataReplayerFactory(temp_file.path,
-                                           "raw_data",
-                                           exit=True),
-                    ExpectorEndpointFactory(expector)
+                    TextReplayerFactory(temp_file.path,
+                                        "raw_data"),
+                    ExpectorEndpointFactory(expector,
+                                            exit_when_done=True)
                 ])
 
     def test_raw_data_replayer_two(self):
         with self.expector({
             (TaskType.process_data, "raw_data"): 2,
-            TaskType.terminate: 1,
         }) as expector:
 
             with self.temp_file() as temp_file:
@@ -61,15 +59,10 @@ class TestRawDataReplayer(SNRTestBase):
                 with temp_file.open() as f:
                     f.write("test_data1\n")
                     f.write("test_data2\n")
-                    f.write("\n")
 
                 self.run_test_node([
-                    RawDataReplayerFactory(temp_file.path,
-                                           "raw_data",
-                                           exit=True),
-                    ExpectorEndpointFactory(expector)
+                    TextReplayerFactory(temp_file.path,
+                                        "raw_data"),
+                    ExpectorEndpointFactory(expector,
+                                            exit_when_done=True)
                 ])
-
-
-if __name__ == '__main__':
-    unittest.main()

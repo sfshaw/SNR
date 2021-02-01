@@ -1,9 +1,8 @@
-from typing import List, Tuple
-
 import cv2
 import numpy as np
+from snr.snr_types.base import *
 
-from snr.snr_std.cv.boxes import Rect
+from .boxes import Rect
 
 # Minimim area threshold that is boxed
 AREA_THRESHHOLD = 1000

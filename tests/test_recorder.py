@@ -1,24 +1,28 @@
-from snr import *
+import logging
 
-RAW_DATA_PATH = "tests/test_data/in/raw_data1.txt"
+from snr import *
 
 
 class TestRecorder(SNRTestBase):
 
     def test_recorder_encoding(self):
+        logging.getLogger("Page").setLevel(logging.WARN)
         with self.expector({(
             TaskType.process_data, "raw_data"): 1,
-            TaskType.terminate: 1
         }) as expector:
 
-            with self.temp_file() as output:
+            with self.temp_file("raw_data_input.txt"
+                                ) as input, \
+                    self.temp_file("output.tmp") as output:
+
+                with input.open() as f:
+                    f.write("test_data\n")
 
                 self.run_test_node([
-                    RawDataReplayerFactory(RAW_DATA_PATH,
-                                           "raw_data",
-                                           exit=True),
+                    TextReplayerFactory(input.path,
+                                        "raw_data"),
                     RecorderFactory(output.path, ["raw_data"]),
-                    ExpectorEndpointFactory(expector)
+                    ExpectorEndpointFactory(expector, exit_when_done=True)
                 ])
 
                 output.assertExists()
@@ -30,9 +34,10 @@ class TestRecorder(SNRTestBase):
                         self.assertEqual("test_data", page.data)
                         self.assertEqual("test_node", page.origin)
                     else:
-                        self.assertTrue(
-                            False,
-                            f"Deserialization  of {line} failed, got {page}")
+                        self.log.error("Deserialization of %s failed, got %s",
+                                       line, page)
+                        self.assertTrue(False,
+                                        f"Deserialization of page failed")
 
 
 if __name__ == '__main__':

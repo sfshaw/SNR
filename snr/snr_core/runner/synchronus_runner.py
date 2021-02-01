@@ -1,13 +1,8 @@
-from typing import Optional
-
-from snr.snr_core.config import Config
-from snr.snr_core.context.root_context import RootContext
-from snr.snr_core.datastore import Datastore
-from snr.snr_core.endpoint.node_core_factory import NodeCoreFactory
-from snr.snr_core.node import Node
 from snr.snr_protocol import *
-from snr.snr_protocol.node_protocol import NodeProtocol
-from snr.snr_types import *
+
+from ...snr_core.config import Config
+from ...snr_core.context.root_context import RootContext
+from ...snr_core.node import Node
 
 
 class SynchronousRunner(RunnerProtocol):
@@ -18,15 +13,12 @@ class SynchronousRunner(RunnerProtocol):
 
     def run(self) -> None:
         context = RootContext("synchronous_runner")
-        node: Optional[NodeProtocol] = None
+        components = self.config.get(self.role)
+        node: NodeProtocol = Node(context,
+                                  self.role,
+                                  self.config.mode,
+                                  components)
         try:
-            components = self.config.get(self.role)
-            components.append(NodeCoreFactory())
-            node = Node(context,
-                        self.role,
-                        self.config.mode,
-                        components,
-                        lambda n, s: Datastore(n, s))
             node.loop()  # Blocking loop
         except KeyboardInterrupt:
             if node:

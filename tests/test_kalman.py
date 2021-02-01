@@ -1,57 +1,60 @@
 from snr import *
 
-raw_data_filename = "tests/test_data/in/raw_kalman_data.csv"
-
 
 class TestKalman(SNRTestBase):
 
     def test_kalman(self):
-        with self.temp_file() as temp_file:
+        with self.temp_file("raw_data.csv"
+                            ) as input, \
+            self.temp_file("pages.tmp"
+                           ) as output1, \
+            self.temp_file(filename="filtered_ouput.tmp"
+                           ) as output2:
+
+            with input.open() as f:
+                f.write("1,2,3\n")
+                f.write("4,5,6\n")
 
             with self.expector({
                 (TaskType.process_data, "raw_data"): 2,
-                (TaskType.terminate, "replayer_done"): 1,
             }) as expector:
 
                 self.run_test_node([
-                    RawDataReplayerFactory(raw_data_filename,
-                                           "raw_data",
-                                           exit=True),
-                    RecorderFactory(temp_file.path, ["raw_data"]),
-                    ExpectorEndpointFactory(expector),
+                    TextReplayerFactory(input.path,
+                                        "raw_data"),
+                    RecorderFactory(output1.path, ["raw_data"]),
+                    ExpectorEndpointFactory(expector, exit_when_done=True),
                 ])
 
-            temp_file.assertExists()
+            output1.assertExists()
 
             with self.expector({
                 (TaskType.process_data, "raw_data"): 2,
-                (TaskType.terminate, "replayer_done"): 1,
+                (TaskType.process_data, "filtered_data"): 2,
             }) as expector:
 
-                with self.temp_file(filename="filtered_ouput.tmp") as output:
+                self.run_test_node([
+                    ReplayerFactory(output1.path),
+                    KalmanFilterFactory("raw_data", "filtered_data"),
+                    RecorderFactory(output2.path, ["filtered_data"]),
+                    ExpectorEndpointFactory(expector, exit_when_done=True),
+                ])
 
-                    self.run_test_node([
-                        ReplayerFactory(temp_file.path, exit=True),
-                        KalmanFilterFactory("raw_data", "filtered_data"),
-                        RecorderFactory(output.path, ["filtered_data"]),
-                        ExpectorEndpointFactory(expector),
-                    ])
-
-                    output.assertExists()
-                    with PageReader(self.root_context,
-                                    "test_reader",
-                                    output.path) as reader:
-                        self.assertPage(reader.read(),
-                                        "filtered_data",
-                                        "1,2,3",
-                                        "test_node",
-                                        process=True)
-                        self.assertPage(reader.read(),
-                                        "filtered_data",
-                                        "4,5,6",
-                                        "test_node",
-                                        process=True)
-                        self.assertIsNone(reader.read())
+            output2.assertExists()
+            with PageReader(self.root_context,
+                            "test_reader",
+                            output2.path) as reader:
+                self.assertPage(reader.read(),
+                                "filtered_data",
+                                "1,2,3",
+                                "test_node",
+                                process=True)
+                self.assertPage(reader.read(),
+                                "filtered_data",
+                                "4,5,6",
+                                "test_node",
+                                process=True)
+                self.assertIsNone(reader.read())
 
 
 if __name__ == '__main__':

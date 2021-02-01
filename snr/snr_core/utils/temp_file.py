@@ -1,22 +1,27 @@
 import os
 import unittest
-from typing import IO, Any
+
+from snr.snr_types.base import *
+
+TEMP_PATH = "temp/"
 
 
 class TempFile:
     def __init__(self,
                  testcase: unittest.TestCase,
-                 path: str,
+                 filename: str,
                  overwrite: bool = False,
                  cleanup: bool = True
                  ) -> None:
         self.testcase = testcase
         self.overwrite = overwrite
         self.cleanup = cleanup
-        self.path = path
+        self.path = TEMP_PATH + filename
+        if not os.path.exists(TEMP_PATH):
+            os.makedirs(TEMP_PATH)
 
     def open(self) -> IO[Any]:
-        return open(self.path, 'x')
+        return open(self.path, 'w')
 
     def assertExists(self):
         self.testcase.assertTrue(os.path.exists(self.path),

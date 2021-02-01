@@ -1,8 +1,8 @@
 import socket
-from typing import List, Tuple
 
 from snr.snr_core.base import *
-from snr.snr_std.comms.sockets.discovery_server import DiscoveryServer
+
+from .discovery_server import DiscoveryServer
 
 TIMEOUT = 2
 
