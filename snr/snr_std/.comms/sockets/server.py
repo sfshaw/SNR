@@ -1,5 +1,6 @@
 import pickle
 import socket
+import time
 from socket import socket as Socket
 
 from snr.snr_core.base import *
@@ -65,7 +66,7 @@ class SocketsServer(ThreadLoop):
         except socket.error as socket_error:
             self.fatal("Bind failed: {}", [socket_error])
             self.s.close()
-            self.sleep(self.settings.SOCKETS_RETRY_WAIT)
+            time.sleep(self.settings.SOCKETS_RETRY_WAIT)
         # Listen for connections
         try:
             self.s.listen(self.settings.SOCKETS_MAX_CONNECTIONS)
