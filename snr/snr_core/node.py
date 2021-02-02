@@ -12,6 +12,7 @@ from .datastore import Datastore
 from .endpoint.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
 from .utils.profiler import Profiler
+from .utils.timer import Timer
 
 SLEEP_TIME = 0.00005
 
@@ -30,8 +31,9 @@ class Node(Context, NodeProtocol):
         self.role = role
         self.mode = mode
         self.context = self
+        self.timer = Timer()
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
-        self.__datastore = Datastore(self, self.schedule)
+        self.__datastore = Datastore(self, self.schedule, self.timer)
         self.endpoints: Dict[str, EndpointProtocol] = {}
         self.add_component(NodeCoreFactory())
         for factory in factories:
@@ -164,3 +166,6 @@ class Node(Context, NodeProtocol):
 
     def get_page(self, key: str) -> Optional[Page]:
         return self.__datastore.get_page(key)
+
+    def get_time(self) -> float:
+        return self.timer.current()

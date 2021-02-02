@@ -56,3 +56,6 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
 
     def get_data(self, key: str) -> Optional[Any]:
         ...
+
+    def get_time(self) -> float:
+        ...

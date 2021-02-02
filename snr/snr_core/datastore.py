@@ -11,11 +11,11 @@ class Datastore(Context):
     def __init__(self,
                  parent: ContextProtocol,
                  task_scheduler: TaskScheduler,
+                 timer: Timer,
                  ) -> None:
         super().__init__("datastore", parent)
-
+        self.timer = timer
         self.parent = parent
-        self.timer = Timer()
         self.data_dict: DataDict = {}
         self.schedule_task = task_scheduler
 
