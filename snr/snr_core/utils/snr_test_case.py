@@ -1,8 +1,11 @@
 import time
 import unittest
+
 from snr.snr_core.base import *
 
 from .expector import Expectations, Expector
+from .expector_protocol import ExpectorProtocol
+from .ordered_expector import OrderedExpectations, OrderedExpector
 from .temp_file import TempFile
 
 PRINT_INDIVIDUAL_RUNTIME: bool = True
@@ -24,8 +27,15 @@ class SNRTestCase(unittest.TestCase):
     def context(self):
         return Context(self.id(), self.root_context)
 
-    def expector(self, expectations: Expectations) -> Expector:
+    def expector(self,
+                 expectations: Expectations
+                 ) -> ExpectorProtocol:
         return Expector(expectations, self)
+
+    def ordered_expector(self,
+                         expectations: OrderedExpectations
+                         ) -> ExpectorProtocol:
+        return OrderedExpector(expectations, self)
 
     def get_config(self,
                    factories: List[FactoryProtocol],

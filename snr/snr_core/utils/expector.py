@@ -1,13 +1,19 @@
 import logging
-from unittest.case import TestCase
+import unittest
 
 from snr.snr_types.base import *
+
+from .expector_protocol import ExpectorProtocol
 
 Expectations = Dict[Any, int]
 
 
-class Expector:
-    def __init__(self, expectations: Expectations, testcase: TestCase) -> None:
+class Expector(ExpectorProtocol):
+
+    def __init__(self,
+                 expectations: Expectations,
+                 testcase: unittest.TestCase
+                 ) -> None:
         self.expectations = expectations
         self.testcase = testcase
         self.log = logging.getLogger()
@@ -15,13 +21,18 @@ class Expector:
         for key in expectations:
             self.times_called[str(key)] = 0
 
-    def call(self, key: Any):
+    def get_expectations(self) -> Iterable[Any]:
+        return self.expectations.keys()
+
+    def call(self, key: Any) -> None:
         val = self.times_called.get(str(key))
         if val is None:
             val = 0
         self.times_called[str(key)] = val + 1
 
-    def assert_satisfied(self):
+    def assert_satisfied(self) -> None:
+        '''Assert that all expectations have been satisfied
+        '''
         for (key, expected_value) in self.expectations.items():
             if expected_value != self.times_called[str(key)]:
                 self.dump()
@@ -31,9 +42,8 @@ class Expector:
         self.testcase.assertTrue(True)
 
     def check(self) -> bool:
-        """Safety failable version of assertSatisfied, can be called
-        and fail without raising AssertionError
-        """
+        '''Check each expectation and shortcircuit if one is not satisfied.
+        '''
         for (key, expected_value) in self.expectations.items():
             if expected_value != self.times_called[str(key)]:
                 return False
@@ -44,6 +54,3 @@ class Expector:
 
     def __enter__(self) -> "Expector":
         return self
-
-    def __exit__(self, *args: Any) -> None:
-        self.assert_satisfied()
