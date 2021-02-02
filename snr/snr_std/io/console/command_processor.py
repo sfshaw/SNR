@@ -49,7 +49,5 @@ class CommandProcessor(Endpoint):
             self.warn("Invalid reload args: %s", args)
 
     def cmd_list(self, args: List[str]) -> SomeTasks:
-        options = {
-            "endpoints": task.event("cmd_list_endpoints")
-        }
-        return options.get(args[0])
+        self.info("Listing endpoints: \n%s",
+                  "\n\t".join(self.parent.endpoints.keys()))

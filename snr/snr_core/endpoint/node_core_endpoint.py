@@ -65,7 +65,3 @@ class NodeCore(Endpoint):
             self.warn("Endpoint %s not found", endpoint_name)
 
         return None
-
-    def task_handler_list_endpoints(self, t: Task, key: TaskId):
-        self.info("Listing endpoints: \n%s",
-                  "\n\t".join(self.parent.endpoints.keys()))
