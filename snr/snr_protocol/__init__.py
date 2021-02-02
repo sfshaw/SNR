@@ -1,3 +1,12 @@
+'''Provides interface-like Protocols used throughout the project
+
+These Protocol definitions precede concrete implementations to describe exactly
+what concrete implemetations can expect from each other and must do for each
+other. Thus, croncrete implementations can rely on protocol definitions rather
+than other concrete definitions. Defining protocols separate from concrete
+implemetations makes new implementations easier and prevents some cyclic
+dependancies.
+'''
 from .component_protocol import ComponentProtocol
 from .config_protocol import ConfigProtocol
 from .context_protocol import ContextProtocol

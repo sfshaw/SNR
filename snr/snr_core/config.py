@@ -1,3 +1,10 @@
+'''Provides concrete implementation of ConfigProtocol by wrapping mode and a
+ dictionary of factories by role.
+A single Config contains the information to construct all the nodes used by
+system or robot. With one Config definition, the components of multiple nodes
+can be defined in one place.
+'''
+
 from snr.snr_protocol import *
 from snr.snr_types import *
 

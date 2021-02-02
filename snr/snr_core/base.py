@@ -1,3 +1,9 @@
+'''Exports commonly used core classes, types, and protocols
+
+This should include the basic building blocks for a custom endpoint or loop.
+This is what snr-std relies on.
+'''
+
 from snr.snr_protocol import *  # Project Protocols
 from snr.snr_types import *  # Project types
 
