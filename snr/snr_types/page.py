@@ -28,7 +28,7 @@ class Page(DataClassJsonMixin):
             self.process)
 
     def serialize(self) -> str:
-        json = self.to_json()
+        json = self.to_json()  # type: ignore
 
         log = logging.getLogger("Page")
         log.debug("Page serialized to json: %s",
@@ -38,7 +38,7 @@ class Page(DataClassJsonMixin):
     @classmethod
     def deserialize(cls, json: str) -> Optional["Page"]:
         try:
-            return Page.from_json(json)
+            return Page.from_json(json)  # type: ignore
         except Exception as e:
             log = logging.getLogger("Page")
             log.error("Could not deserialize Page from json: %s, e: %s",
