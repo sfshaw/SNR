@@ -17,4 +17,4 @@ class TimeoutLoop(ThreadLoop):
     def setup(self) -> None:
         if self.timeout_s > 0:
             time.sleep(self.timeout_s)
-        self.parent.schedule(task.terminate("Timeout"))
+        self.parent.schedule(task_terminate("Timeout"))

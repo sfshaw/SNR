@@ -1,6 +1,7 @@
-from snr.snr_core.base import *
-from snr.snr_core.endpoint.node_core_factory import NodeCoreFactory
-from snr.snr_core.utils.test_base import *
+from snr import *
+from snr.snr_core.node import Node
+from snr.snr_core.utils.utils import no_op
+from snr.snr_types.task import task_process_data
 
 
 class TestNode(SNRTestCase):
@@ -32,14 +33,12 @@ class TestNode(SNRTestCase):
         self.assertIsNone(get((Type.c, "1")))
 
     def test_get_task_handlers(self):
-        root_context = RootContext("test")
         node = None
         try:
-            node = Node(root_context,
+            node = Node(self.root_context,
                         "test",
                         Mode.TEST,
                         [
-                            NodeCoreFactory(),
                             DummyEndpointFactory("dummy_endpoint_1", {
                                 (TaskType.event, "by_type_and_name"): no_op,
                                 TaskType.process_data: no_op
@@ -49,14 +48,14 @@ class TestNode(SNRTestCase):
                             }),
                         ])
 
-            handlers = node.get_task_handlers(task.terminate("test"))
+            handlers = node.get_task_handlers(task_terminate("test"))
             self.assertEqual(1, len(handlers))
 
-            handlers = node.get_task_handlers(task.event("none"))
+            handlers = node.get_task_handlers(task_event("none"))
             self.assertEqual(0, len(handlers))
 
             handlers = node.get_task_handlers(
-                task.process_data("by_type"))
+                task_process_data("by_type"))
             self.assertEqual(2, len(handlers))
 
             node.set_terminate_flag("test done")

@@ -1,6 +1,7 @@
 import importlib
 
 from snr.snr_protocol import *
+from snr.snr_types import *
 
 
 class EndpointFactory(FactoryProtocol):

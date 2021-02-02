@@ -67,23 +67,23 @@ class Task(DataClassJsonMixin):
             self.name, self.type, self.priority, self.val_list)
 
 
-def event(name: str, val_list: List[Any] = []) -> Task:
+def task_event(name: str, val_list: List[Any] = []) -> Task:
     return Task(TaskType.event, name, val_list=val_list)
 
 
-def store_page(page: Page) -> Task:
+def task_store_page(page: Page) -> Task:
     return Task(TaskType.store_page, page.key, val_list=[page])
 
 
-def process_data(name: str) -> Task:
+def task_process_data(name: str) -> Task:
     return Task(TaskType.process_data, name)
 
 
-def reload(endpoint_name: str) -> Task:
+def task_reload(endpoint_name: str) -> Task:
     return Task(TaskType.reload, endpoint_name)
 
 
-def terminate(reason: str) -> Task:
+def task_terminate(reason: str) -> Task:
     return Task(TaskType.terminate, reason)
 
 

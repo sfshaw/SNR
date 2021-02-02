@@ -1,3 +1,4 @@
+from snr.snr_core.base import *
 from .dummy_endpoint import DummyEndpointFactory
 from .expector import Expectations, Expector
 from .expector_endpoint import ExpectorEndpointFactory

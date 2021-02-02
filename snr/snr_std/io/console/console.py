@@ -3,6 +3,7 @@ import sys
 import threading
 
 from snr.snr_core.base import *
+from snr.snr_core.utils.sockets.tcp_connection import TCPConnection
 
 PROMPT = "> "
 

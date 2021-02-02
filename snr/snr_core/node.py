@@ -5,6 +5,8 @@ import threading
 import time
 
 from snr.snr_protocol import *
+from snr.snr_types import *
+from snr.snr_types.task import task_store_page
 
 from .context.context import Context
 from .context.root_context import RootContext
@@ -156,7 +158,7 @@ class Node(Context, NodeProtocol):
         self.__datastore.synchronous_store(page)
 
     def store_page(self, page: Page) -> None:
-        self.schedule(task.store_page(page))
+        self.schedule(task_store_page(page))
 
     def store_data(self, key: str, data: Any, process: bool = True) -> None:
         self.store_page(self.__datastore.page(key, data, process))

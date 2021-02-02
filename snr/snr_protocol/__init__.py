@@ -1,4 +1,3 @@
-from ..snr_types import *
 from .component_protocol import ComponentProtocol
 from .config_protocol import ConfigProtocol
 from .context_protocol import ContextProtocol

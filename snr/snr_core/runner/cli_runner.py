@@ -1,8 +1,10 @@
 import sys
 
 from snr.snr_core.config import Config, Mode
-from snr.snr_core.runner.synchronus_runner import SynchronousRunner
 from snr.snr_core.utils.utils import print_usage
+from snr.snr_types import *
+
+from .synchronus_runner import SynchronousRunner
 
 
 class CLIRunner(SynchronousRunner):

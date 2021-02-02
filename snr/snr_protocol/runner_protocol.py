@@ -1,6 +1,6 @@
 from snr.snr_types import *
 
-from snr.snr_protocol.config_protocol import ConfigProtocol
+from .config_protocol import ConfigProtocol
 
 
 @runtime_checkable

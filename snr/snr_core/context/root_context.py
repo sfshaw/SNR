@@ -1,6 +1,7 @@
 import logging
 
 from snr.snr_protocol import *
+from snr.snr_types import *
 
 LOG_FORMAT = "[%(name)s:\t%(levelname)s]\t%(message)s\t"
 LOG_LEVEL = logging.WARNING

@@ -3,7 +3,7 @@ from snr.snr_core.base import *
 
 class TextReader(Context):
     def __init__(self,
-                 parent: Context,
+                 parent: ContextProtocol,
                  name: str,
                  filename: str,
                  ) -> None:

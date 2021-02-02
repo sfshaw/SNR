@@ -45,7 +45,7 @@ class Replayer(ThreadLoop):
                 self.done = True
                 if self.exit_when_done:
                     self.dbg("Reader scheduling terminate task")
-                    self.parent.schedule(task.terminate("replayer_done"))
+                    self.parent.schedule(task_terminate("replayer_done"))
 
     def terminate(self) -> None:
         self.reader.close()

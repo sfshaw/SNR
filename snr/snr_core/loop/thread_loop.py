@@ -4,6 +4,7 @@ import time
 
 from snr.snr_core.context.context import Context
 from snr.snr_protocol import *
+from snr.snr_types import *
 
 from .loop_factory import LoopFactory
 

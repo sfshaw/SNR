@@ -1,4 +1,6 @@
 from snr.snr_core.base import *
+from snr.snr_types import *
+from snr.snr_types.task import task_reload
 
 Command = Callable[[List[str]], SomeTasks]
 
@@ -40,11 +42,11 @@ class CommandProcessor(Endpoint):
 
     def cmd_exit(self, args: List[str]) -> Task:
         self.dbg("Executing exit command")
-        return task.terminate("terminate_cmd")
+        return task_terminate("terminate_cmd")
 
     def cmd_reload(self, args: List[str]):
         if len(args) == 1:
-            return task.reload(args[1])
+            return task_reload(args[1])
         else:
             self.warn("Invalid reload args: %s", args)
 

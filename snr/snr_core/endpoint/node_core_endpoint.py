@@ -1,4 +1,5 @@
 from snr.snr_protocol import *
+from snr.snr_types import *
 
 from .endpoint import Endpoint
 from .endpoint_factory import EndpointFactory
@@ -20,8 +21,6 @@ class NodeCore(Endpoint):
             TaskType.terminate: self.task_handler_terminate,
             TaskType.store_page: self.task_handler_store_page,
             TaskType.reload: self.task_handler_reload,
-            (TaskType.event, "cmd_list_endpoints"):
-            self.task_handler_list_endpoints,
         }
 
     def start(self) -> None:

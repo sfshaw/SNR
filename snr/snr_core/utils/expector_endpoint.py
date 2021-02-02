@@ -31,7 +31,7 @@ class ExpectorEndpoint(Endpoint):
         self.dbg(f"Expector called for: {key}")
         self.expector.call(key)
         if self.exit_when_done and self.expector.check():
-            return task.terminate("expector_satisfied")
+            return task_terminate("expector_satisfied")
         return None
 
 

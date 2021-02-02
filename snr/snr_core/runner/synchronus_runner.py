@@ -1,8 +1,8 @@
-from snr.snr_protocol import *
-
 from snr.snr_core.config import Config
 from snr.snr_core.context.root_context import RootContext
 from snr.snr_core.node import Node
+from snr.snr_protocol import *
+from snr.snr_types import *
 
 
 class SynchronousRunner(RunnerProtocol):

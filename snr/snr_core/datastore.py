@@ -1,6 +1,9 @@
-from snr.snr_core.context.context import Context
-from snr.snr_core.utils.timer import Timer
 from snr.snr_protocol import *
+from snr.snr_types import *
+from snr.snr_types.task import task_process_data
+
+from .context.context import Context
+from .utils.timer import Timer
 
 SLEEP_TIME_S = 0.0001
 
@@ -48,5 +51,5 @@ class Datastore(Context):
         self.data_dict[page.key] = page
         self.dbg("Stored Page(%s)", page.key)
         if page.process:
-            t = task.process_data(page.key)
+            t = task_process_data(page.key)
             self.schedule_task(t)

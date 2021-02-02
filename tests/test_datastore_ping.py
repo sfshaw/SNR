@@ -23,7 +23,7 @@ class PingTestEndpoint(Endpoint):
         self.produced_task: bool = False
 
     def start(self) -> None:
-        self.parent.schedule(task.event("ping_request"))
+        self.parent.schedule(task_event("ping_request"))
 
     def store_ping(self, t: Task, key: TaskId) -> SomeTasks:
         self.parent.store_data("ping", time.time())
@@ -38,7 +38,7 @@ class PingTestEndpoint(Endpoint):
         start: float = data
         self.info("Datastore ping latency: %s ms",
                   (time.time() - float(start)) * 1000)
-        return task.terminate("test_endpoint_done")
+        return task_terminate("test_endpoint_done")
 
 
 class PingTestFactory(EndpointFactory):
