@@ -1,7 +1,7 @@
 from . import task
 from .base import *
 from .mode import Mode
-from .page import DataKey, InboundStoreFn, Page
+from .page import DataKey, Page
 from .role import Role
 from .serializable import Serializable
 from .settings import Settings

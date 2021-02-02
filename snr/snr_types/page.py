@@ -44,6 +44,3 @@ class Page(DataClassJsonMixin):
             log.error("Could not deserialize Page from json: %s, e: %s",
                       json, e)
             return None
-
-
-InboundStoreFn = Callable[[Page], None]

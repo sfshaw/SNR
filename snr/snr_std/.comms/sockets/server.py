@@ -15,15 +15,12 @@ class SocketsServer(ThreadLoop):
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  config: SocketsConfig,
-                 inbound_store: InboundStoreFn
                  ) -> None:
         super().__init__(factory,
                          parent,
                          "sockets_server",
-                         self.loop_handler,
                          tick_rate_hz=0)
         self.config: SocketsConfig = config
-        self.inbound_store: InboundStoreFn = inbound_store
 
         self.s: Optional[Socket] = None
         self.ready: bool = False
@@ -40,7 +37,7 @@ class SocketsServer(ThreadLoop):
             data = self.s.recv(self.settings.MAX_SOCKET_SIZE)
             self.dbg("Received data: {}", [data])
             page: Page = pickle.loads(data)
-            self.inbound_store(page)
+            self.parent.store_page(page)
         except (ConnectionResetError, Exception) as error:
             self.err("Lost {} sockets connection: {}",
                      [self.name, error.__repr__()])
