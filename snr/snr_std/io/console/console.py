@@ -1,6 +1,6 @@
+import io
+import sys
 import threading
-from io import StringIO
-from sys import stdin, stdout
 
 from snr.snr_core.base import *
 
@@ -18,9 +18,9 @@ class RemoteConsole(threading.Thread):
                          daemon=False)
         self.server_tuple = server_tuple
         self.retry_wait_s = retry_wait_s
-        self.input_file = stdin
+        self.input_file = sys.stdin
         if commands:
-            self.input_file = StringIO("\n".join(commands) + "\n")
+            self.input_file = io.StringIO("\n".join(commands) + "\n")
         self.prompt_text: str = server_tuple[0] + PROMPT
         # self.commands: Dict[str, Command] = {
         #     "exit": self.cmd_exit,
@@ -46,14 +46,14 @@ class RemoteConsole(threading.Thread):
                     self.set_terminate_flag()
 
     def get_input(self) -> Optional[str]:
-        stdout.write(self.prompt_text)
-        stdout.flush()
+        sys.stdout.write(self.prompt_text)
+        sys.stdout.flush()
         input: Optional[str] = None
         try:
             input = self.input_file.readline().rstrip()
-            if self.input_file is not stdin:
-                stdout.write(input)
-                stdout.flush()
+            if self.input_file is not sys.stdin:
+                sys.stdout.write(input)
+                sys.stdout.flush()
         except EOFError:
             self.set_terminate_flag()
         return input

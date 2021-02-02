@@ -6,10 +6,8 @@ Likely based on pygame example code?
 import glob
 import sys
 import time
-from sys import platform
 
 import serial
-from serial.serialutil import SerialBase
 from snr.snr_core.base import *
 
 
@@ -73,7 +71,7 @@ class SerialFinder(Context):
         result = []
         for port in ports:
             try:
-                s: SerialBase = serial.serial(
+                s: serial.SerialBase = serial.serial(
                     port)    # Try to open a port
                 s.close()                  # Close the port if sucessful
                 result.append(port)        # Add to list of good ports
@@ -84,7 +82,7 @@ class SerialFinder(Context):
     def __select_port(self, ports: List[str]) -> Optional[str]:
         """ Selects the apprpriate port from the given list
         """
-        if platform == "linux" or platform == "linux2":
+        if sys.platform == "linux" or sys.platform == "linux2":
             self.dbg("Linux detected")
             for p in ports:
                 # return '/dev/ttyS0'
@@ -92,11 +90,11 @@ class SerialFinder(Context):
                 if ("USB" in p) or ("ACM" in p):
                     return p
 
-        elif platform == "darwin":
+        elif sys.platform == "darwin":
             self.dbg("Darwin detected")
             return ports[0]
 
-        elif platform == "win32":
+        elif sys.platform == "win32":
             self.dbg("Windows detected")
             p = ""
             for p in ports:

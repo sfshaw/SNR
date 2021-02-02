@@ -3,9 +3,7 @@
 # TODO: Add more documentation here
 # """
 
-# from time import sleep
-
-
+# import time
 # import serial
 # from serial.serialutil import SerialBase, SerialException
 # from snr.snr_core.base import *
@@ -93,7 +91,7 @@
 #         if conn.isOpen():
 #             self.info("Opened serial connection on {} at baud {}",
 #                       [self.serial_port, self.settings.SERIAL_BAUD])
-#             sleep(self.settings.SERIAL_SETUP_WAIT_POST)
+#             time.sleep(self.settings.SERIAL_SETUP_WAIT_POST)
 #             waiting: int = conn.inWaiting()
 #             while waiting > 0:
 #                 if waiting > PACKET_SIZE:

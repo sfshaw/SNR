@@ -1,5 +1,5 @@
 
-# from threading import Thread
+# import threading
 
 # from snr.snr_protocol import *
 
@@ -28,7 +28,7 @@
 #             role,
 #             Config(factories={role: factories}))
 #             for (role, factories) in self.factories_by_role.items()]
-#         threads = [Thread(target=runner.run) for runner in runners]
+#         threads = [threading.Thread(target=runner.run) for runner in runners]
 #         try:
 #             [thread.start() for thread in threads]
 #         except KeyboardInterrupt:

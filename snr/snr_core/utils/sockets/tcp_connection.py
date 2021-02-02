@@ -1,8 +1,8 @@
 import pickle
+import socket
 import struct
-from socket import AF_INET, SOCK_STREAM
+import time
 from socket import socket as Socket
-from time import sleep
 
 from snr.snr_types.base import *
 
@@ -23,7 +23,7 @@ class TCPConnection(Generic[T]):
         self.retry_wait_s = retry_wait_s
         while tries > 0:
             try:
-                self.inner = Socket(AF_INET, SOCK_STREAM)
+                self.inner = Socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.inner.connect(server_tuple)
                 return
             except Exception as e:
@@ -32,7 +32,7 @@ class TCPConnection(Generic[T]):
                 if not tries > 0:
                     raise e
                 else:
-                    sleep(self.retry_wait_s)
+                    time.sleep(self.retry_wait_s)
 
     def send(self, data: T) -> None:
         encoded_data = pickle.dumps(data)

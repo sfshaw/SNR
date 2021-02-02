@@ -1,6 +1,6 @@
 
-from threading import Lock
-from time import sleep
+import threading
+import time
 
 from snr.snr_core.base import *
 from snr.snr_core.utils.test_base import *
@@ -30,20 +30,20 @@ class TestConsumer(SNRTestCase):
                                  no_op,
                                  SLEEP_TIME_S)
 
-        sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME)
         self.assertTrue(consumer.is_alive())
 
-        sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME)
         self.assertTrue(consumer.is_alive())
 
         consumer.join_from("test complete")
         self.assertFalse(consumer.is_alive())
-        sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME)
         self.assertFalse(consumer.is_alive())
 
     def test_consumer_put(self):
 
-        self.lock = Lock()
+        self.lock = threading.Lock()
         self.num: int = 0
 
         def increment(n: int) -> None:
@@ -59,9 +59,9 @@ class TestConsumer(SNRTestCase):
 
         def flush() -> None:
             if consumer.is_alive():
-                sleep(SLEEP_TIME_S * 10)
+                time.sleep(SLEEP_TIME_S * 10)
                 consumer.flush()
-                sleep(SLEEP_TIME_S * 10)
+                time.sleep(SLEEP_TIME_S * 10)
                 consumer.flush()
 
         try:

@@ -1,5 +1,4 @@
 import importlib
-from types import ModuleType
 
 from snr.snr_protocol import *
 

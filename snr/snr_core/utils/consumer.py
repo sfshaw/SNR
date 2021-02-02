@@ -1,15 +1,17 @@
 import logging
-from queue import Empty, Queue
-from threading import Event, Thread
+import queue
+import threading
 import time
+
 from snr.snr_types.base import *
+
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
 
 T = TypeVar('T')
 
 
-class Consumer(Thread, Generic[T]):
+class Consumer(threading.Thread, Generic[T]):
     def __init__(self,
                  parent_name: str,
                  action: Callable[[T], None],
@@ -20,9 +22,9 @@ class Consumer(Thread, Generic[T]):
         self.log = logging.getLogger(self.name)
         self.action = action
         self.sleep_time = sleep_time
-        self.queue: "Queue[T]" = Queue()
-        self.__terminate_flag = Event()
-        self.flushed = Event()
+        self.queue: "queue.Queue[T]" = queue.Queue()
+        self.__terminate_flag = threading.Event()
+        self.flushed = threading.Event()
         self.flushed.set()
 
         self.start()
@@ -56,7 +58,7 @@ class Consumer(Thread, Generic[T]):
             item = self.__get()
             if item:
                 self.action(item)
-        except Empty:
+        except queue.Empty:
             pass
         except EOFError as e:
             self.log.error("EOFError: %s", e)

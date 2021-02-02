@@ -1,4 +1,4 @@
-from threading import Event
+import threading
 
 from snr.snr_types import *
 
@@ -13,7 +13,7 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
     role: Role
     mode: Mode
     endpoints: Dict[str, EndpointProtocol]
-    is_terminated: Event
+    is_terminated: threading.Event
 
     def loop(self) -> None:
         ...

@@ -1,8 +1,8 @@
 import functools
 import logging
 import operator
+import threading
 import time
-from threading import Event
 
 from snr.snr_protocol import *
 
@@ -38,8 +38,8 @@ class Node(Context, NodeProtocol):
         self.add_component(NodeCoreFactory())
         for factory in factories:
             self.add_component(factory)
-        self.__terminate_flag = Event()
-        self.is_terminated = Event()
+        self.__terminate_flag = threading.Event()
+        self.is_terminated = threading.Event()
         self.info("Initialized with %s endpoints",
                   len(self.endpoints))
 

@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import transpose
 from snr.snr_types.base import *
 
 SymbolicParamGetter = Callable[[float], np.ndarray]
@@ -93,9 +92,10 @@ class KalmanFilter:
                 prediction: Prediction
                 ) -> Correction:
         #  % Kk = p_min * H' / (H * p_min * H' + R);
-        Kk = prediction.p @ transpose(self.h) / (self.h @
-                                                 prediction.p @
-                                                 transpose(self.h) + self.r)
+        Kk = prediction.p @ np.transpose(self.h) / \
+            (self.h @
+             prediction.p @
+             np.transpose(self.h) + self.r)
         #  % x = x_min + Kk * (z - H * x_min);
         x = prediction.x + Kk @ (z - self.h @ prediction.x)
         #  % p = (params.I_state - Kk * H) * p_min;
@@ -107,7 +107,7 @@ class KalmanFilter:
         #  % x_min_1 = Phi * x;
         x_min_1 = phi @ correction.x
         #  % p_min_1 = Phi * p * Phi' + Q;
-        p_min_1 = phi @ correction.p @ transpose(phi) + self.get_q(delta_t)
+        p_min_1 = phi @ correction.p @ np.transpose(phi) + self.get_q(delta_t)
         return Prediction(x_min_1, p_min_1)
 
     def iterate(self,
