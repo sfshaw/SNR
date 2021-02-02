@@ -5,7 +5,7 @@ from snr.snr_core.utils.test_base import *
 raw_data_filename = "snr/test/test_data/raw_data.txt"
 
 
-class TestExpectorEndpoint(SNRTestBase):
+class TestExpectorEndpoint(SNRTestCase):
 
     def test_expector_endpoint_empty(self):
         with Expector({}, self) as expector:

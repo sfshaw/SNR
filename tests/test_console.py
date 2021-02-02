@@ -1,7 +1,7 @@
 from snr import *
 
 
-class TestConsole(SNRTestBase):
+class TestConsole(SNRTestCase):
 
     def test_console_fails_to_connect(self):
         CONSOLE_PORT: int = 54321

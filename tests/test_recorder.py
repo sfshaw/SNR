@@ -3,7 +3,7 @@ import logging
 from snr import *
 
 
-class TestRecorder(SNRTestBase):
+class TestRecorder(SNRTestCase):
 
     def test_recorder_encoding(self):
         logging.getLogger("Page").setLevel(logging.WARN)

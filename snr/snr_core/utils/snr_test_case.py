@@ -8,7 +8,7 @@ from .temp_file import TempFile
 PRINT_INDIVIDUAL_RUNTIME: bool = True
 
 
-class SNRTestBase(unittest.TestCase):
+class SNRTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.startTime = time.time()

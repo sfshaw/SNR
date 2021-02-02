@@ -1,7 +1,7 @@
 from snr import *
 
 
-class TestTextReader(SNRTestBase):
+class TestTextReader(SNRTestCase):
 
     def test_raw_reader(self):
         with self.temp_file() as file:

@@ -1,7 +1,7 @@
 from snr import *
 
 
-class TestKalman(SNRTestBase):
+class TestKalman(SNRTestCase):
 
     def test_kalman(self):
         with self.temp_file("raw_data.csv"

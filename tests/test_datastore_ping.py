@@ -51,7 +51,7 @@ class PingTestFactory(EndpointFactory):
                                 "ping_test_endpoint")
 
 
-class TestDatastorePing(SNRTestBase):
+class TestDatastorePing(SNRTestCase):
 
     def test_dds_ping(self):
         with self.expector({

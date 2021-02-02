@@ -3,7 +3,7 @@ from snr.snr_core.endpoint.node_core_factory import NodeCoreFactory
 from snr.snr_core.utils.test_base import *
 
 
-class TestNode(SNRTestBase):
+class TestNode(SNRTestCase):
 
     def test_lookup_proof_of_concept(self):
         class Type(Enum):

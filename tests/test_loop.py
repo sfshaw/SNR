@@ -29,7 +29,7 @@ class LUTFactory(LoopFactory):
         return LoopUnderTest(self, parent, self.expector)
 
 
-class TestLoop(SNRTestBase):
+class TestLoop(SNRTestCase):
 
     def test_loop_terminate(self):
         expectations: Expectations = {

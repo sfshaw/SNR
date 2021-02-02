@@ -8,7 +8,7 @@ from snr.snr_core.utils.test_base import *
 SLEEP_TIME_S = 0.00005
 
 
-class TestConsumer(SNRTestBase):
+class TestConsumer(SNRTestCase):
 
     def test_increment(self):
         self.num: int = 0

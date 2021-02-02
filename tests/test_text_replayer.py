@@ -1,7 +1,7 @@
 from snr import *
 
 
-class TestTextReplayer(SNRTestBase):
+class TestTextReplayer(SNRTestCase):
 
     def test_raw_reader(self):
         with self.temp_file() as file:
