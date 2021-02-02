@@ -10,6 +10,15 @@ TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 
 
 class NodeCoreEndpoint(Endpoint):
+    '''The `NodeCoreEndpoint` is a concrete `Endpoint` implementation used to
+     provide task handling capabilities to the `Node`.
+
+    All `Node`s construct their own `NodeCoreEndpoint`. Moving this
+    capability to a separate class keeps the implementation of `Node` simpler
+    and cleaner. As an `Enpoint` with a `Factory`, a `Node`'s `NodeCoreEndoint`
+    can be reloaded during development.
+    '''
+
     def __init__(self,
                  factory: EndpointFactory,
                  parent: NodeProtocol,
@@ -33,6 +42,9 @@ class NodeCoreEndpoint(Endpoint):
         return None
 
     def task_handler_store_page(self, t: Task, key: TaskId) -> SomeTasks:
+        # TODO: Solidify queueing Page stores in the task queue or in a...
+        #  separate datastore queue (the advantage of which is the ability
+        #  to flush data through, independant of tasks)
         page = t.val_list[0]
         if isinstance(page, Page):
             self.parent.synchronous_store(page)
