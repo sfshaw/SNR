@@ -9,4 +9,4 @@ class NodeCoreFactory(EndpointFactory):
         super().__init__(node_core_endpoint)
 
     def get(self, parent: NodeProtocol) -> EndpointProtocol:
-        return node_core_endpoint.NodeCore(self, parent)
+        return node_core_endpoint.NodeCoreEndpoint(self, parent)

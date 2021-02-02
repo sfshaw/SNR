@@ -9,7 +9,7 @@ NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 
 
-class NodeCore(Endpoint):
+class NodeCoreEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: NodeProtocol,
