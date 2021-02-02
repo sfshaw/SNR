@@ -44,12 +44,14 @@ class CommandProcessor(Endpoint):
         self.dbg("Executing exit command")
         return task_terminate("terminate_cmd")
 
-    def cmd_reload(self, args: List[str]):
+    def cmd_reload(self, args: List[str]) -> SomeTasks:
         if len(args) == 1:
             return task_reload(args[1])
         else:
             self.warn("Invalid reload args: %s", args)
+            return None
 
     def cmd_list(self, args: List[str]) -> SomeTasks:
         self.info("Listing endpoints: \n%s",
                   "\n\t".join(self.parent.endpoints.keys()))
+        return None
