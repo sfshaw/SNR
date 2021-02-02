@@ -17,7 +17,8 @@ class TextReplayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         NAME_PREFIX + data_name)
+                         NAME_PREFIX + data_name,
+                         tick_rate_hz=100)
         self.task_handlers = {
             (TaskType.process_data, data_name): self.retire_data
         }
