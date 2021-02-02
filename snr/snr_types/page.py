@@ -1,6 +1,7 @@
 import logging
 
 from .base import *
+from .role import Role
 
 MAX_PRINTABLE_DATA_LEN = 60
 
@@ -12,7 +13,7 @@ DataKey = str
 class Page(DataClassJsonMixin):
     key: DataKey
     data: Any
-    origin: str
+    origin: Role
     created_at: float
     process: bool = True
 
