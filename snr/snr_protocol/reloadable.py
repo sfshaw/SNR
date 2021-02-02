@@ -17,8 +17,9 @@ class Reloadable(ComponentProtocol, Protocol):
     '''The factory that knows how to reload the aComponent`'s Python module
     '''
 
-    def reload(self) -> None:
+    def reload(self) -> FactoryProtocol:
         '''Concrete implementation of reload for all `Reloadable`s
         '''
         self.factory.reload()
         self.join()
+        return self.factory

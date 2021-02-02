@@ -64,9 +64,8 @@ class NodeCoreEndpoint(Endpoint):
         endpoint = self.parent.endpoints.get(endpoint_name)
         if isinstance(endpoint, EndpointProtocol):
             self.info("Reloading endoint: %s", endpoint_name)
-            endpoint.reload()
             self.parent.endpoints.pop(endpoint_name)
-            new_name = self.parent.add_component(endpoint.factory)
+            new_name = self.parent.add_component(endpoint.reload())
             if new_name:
                 self.parent.endpoints[new_name].start()
             else:
