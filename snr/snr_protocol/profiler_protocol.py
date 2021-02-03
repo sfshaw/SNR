@@ -2,6 +2,8 @@ from snr.snr_types import *
 
 ProfilingResult = Tuple[str, float]
 
+T = TypeVar("T")
+
 
 @runtime_checkable
 class ProfilerProtocol(Protocol):
@@ -9,9 +11,9 @@ class ProfilerProtocol(Protocol):
 
     def time(self,
              name: str,
-             handler: Callable[..., Any],
+             handler: Callable[..., T],
              args: List[Any]
-             ) -> Any:
+             ) -> T:
         ...
 
     def dump(self) -> None:
