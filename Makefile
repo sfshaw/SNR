@@ -75,7 +75,7 @@ flake:
 
 my: mypy
 mypy:
-	mypy $(LIB_DIR)
+	mypy -p $(LIB_DIR)
 
 
 docs: html
