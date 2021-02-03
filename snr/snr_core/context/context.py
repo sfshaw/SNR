@@ -69,9 +69,9 @@ class Context(ContextProtocol):
     def profile(self,
                 task_name: str,
                 handler: Callable[..., T],
-                args: List[Any]) -> T:
+                *args: Any) -> T:
         if self.profiler:
             return self.profiler.time(f"{task_name}:{self.name}",
-                                      handler, args)
+                                      handler, *args)
         else:
             return handler(*args)

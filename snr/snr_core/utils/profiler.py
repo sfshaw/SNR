@@ -30,7 +30,7 @@ class Profiler(Consumer[ProfilingResult]):
     def time(self,
              name: str,
              handler: Callable[[Any], T],
-             args: List[Any]
+             *args: Any
              ) -> T:
         timer = Timer()
         result = handler(*args)

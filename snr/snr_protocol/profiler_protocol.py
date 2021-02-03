@@ -12,7 +12,7 @@ class ProfilerProtocol(Protocol):
     def time(self,
              name: str,
              handler: Callable[..., T],
-             args: List[Any]
+             *args: Any
              ) -> T:
         ...
 
