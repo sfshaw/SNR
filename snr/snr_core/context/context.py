@@ -15,11 +15,8 @@ class Context(ContextProtocol):
 
         self.log = logging.getLogger(self.name)
 
-        self.settings: Settings = parent.settings
+        self.settings = parent.settings
         self.profiler = profiler
-
-        if not self.settings:
-            raise Exception(f"FATAL: Incorrectly constructed context: {name}")
 
     def terminate(self) -> None:
         self.dbg("Terminating context %s", self.name)
