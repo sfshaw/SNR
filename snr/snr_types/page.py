@@ -9,6 +9,7 @@ MAX_PRINTABLE_DATA_LEN = 60
 DataKey = str
 '''The key to get a piece of data.
 '''
+# TODO: Suprress inherited docstrings from str
 
 
 @dataclass
