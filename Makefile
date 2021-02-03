@@ -18,6 +18,7 @@ DIST_DIR=dist
 EGG_INFO_DIR=SNR.egg-info
 LIB_DIR=snr
 STD_DIR=snr_std
+HTML_DOCS_DIR=html
 
 TEST_FLAGS=test -d
 
@@ -76,11 +77,21 @@ my: mypy
 mypy:
 	mypy $(LIB_DIR)
 
+
+docs: html
+html: lint
+	pdoc3 $(LIB_DIR) --html --force
+
+.PHONY: docs_https
+dh: docs_http
+docs_http: lint
+	pdoc3 --http : $(LIB_DIR)
+
 c: clean
 clean:
 	$(PY_SETUP) clean
 	py3clean .
-	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR)
+	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR) ./$(HTML_DOCS_DIR)
 
 py:
 	$(PYTHON)
