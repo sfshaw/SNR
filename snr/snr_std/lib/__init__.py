@@ -1,3 +1,10 @@
+'''This module exports factories and other useful classes from `snr.snr_std`.
+ These should be imported via `from snr import *`.
+
+Endpoints and some other utility classes are not exported here and must be
+imported if needed.
+'''
+
 from ..io.console.console import LocalConsole
 from ..io.console.console_factory import (CommandProcessorFactory,
                                           CommandReceiverFactory)
