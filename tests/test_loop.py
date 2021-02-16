@@ -1,5 +1,5 @@
-from snr.snr_core.base import *
-from snr.snr_core.utils.test_base import *
+from snr import *
+from snr.snr_std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
 
 
 class LoopUnderTest(ThreadLoop):
@@ -41,7 +41,7 @@ class TestLoop(SNRTestCase):
                 LUTFactory(expector),
                 TimeoutLoopFactory(ms=FAST_TEST_TIMEOUT_MS)
             ])
-            runner = SynchronusTestRunner(config)
+            runner = TestRunner(config)
             runner.run()
 
 

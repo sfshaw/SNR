@@ -1,8 +1,5 @@
-
-from snr.snr_core.base import *
-from snr.snr_core.utils.test_base import *
-
-raw_data_filename = "snr/test/test_data/raw_data.txt"
+from snr import *
+from snr.snr_std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
 
 
 class TestExpectorEndpoint(SNRTestCase):
@@ -14,7 +11,7 @@ class TestExpectorEndpoint(SNRTestCase):
                 TimeoutLoopFactory(ms=FAST_TEST_TIMEOUT_MS)
             ])
             config.mode = Mode.DEBUG
-            runner = SynchronusTestRunner(config)
+            runner = TestRunner(config)
             runner.run()
 
     def test_expector_endpoint_terminate(self):
@@ -26,7 +23,7 @@ class TestExpectorEndpoint(SNRTestCase):
                 ExpectorEndpointFactory(expector),
                 TimeoutLoopFactory(ms=FAST_TEST_TIMEOUT_MS)
             ])
-            runner = SynchronusTestRunner(config)
+            runner = TestRunner(config)
             runner.run()
 
 

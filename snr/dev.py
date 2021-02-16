@@ -3,7 +3,7 @@ from snr import *
 
 def main():
     CONSOLE_PORT: int = 54321
-    runner = SynchronusTestRunner(
+    runner = TestRunner(
         Config(Mode.TEST,
                {"test": [
                 CommandReceiverFactory(CONSOLE_PORT),

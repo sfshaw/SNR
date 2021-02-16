@@ -1,4 +1,5 @@
 from snr.snr_protocol import *
+from snr.snr_types import *
 
 from . import node_core_endpoint
 from .endpoint_factory import EndpointFactory

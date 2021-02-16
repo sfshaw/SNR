@@ -37,7 +37,7 @@ class TestRecorder(SNRTestCase):
                         self.log.error("Deserialization of %s failed, got %s",
                                        line, page)
                         self.assertTrue(False,
-                                        f"Deserialization of page failed")
+                                        "Deserialization of page failed")
 
 
 if __name__ == '__main__':

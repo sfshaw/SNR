@@ -1,8 +1,7 @@
 import logging
 import time
 
-from snr.snr_core.base import *
-from snr.snr_core.utils.test_base import *
+from snr import *
 
 
 class PingTestEndpoint(Endpoint):

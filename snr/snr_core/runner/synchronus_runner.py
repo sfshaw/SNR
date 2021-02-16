@@ -1,13 +1,15 @@
-from snr.snr_core.config import Config
-from snr.snr_core.context.root_context import RootContext
-from snr.snr_core.node import Node
 from snr.snr_protocol import *
 from snr.snr_types import *
+
+from ..context.root_context import RootContext
+from ..node import Node
 
 
 class SynchronousRunner(RunnerProtocol):
 
-    def __init__(self, role: Role, config: Config):
+    def __init__(self,
+                 role: Role,
+                 config: ConfigProtocol):
         self.role = role
         self.config = config
 

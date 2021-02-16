@@ -13,4 +13,4 @@ from .endpoint.endpoint import Endpoint
 from .endpoint.endpoint_factory import EndpointFactory
 from .loop.loop_factory import LoopFactory
 from .loop.thread_loop import ThreadLoop
-from .runner.test_runner import SynchronusTestRunner
+from .runner.test_runner import TestRunner

@@ -1,13 +1,13 @@
 from snr.snr_types import *
 
-from snr.snr_protocol.factory_protocol import ComponentsByRole
+from .config_protocol import ConfigProtocol
 
 
 @runtime_checkable
 class MultiRunnerProtocol(Protocol):
 
-    mode: Mode
-    factories_by_role: ComponentsByRole
+    config: ConfigProtocol
+    roles: List[Role]
 
-    def run(self, roles: List[Role]) -> None:
+    def run(self) -> None:
         ...

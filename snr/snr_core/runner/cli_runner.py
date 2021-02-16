@@ -1,7 +1,6 @@
 import sys
 
-from snr.snr_core.config import Config, Mode
-from snr.snr_core.utils.utils import print_usage
+from snr.snr_protocol import *
 from snr.snr_types import *
 
 from .synchronus_runner import SynchronousRunner
@@ -9,7 +8,7 @@ from .synchronus_runner import SynchronousRunner
 
 class CLIRunner(SynchronousRunner):
 
-    def __init__(self, config: Config):
+    def __init__(self, config: ConfigProtocol):
         argc = len(sys.argv)
         if argc < 2:
             print_usage()

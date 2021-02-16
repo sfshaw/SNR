@@ -1,7 +1,8 @@
-from snr.snr_core.context.context import Context
-from snr.snr_core.endpoint.endpoint_factory import EndpointFactory
 from snr.snr_protocol import *
 from snr.snr_types import *
+
+from ..context.context import Context
+from .endpoint_factory import EndpointFactory
 
 
 class Endpoint(Context, EndpointProtocol):

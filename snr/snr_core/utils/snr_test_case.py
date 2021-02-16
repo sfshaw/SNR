@@ -1,9 +1,8 @@
 import time
 import unittest
 
-from snr.snr_core.base import *
-from snr.snr_core.context.root_context import RootContext
-
+from ..base import *
+from ..context.root_context import RootContext
 from .expector import Expectations, Expector
 from .expector_protocol import ExpectorProtocol
 from .ordered_expector import OrderedExpectations, OrderedExpector
@@ -49,7 +48,7 @@ class SNRTestCase(unittest.TestCase):
                       mode: Mode = Mode.TEST
                       ) -> None:
         config = self.get_config(factories, mode)
-        runner = SynchronusTestRunner(config)
+        runner = TestRunner(config)
         runner.run()
 
     def temp_file(self,

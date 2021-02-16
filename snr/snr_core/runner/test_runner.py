@@ -1,10 +1,11 @@
-from snr.snr_core.config import Config
-from snr.snr_core.runner.synchronus_runner import SynchronousRunner
+from snr.snr_protocol import *
+
+from ..runner.synchronus_runner import SynchronousRunner
 
 
-class SynchronusTestRunner(SynchronousRunner):
+class TestRunner(SynchronousRunner):
 
     def __init__(self,
-                 config: Config
+                 config: ConfigProtocol
                  ) -> None:
         super().__init__("test", config)
