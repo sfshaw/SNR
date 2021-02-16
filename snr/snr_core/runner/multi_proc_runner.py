@@ -1,4 +1,5 @@
-import multiprocessing
+import logging
+import multiprocessing as mp
 
 from snr.snr_protocol import *
 from snr.snr_types import *
@@ -19,16 +20,18 @@ class MultiProcRunner(MultiRunnerProtocol):
 
     def run(self):
         context = RootContext("runner")
+        context.log.setLevel(logging.WARN)
         nodes: List[NodeProtocol] = [
             Node(context,
                  role,
                  self.mode,
                  self.config.get(role))
             for role in self.roles]
-        procs = [multiprocessing.Process(
+        processes = [mp.Process(
             target=node.loop) for node in nodes]
         try:
-            [thread.start() for thread in procs]
+            for proc in processes:
+                proc.start()
         except KeyboardInterrupt:
             print("TODO: Handle keyboard interrupt in runner processes")
             # for runner  in runners:
@@ -39,5 +42,9 @@ class MultiProcRunner(MultiRunnerProtocol):
             #         context.fatal(
             #             "Exiting before node was done being constructed")
         finally:
-            for thread in procs:
+            for node in nodes:
+                if node:
+                    if not node.is_terminated():
+                        node.set_terminate_flag("Runner clean up")
+            for thread in processes:
                 thread.join()

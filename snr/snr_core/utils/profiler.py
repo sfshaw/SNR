@@ -21,7 +21,8 @@ class Profiler(Consumer[ProfilingResult]):
             return None
         super().__init__("profiler",
                          self.store_task,
-                         SLEEP_TIME_S)
+                         SLEEP_TIME_S,
+                         True)  # TODO: Use of daemon thread is a hack
         self.settings = settings
         self.log = logging.getLogger(self.name)
         self.time_dict: Dict[str, Deque[float]] = {}
