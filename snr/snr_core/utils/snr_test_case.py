@@ -5,6 +5,7 @@ from ..base import *
 from ..context.root_context import RootContext
 from .expector import Expectations, Expector
 from .expector_protocol import ExpectorProtocol
+from .mock_node import MockNode
 from .ordered_expector import OrderedExpectations, OrderedExpector
 from .temp_file import TempFile
 
@@ -50,6 +51,9 @@ class SNRTestCase(unittest.TestCase):
         config = self.get_config(factories, mode)
         runner = TestRunner(config)
         runner.run()
+
+    def mock_node(self) -> NodeProtocol:
+        return MockNode(self.root_context)
 
     def temp_file(self,
                   filename: Optional[str] = None,
