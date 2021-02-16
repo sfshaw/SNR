@@ -41,9 +41,9 @@ class OrderedExpector(ExpectorProtocol):
         return self.expectations == self.met_expectations
 
     def dump(self) -> None:
-        self.log.warn("Expected: %s \nGot %s",
-                      self.expectations,
-                      self.met_expectations)
+        self.log.warning("Expected: %s \nGot %s",
+                         self.expectations,
+                         self.met_expectations)
 
     def __enter__(self) -> "OrderedExpector":
         return self
