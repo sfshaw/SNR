@@ -7,9 +7,6 @@ class DatastoreProtocol(Protocol):
     def page(self, key: str, value: Any, process: bool = True) -> Page:
         ...
 
-    def store_page(self, page: Page) -> None:
-        ...
-
     def get_data(self, key: str) -> Optional[Any]:
         ...
 
