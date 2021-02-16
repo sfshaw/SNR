@@ -13,18 +13,15 @@ PY_SETUP=$(PYTHON) $(SETUP_PY)
 UNITTEST_MOD=-m unittest
 DIST_TARGETS=sdist bdist_wheel
 
-BUILD_DIR=build
-DIST_DIR=dist
+ROOT_MODULE=snr
+LIB_DIR=./$(ROOT_MODULE)
+BUILD_DIR=./build
+DIST_DIR=./dist
 EGG_INFO_DIR=SNR.egg-info
-LIB_DIR=snr
-STD_DIR=snr_std
-HTML_DOCS_DIR=html
+HTML_DOCS_DIR=./html
+CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) ./temp
 
 TEST_FLAGS=test -d
-
-FLAKE8_IGNORE_CODES=F401,F403,F405,W503,W504
-FLAKE8_FLAGS=snr --ignore=$(FLAKE8_IGNORE_CODES)
-
 .PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy prep
 d: dev
 dev: develop
@@ -71,21 +68,22 @@ lint: mypy flake
 
 f: flake
 flake: 
-	flake8 $(FLAKE8_FLAGS)
+	flake8 $(ROOT_MODULE)
 
 my: mypy
 mypy:
-	mypy -p $(LIB_DIR)
+	$(PYTHON) -m mypy -p $(ROOT_MODULE)
+
 
 
 docs: html
 html: lint
-	pdoc3 $(LIB_DIR) --html --force
+	$(PYTHON) -m pdoc -o $(HTML_DOCS_DIR) $(ROOT_MODULE)
 
-.PHONY: docs_https
+.PHONY: docs_http
 dh: docs_http
 docs_http: lint
-	pdoc3 --http : $(LIB_DIR)
+	$(PYTHON) -m pdoc $(ROOT_MODULE)
 
 c: clean
 clean:

@@ -30,8 +30,9 @@ setup(
         'dev': [
             'setuptools',           # Build tool
             'wheel',                # Build tool
-            'mypy',                 # Type checking
-            'flake8'                # Linter
+            'mypy>=0.800',          # Type checking
+            'flake8>=3.8',          # Linter
+            'pdoc>=6.1',             # Doc genertion
         ],
         'test': ['check-manifest'],
     },
