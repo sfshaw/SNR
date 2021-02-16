@@ -19,7 +19,8 @@ BUILD_DIR=./build
 DIST_DIR=./dist
 EGG_INFO_DIR=SNR.egg-info
 HTML_DOCS_DIR=./html
-CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) ./temp
+COVERAGE_FILES=.coverage coverage.xml
+CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) $(COVERAGE_FILES) ./temp
 
 TEST_FLAGS=test -d
 .PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy prep
@@ -74,7 +75,16 @@ my: mypy
 mypy:
 	$(PYTHON) -m mypy -p $(ROOT_MODULE)
 
+.PHONY: coverage
+cov: coverage
+coverage: coverage.xml
+	coverage report
 
+coverage.xml: .coverage
+	coverage xml
+
+.coverage:
+	coverage run -m unittest 
 
 docs: html
 html: lint

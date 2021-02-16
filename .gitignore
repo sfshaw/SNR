@@ -6,3 +6,5 @@ MANIFEST
 typings
 *.tmp
 html
+.coverage*
+coverage.xml
