@@ -30,5 +30,5 @@ class SynchronousRunner(RunnerProtocol):
                 print("Exiting before node was done being constructed")
         finally:
             if node:
-                if not node.is_terminated.is_set():
+                if not node.is_terminated():
                     node.set_terminate_flag("Runner clean up")

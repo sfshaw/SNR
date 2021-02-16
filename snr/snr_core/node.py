@@ -41,7 +41,7 @@ class Node(Context, NodeProtocol):
         for factory in factories:
             self.add_component(factory)
         self.__terminate_flag = threading.Event()
-        self.is_terminated = threading.Event()
+        self.__is_terminated = threading.Event()
         self.info("Initialized with %s endpoints",
                   len(self.endpoints))
 
@@ -127,7 +127,7 @@ class Node(Context, NodeProtocol):
         if not self.__terminate_flag.is_set():
             self.warn("Temrinated prior to setting of terminate flag")
             self.set_terminate_flag("terminate")
-        if self.is_terminated.is_set():
+        if self.is_terminated():
             self.err("Already terminated")
 
         for e in self.endpoints.values():
@@ -138,8 +138,11 @@ class Node(Context, NodeProtocol):
         self.__datastore.dump_data()
 
         super().terminate()
-        self.is_terminated.set()
+        self.__is_terminated.set()
         self.info("Node %s finished terminating", self.role)
+
+    def is_terminated(self) -> bool:
+        return self.__is_terminated.is_set()
 
     def add_component(self, factory: FactoryProtocol) -> Optional[str]:
         component = factory.get(self)

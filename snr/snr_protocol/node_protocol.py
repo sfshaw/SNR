@@ -1,5 +1,3 @@
-import threading
-
 from snr.snr_types import *
 
 from .component_protocol import ComponentProtocol
@@ -13,7 +11,6 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
     role: Role
     mode: Mode
     endpoints: Dict[str, EndpointProtocol]
-    is_terminated: threading.Event
 
     def loop(self) -> None:
         ...
@@ -30,6 +27,9 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
         Conversely, join may be called from an external context such as
         another thread or process.
         """
+        ...
+
+    def is_terminated(self) -> bool:
         ...
 
     def add_component(self, factory: FactoryProtocol) -> Optional[str]:
