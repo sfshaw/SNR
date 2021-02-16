@@ -28,11 +28,8 @@ class Datastore(Context):
         created_at = self.timer.current()
         return Page(key, value, self.parent.name, created_at, process)
 
-    def store_page(self, page: Page) -> None:
-        self.synchronous_store(page)
-
     def get_data(self, key: str) -> Optional[Any]:
-        page: Any = self.get_page(key)
+        page = self.get_page(key)
         if page:
             return page.data
         return None

@@ -15,7 +15,7 @@ class TaskQueue(Context):
                          parent,
                          parent.profiler)
         self.get_new_tasks = task_source
-        self.queue: "queue.Queue[Task]" = queue.Queue()
+        self.queue: queue.Queue[Task] = queue.Queue()
         self.log.setLevel(logging.WARN)
 
     def schedule(self, t: SomeTasks) -> None:
@@ -31,7 +31,7 @@ class TaskQueue(Context):
                 if item:
                     self.schedule(item)
         else:
-            self.err("Cannot schedule %s object %s", type(t), t)
+            self.err("Cannot schedule %s", t)
 
     def __schedule_task(self, t: Task) -> None:
         # Handle normal tasks

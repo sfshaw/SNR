@@ -22,7 +22,7 @@ class Consumer(threading.Thread, Generic[T]):
         self.log = logging.getLogger(self.name)
         self.action = action
         self.sleep_time = sleep_time
-        self.queue: "queue.Queue[T]" = queue.Queue()
+        self.queue: queue.Queue[T] = queue.Queue()
         self.__terminate_flag = threading.Event()
         self.flushed = threading.Event()
         self.flushed.set()
@@ -34,9 +34,8 @@ class Consumer(threading.Thread, Generic[T]):
             self.queue.put(item)
             self.flushed.clear()
         else:
-            self.log.error(
-                "Consumer fed but thread is not alive ({})",
-                item)
+            self.log.error("Consumer fed but thread is not alive (%s)",
+                           item)
 
     def __loop(self) -> None:
         self.log.debug("Thread now running")

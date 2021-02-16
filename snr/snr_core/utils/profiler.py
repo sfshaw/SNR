@@ -12,6 +12,8 @@ JOIN_TIMEOUT = 1
 
 ProfilingResult = Tuple[str, float]
 
+T = TypeVar("T")
+
 
 class Profiler(Consumer[ProfilingResult]):
     def __init__(self, settings: Settings):
@@ -24,8 +26,6 @@ class Profiler(Consumer[ProfilingResult]):
         self.log = logging.getLogger(self.name)
         self.time_dict: Dict[str, Deque[float]] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
-
-    T = TypeVar("T")
 
     def time(self,
              name: str,
