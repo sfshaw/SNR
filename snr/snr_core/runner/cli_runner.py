@@ -11,7 +11,7 @@ class CLIRunner(SynchronousRunner):
     def __init__(self, config: ConfigProtocol):
         argc = len(sys.argv)
         if argc < 2:
-            print_usage()
+            print(f"usage: {sys.executable} main.py [robot | topside]")
             sys.exit(1)
         role = sys.argv[1]
 
