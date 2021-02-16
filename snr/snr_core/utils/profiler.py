@@ -42,12 +42,12 @@ class Profiler(Consumer[ProfilingResult]):
 
     def store_task(self, type_and_runtime: Tuple[str, float]):
         (task_type, runtime) = type_and_runtime
-        self.log.debug("Ran {} task in {}",
+        self.log.debug("Ran %s task in %s",
                        task_type, self.format_time(runtime))
         if self.time_dict.get(task_type) is None:
             self.init_task_type(task_type)
         self.time_dict[task_type].append(runtime)
-        self.log.debug("Task {} has average runtime {}",
+        self.log.debug("Task %s has average runtime %s",
                        task_type,
                        self.avg_time(task_type, self.time_dict[task_type]))
 
@@ -58,7 +58,7 @@ class Profiler(Consumer[ProfilingResult]):
     def dump(self):
         self.log.info("Task/Loop type:\t\tAvg runtime: ")
         for k, deq in self.time_dict.items():
-            self.log.info("{}:\t\t{}",
+            self.log.info("%s:\t\t%s",
                           k, self.avg_time(k, deq))
 
     def avg_time(self, key: str, deque: Deque[float]) -> str:
