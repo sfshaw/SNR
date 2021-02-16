@@ -16,9 +16,11 @@ class Consumer(threading.Thread, Generic[T]):
                  parent_name: str,
                  action: Callable[[T], None],
                  sleep_time: float,
+                 daemon: bool = False
                  ) -> None:
         super().__init__(target=self.__loop,
-                         name=parent_name + CONSUMER_THREAD_NAME_SUFFIX)
+                         name=parent_name + CONSUMER_THREAD_NAME_SUFFIX,
+                         daemon=daemon)
         self.log = logging.getLogger(self.name)
         self.action = action
         self.sleep_time = sleep_time
