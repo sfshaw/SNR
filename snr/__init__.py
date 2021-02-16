@@ -3,8 +3,9 @@
 - `snr.snr_core.utils.test_base` (testing tools)
 - `snr.snr_std` (standard built-in implementations)
 
- Only `from snr import *`
- should be needed for basic usage of the SNR framework, including implementing components and snr.snr_core.Factories and running snr.snr_core.node.Node`s
+Only `from snr import *` should be needed for basic usage of the SNR framework,
+including implementing components and snr.snr_core.Factories and running
+`snr.snr_core.node.Node`s
 '''
 
 from snr.snr_core.base import *
