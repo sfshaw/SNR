@@ -1,5 +1,3 @@
-import threading
-
 from snr.snr_core.base import *
 from snr.snr_protocol import *
 from snr.snr_types import *
@@ -12,7 +10,6 @@ class MockNode(Context):
         self.role: Role = "test"
         self.mode = Mode.TEST
         self.endpoints: Dict[str, EndpointProtocol] = {}
-        self.is_terminated = threading.Event()
 
     def loop(self) -> None:
         pass
@@ -21,10 +18,13 @@ class MockNode(Context):
         return []
 
     def set_terminate_flag(self, reason: str) -> None:
-        self.is_terminated.set()
+        pass
 
     def terminate(self) -> None:
         pass
+
+    def is_terminated(self) -> bool:
+        return True
 
     def add_component(self, factory: FactoryProtocol) -> Optional[str]:
         pass
