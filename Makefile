@@ -22,37 +22,44 @@ HTML_DOCS_DIR=./html
 COVERAGE_FILES=.coverage coverage.xml
 CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) $(COVERAGE_FILES) ./temp
 
-TEST_FLAGS=test -d
-.PHONY: dev develop console check build install dist test test_all clean pygame_deps lint flake mypy prep
+.PHONY: dev
 d: dev
-dev: develop
+dev:
 	$(PYTHON) $(LIB_DIR)/dev.py
 
+.PHONY: develop
 develop:
 	$(PY_SETUP) develop --user
 
+.PHONY: console
 console:
 	$(PYTHON) $(STD_DIR)/io/console/console.py
 
 check_manifest:
 	$(PYTHON) -m check_manifest
 
+.PHONY: check
 check:
 	$(PY_SETUP) check
 
+.PHONY: build
 build: check
 	$(PY_SETUP) build
 
+.PHONY: dist
 dist: build
 	$(PY_SETUP) $(DIST_TARGETS)
 
+.PHONY: install
 install: build
 	$(PY_SETUP) install --user
 
+.PHONY: test
 t: test
 test: check
 	$(PYTHON) $(UNITTEST_MOD)
 
+.PHONY: test_all
 ta: test_all
 test_all:
 	$(CPYTHON37) $(UNITTEST_MOD)
@@ -61,16 +68,20 @@ test_all:
 	$(CPYTHON310) $(UNITTEST_MOD)
 	$(PYPY) $(UNITTEST_MOD)
 
+.PHONY: prep
 p: prep
 prep: lint test_all check
 
+.PHONY: lint
 l: lint
 lint: mypy flake
 
+.PHONY: flake
 f: flake
 flake: 
 	flake8 $(ROOT_MODULE)
 
+.PHONY: mypy
 my: mypy
 mypy:
 	$(PYTHON) -m mypy -p $(ROOT_MODULE)
@@ -92,18 +103,20 @@ html: lint
 
 .PHONY: docs_http
 dh: docs_http
-docs_http: lint
+docs_http:
 	$(PYTHON) -m pdoc $(ROOT_MODULE)
 
+.PHONY: clean
 c: clean
 clean:
 	$(PY_SETUP) clean
 	py3clean .
-	rm -rf ./$(BUILD_DIR) ./$(DIST_DIR) ./$(EGG_INFO_DIR) ./$(HTML_DOCS_DIR)
+	rm -rf $(CLEAN_DIRS)
 
 py:
 	$(PYTHON)
 
+.PHONY: pygame_deps
 pygame_deps: 
 	sudo apt update
 	sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev libportmidi-dev
