@@ -1,9 +1,34 @@
 import logging
 
 from snr import *
+from snr.snr_std.io.recorder.recorder_endpoint import RecorderEndpoint
+from snr.snr_types.task import task_process_data
 
 
 class TestRecorder(SNRTestCase):
+
+    def test_invalid_task(self):
+        with self.temp_file() as f:
+            try:
+                recorder = RecorderEndpoint(None,
+                                            self.mock_node(),
+                                            "test_recorder",
+                                            f.path,
+                                            ["data"])
+                recorder.log.setLevel(logging.CRITICAL)
+                wrong_event_task = task_process_data("boring_data")
+                self.assertIsNone(recorder.task_handler(wrong_event_task,
+                                                        (TaskType.process_data,
+                                                         "totally invalid")))
+                wrong_event_task = task_event("boring_event")
+                self.assertIsNone(recorder.task_handler(
+                    wrong_event_task,
+                    (TaskType.process_data, "totally invalid")))
+                self.assertIsNone(recorder.task_handler(
+                    task_process_data("data"),
+                    (TaskType.process_data, "data")))
+            finally:
+                recorder.join()
 
     def test_recorder_encoding(self):
         logging.getLogger("Page").setLevel(logging.WARN)
