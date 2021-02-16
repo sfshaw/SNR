@@ -70,12 +70,11 @@ class SNRTestCase(unittest.TestCase):
                    origin: str,
                    created_at: Optional[float] = None,
                    process: bool = True):
-        if page:
-            self.assertEqual(key, page.key)
-            self.assertEqual(data, page.data)
-            self.assertEqual(origin, page.origin)
-            if created_at:
-                self.assertAlmostEqual(created_at, page.created_at)
-            self.assertEqual(process, page.process)
-        else:
-            self.assertTrue(False, "Given page is not a Page")
+        self.assertTrue(isinstance(page, Page))
+        assert isinstance(page, Page)
+        self.assertEqual(key, page.key)
+        self.assertEqual(data, page.data)
+        self.assertEqual(origin, page.origin)
+        if created_at:
+            self.assertAlmostEqual(created_at, page.created_at)
+        self.assertEqual(process, page.process)
