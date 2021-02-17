@@ -1,25 +1,32 @@
+from typing import List
+
 import nox
-import project_requires
+
+supported_python_versions: List[str] = [
+    'python3.7',
+    'python3.8',
+    'python3.9',
+    'python3.10',
+    'pypy3',
+]
 
 
-@nox.session(python=project_requires.supported_python_versions,
+@nox.session(python=supported_python_versions,
              reuse_venv=True)
 def tests(session: nox.Session):
     # list(map(
-    session.install(*project_requires.install_deps)
-    list(map(session.install, project_requires.test_deps))
+    session.install('.[test]')
     session.run('pytest', external=False)
 
 
 @nox.session(python='3',
              reuse_venv=True)
 def mypy(session: nox.Session):
-    list(map(session.install, project_requires.lint_deps))
+    session.install('.[mypy]')
     session.run('mypy', '-p', 'snr')
-
 
 @nox.session(python='3',
              reuse_venv=True)
 def lint(session: nox.Session):
-    list(map(session.install, project_requires.lint_deps))
+    session.install('.[lint]')
     session.run('flake8', 'snr', 'tests')

@@ -70,7 +70,7 @@ test:
 .PHONY: test_all
 ta: test_all
 test_all:
-	nox -s test
+	nox -s tests
 
 .PHONY: prep
 p: prep
