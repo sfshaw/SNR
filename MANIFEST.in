@@ -1,5 +1,7 @@
 include mypy.ini
 include python_version
+include project_requires.py
+include noxfile.py
 
 recursive-include snr *.py
 recursive-include tests *.csv

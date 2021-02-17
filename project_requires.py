@@ -30,8 +30,3 @@ lint_deps: List[str] = [
 ]
 
 docs_deps: List[str] = ['pdoc>=6.1']
-
-# lint_cmds = [
-#     ['mypy', '-p', 'snr'],
-#     'flake8',
-# ]
