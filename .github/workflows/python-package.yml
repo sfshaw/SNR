@@ -40,7 +40,7 @@ jobs:
     #     python -m unittest
     - name: Run Nox Tests 
       run: |
-        python -m nox -s test-${{ matrix.python_version }}
+        python -m nox -s test-${{ matrix.python-version }}
     - name: Create Package distribution
       run: |
         python setup.py check
