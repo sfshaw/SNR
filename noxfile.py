@@ -3,10 +3,10 @@ from typing import List
 import nox
 
 supported_python_versions: List[str] = [
-    'python3.7',
-    'python3.8',
-    'python3.9',
-    'python3.10',
+    '3.7',
+    '3.8',
+    '3.9',
+    '3.10',
     'pypy3',
 ]
 
