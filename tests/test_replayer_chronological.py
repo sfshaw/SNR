@@ -1,10 +1,12 @@
 import logging
+import pytest
 
 from snr import *
 
 
 class TestReplayerChronological(SNRTestCase):
 
+    @pytest.mark.timeout(1000)
     def test_replayer_chronological(self):
 
         with self.ordered_expector([

@@ -20,7 +20,10 @@ DIST_DIR=./dist
 EGG_INFO_DIR=SNR.egg-info
 HTML_DOCS_DIR=./html
 COVERAGE_FILES=.coverage coverage.xml
-CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) $(COVERAGE_FILES) ./temp
+NOX_DIR=.nox
+PYTEST_CACHE=.pytest_cache
+MYPY_CACHE=.mypy_cache
+CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) $(COVERAGE_FILES) ./temp $(NOX_DIR) $(PYTEST_CACHE) $(MYPY_CACHE)
 
 .PHONY: dev
 d: dev
@@ -54,19 +57,20 @@ dist: build
 install: build
 	$(PY_SETUP) install --user
 
+.PHONY: nox
+n: nox
+nox:
+	nox
+
 .PHONY: test
 t: test
-test: check
-	$(PYTHON) $(UNITTEST_MOD)
+test: 
+	$(PYTHON) -m pytest
 
 .PHONY: test_all
 ta: test_all
 test_all:
-	$(CPYTHON37) $(UNITTEST_MOD)
-	$(CPYTHON38) $(UNITTEST_MOD)
-	$(CPYTHON39) $(UNITTEST_MOD)
-	$(CPYTHON310) $(UNITTEST_MOD)
-	$(PYPY) $(UNITTEST_MOD)
+	nox -s test
 
 .PHONY: prep
 p: prep
@@ -74,17 +78,13 @@ prep: lint test_all check
 
 .PHONY: lint
 l: lint
-lint: mypy flake
-
-.PHONY: flake
-f: flake
-flake: 
-	flake8 $(ROOT_MODULE)
+lint: mypy 
+	nox -s lint
 
 .PHONY: mypy
 my: mypy
 mypy:
-	$(PYTHON) -m mypy -p $(ROOT_MODULE)
+	nox -s mypy
 
 .PHONY: coverage
 cov: coverage
@@ -115,6 +115,11 @@ clean:
 
 py:
 	$(PYTHON)
+
+.PHONY: deps
+deps:
+	$(PYTHON)
+	$(PYTHON) -m pip install .[dev] --user
 
 .PHONY: pygame_deps
 pygame_deps: 
