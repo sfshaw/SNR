@@ -1,8 +1,8 @@
 import logging
 
 from snr import *
-from snr.snr_std.io.recorder.recorder_endpoint import RecorderEndpoint
-from snr.snr_types.task import task_process_data
+from snr.std.io.recorder.recorder_endpoint import RecorderEndpoint
+from snr.types.task import task_process_data
 
 
 class TestRecorder(SNRTestCase):

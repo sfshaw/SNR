@@ -1,6 +1,6 @@
 from snr import *
-from snr.snr_core.datastore import Datastore
-from snr.snr_core.utils.timer import Timer
+from snr.core.datastore import Datastore
+from snr.core.utils.timer import Timer
 
 
 class TestDatastore(SNRTestCase):

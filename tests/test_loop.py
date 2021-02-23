@@ -1,5 +1,5 @@
 from snr import *
-from snr.snr_std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
+from snr.std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
 
 
 class LoopUnderTest(ThreadLoop):

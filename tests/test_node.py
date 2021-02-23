@@ -1,7 +1,7 @@
 from snr import *
-from snr.snr_core.node import Node
-from snr.snr_core.utils.utils import no_op
-from snr.snr_types.task import task_process_data
+from snr.core.node import Node
+from snr.core.utils.utils import no_op
+from snr.types.task import task_process_data
 
 
 class TestNode(SNRTestCase):

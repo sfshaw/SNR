@@ -1,10 +1,10 @@
 import threading
 import time
 
-from snr.snr_core.base import *
-from snr.snr_core.utils.consumer import Consumer
-from snr.snr_core.utils.test_base import *
-from snr.snr_core.utils.utils import no_op
+from snr.core.base import *
+from snr.core.utils.consumer import Consumer
+from snr.core.utils.test_base import *
+from snr.core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.00005
 
