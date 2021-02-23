@@ -12,7 +12,7 @@ from snr.snr_types import *
 class Config(ConfigProtocol):
     def __init__(self,
                  mode: Mode,
-                 factories: ComponentsByRole = {}
+                 factories: ComponentsByRole = {},
                  ) -> None:
         self.mode = mode
         self.factories = factories
