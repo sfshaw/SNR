@@ -5,8 +5,6 @@ from snr.types.task import task_process_data
 from .context.context import Context
 from .utils.timer import Timer
 
-SLEEP_TIME_S = 0.0001
-
 DataDict = Dict[DataKey, Page]
 
 
