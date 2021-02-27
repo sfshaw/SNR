@@ -46,5 +46,5 @@ class MultiProcRunner(MultiRunnerProtocol):
                 if node:
                     if not node.is_terminated():
                         node.set_terminate_flag("Runner clean up")
-            for thread in processes:
-                thread.join()
+            for proc in processes:
+                proc.join()
