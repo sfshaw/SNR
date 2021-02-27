@@ -22,6 +22,7 @@ class Consumer(threading.Thread, Generic[T]):
                          name=parent_name + CONSUMER_THREAD_NAME_SUFFIX,
                          daemon=daemon)
         self.log = logging.getLogger(self.name)
+        self.log.setLevel(logging.WARNING)
         self.action = action
         self.sleep_time = sleep_time
         self.queue: queue.Queue[T] = queue.Queue()
@@ -43,15 +44,15 @@ class Consumer(threading.Thread, Generic[T]):
         self.log.debug("Thread now running")
         while not self.__terminate_flag.is_set():
             self.__iterate()
-
             # self.fed.wait(timeout=self.sleep_time)
             time.sleep(self.sleep_time)
 
+        self.log.debug("Exited loop, flushing")
         # Flush remaining lines
         while not self.flushed.is_set():
             self.__iterate()
         self.flushed.set()
-        self.log.debug("Thread exited loop")
+        self.log.debug("Thread done")
 
     def __iterate(self) -> None:
         item: Optional[T] = None
@@ -74,6 +75,7 @@ class Consumer(threading.Thread, Generic[T]):
     def join_from(self, joiner: str) -> None:
         self.log.info("Preparing to join thread from %s", joiner)
         self.set_terminate_flag()
+        self.flush()
         super().join()
         if self.is_alive():
             self.log.warn("Thread just won't die.")
@@ -85,4 +87,7 @@ class Consumer(threading.Thread, Generic[T]):
             self.log.error("Cannot flush dead consumer")
 
     def set_terminate_flag(self) -> None:
-        self.__terminate_flag.set()
+        if not self.__terminate_flag.is_set():
+            self.__terminate_flag.set()
+        else:
+            self.log.warning("Terminate flag already set")
