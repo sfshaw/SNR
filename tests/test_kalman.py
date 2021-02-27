@@ -23,7 +23,8 @@ class TestKalman(SNRTestCase):
                     TextReplayerFactory(input.path,
                                         "raw_data"),
                     RecorderFactory(output1.path, ["raw_data"]),
-                    ExpectorEndpointFactory(expector, exit_when_done=True),
+                    ExpectorEndpointFactory(expector,
+                                            exit_when_satisfied=True),
                 ])
 
             output1.assertExists()
@@ -37,24 +38,26 @@ class TestKalman(SNRTestCase):
                     ReplayerFactory(output1.path),
                     KalmanFilterFactory("raw_data", "filtered_data"),
                     RecorderFactory(output2.path, ["filtered_data"]),
-                    ExpectorEndpointFactory(expector, exit_when_done=True),
+                    ExpectorEndpointFactory(
+                        expector, exit_when_satisfied=True),
                 ])
 
             output2.assertExists()
-            with PageReader(self.root_context,
-                            "test_reader",
-                            output2.path) as reader:
-                self.assertPage(reader.read(),
-                                "filtered_data",
-                                "1,2,3",
-                                "test_node",
-                                process=True)
-                self.assertPage(reader.read(),
-                                "filtered_data",
-                                "4,5,6",
-                                "test_node",
-                                process=True)
-                self.assertIsNone(reader.read())
+            with self.get_context() as context:
+                with PageReader(context,
+                                "test_reader",
+                                output2.path) as reader:
+                    self.assertPage(reader.read(),
+                                    "filtered_data",
+                                    "1,2,3",
+                                    "test_node",
+                                    process=True)
+                    self.assertPage(reader.read(),
+                                    "filtered_data",
+                                    "4,5,6",
+                                    "test_node",
+                                    process=True)
+                    self.assertIsNone(reader.read())
 
 
 if __name__ == '__main__':

@@ -47,7 +47,7 @@ class TestTextReplayer(SNRTestCase):
                     TextReplayerFactory(temp_file.path,
                                         "raw_data"),
                     ExpectorEndpointFactory(expector,
-                                            exit_when_done=True)
+                                            exit_when_satisfied=True)
                 ])
 
     def test_raw_data_replayer_two(self):
@@ -65,5 +65,5 @@ class TestTextReplayer(SNRTestCase):
                     TextReplayerFactory(temp_file.path,
                                         "raw_data"),
                     ExpectorEndpointFactory(expector,
-                                            exit_when_done=True)
+                                            exit_when_satisfied=True)
                 ])

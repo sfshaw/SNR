@@ -9,6 +9,7 @@ class TestRecorder(SNRTestCase):
 
     def test_invalid_task(self):
         with self.temp_file() as f:
+            recorder: Optional[RecorderEndpoint] = None
             try:
                 recorder = RecorderEndpoint(None,
                                             self.mock_node(),
@@ -28,7 +29,8 @@ class TestRecorder(SNRTestCase):
                     task_process_data("data"),
                     (TaskType.process_data, "data")))
             finally:
-                recorder.join()
+                if recorder:
+                    recorder.join()
 
     def test_recorder_encoding(self):
         logging.getLogger("Page").setLevel(logging.WARN)
@@ -47,7 +49,7 @@ class TestRecorder(SNRTestCase):
                     TextReplayerFactory(input.path,
                                         "raw_data"),
                     RecorderFactory(output.path, ["raw_data"]),
-                    ExpectorEndpointFactory(expector, exit_when_done=True)
+                    ExpectorEndpointFactory(expector, exit_when_satisfied=True)
                 ])
 
                 output.assertExists()
