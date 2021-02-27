@@ -2,6 +2,8 @@ import unittest
 
 from snr.types.base import *
 
+Expectations = Dict[Any, int]
+
 
 @runtime_checkable
 class ExpectorProtocol(Protocol):

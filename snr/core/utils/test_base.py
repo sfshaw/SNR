@@ -1,4 +1,6 @@
 from ..base import *
-from .expector import Expectations, Expector
+from .expector import Expector
+from .expector_protocol import Expectations
+from .mp_expector import MPExpector
 from .ordered_expector import OrderedExpectations, OrderedExpector
 from .snr_test_case import SNRTestCase, unittest
