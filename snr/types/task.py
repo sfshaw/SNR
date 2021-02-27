@@ -20,7 +20,7 @@ class TaskType(Enum):
     terminate = 'terminate'
 
     def __repr__(self) -> str:
-        return f"TaskType.{self.value}"
+        return self.value
 
 
 TaskId = Union[TaskType, Tuple[TaskType, str]]
