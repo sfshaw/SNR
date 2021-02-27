@@ -24,6 +24,9 @@ class SNRTestCase(unittest.TestCase):
         t = time.time() - self.startTime
         if PRINT_INDIVIDUAL_RUNTIME:
             print(f"{self.id()}: \t{t:32.3f}s")
+        for thread in threading.enumerate():
+            if not thread.is_alive():
+                print("Zombie thread %s culled", thread.name)
 
     def context(self):
         return Context(self.id(), self.root_context)
