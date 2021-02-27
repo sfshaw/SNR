@@ -6,7 +6,7 @@ from snr import *
 
 class TestReplayerChronological(SNRTestCase):
 
-    @pytest.mark.timeout(1000)
+    @pytest.mark.timeout(500)
     def test_replayer_chronological(self):
 
         with self.ordered_expector([
@@ -14,16 +14,18 @@ class TestReplayerChronological(SNRTestCase):
             (TaskType.process_data, "raw_data2"),
             (TaskType.process_data, "raw_data3"),
             (TaskType.process_data, "raw_data4"),
+            (TaskType.process_data, "raw_data5"),
         ]) as ordered_expector:
 
             with self.temp_file("input.tmp") as input, \
                     self.temp_file("output.tmp") as output:
 
                 expected_pages = [
-                    Page("raw_data1", "data1", "test_node", 0.010),
-                    Page("raw_data2", "data2", "test_node", 0.020),
-                    Page("raw_data3", "data3", "test_node", 0.030),
-                    Page("raw_data4", "data4", "test_node", 0.040),
+                    Page("raw_data1", "data1", "test_node", 0.020),
+                    Page("raw_data2", "data2", "test_node", 0.040),
+                    Page("raw_data3", "data3", "test_node", 0.060),
+                    Page("raw_data4", "data4", "test_node", 0.080),
+                    Page("raw_data5", "data5", "test_node", 0.100),
                 ]
 
                 with input.open() as f:
@@ -50,8 +52,8 @@ class TestReplayerChronological(SNRTestCase):
                 for i in range(len(times) - 1):
                     time_diffs.append(times[i + 1] - times[i])
                 avg = sum(time_diffs)/len(time_diffs)
-                self.assertGreater(avg, 0.005)
-                self.assertGreater(0.015, avg)
+                self.assertGreater(avg, 0.010)
+                self.assertLess(avg, 0.030)
 
                 output.assertExists()
                 with open(output.path) as f:
