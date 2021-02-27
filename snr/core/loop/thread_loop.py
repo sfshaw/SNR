@@ -18,6 +18,9 @@ class ThreadLoop(Context, LoopProtocol):
     endpoint may produce data to be stored in the Node or retreive data from
     the Node. The endpoint has its loop handler function run according to its
     tick_rate (Hz).
+
+    Concrete subclasses should implement the remaining LoopProtocol methods:
+    setup(), loop_handler(), and terminate()
     """
 
     def __init__(self,
