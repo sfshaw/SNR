@@ -1,6 +1,6 @@
 from snr.core.base import *
 
-from . import command_processor, command_receiver
+from . import command_receiver
 
 
 class CommandReceiverFactory(LoopFactory):
@@ -13,12 +13,3 @@ class CommandReceiverFactory(LoopFactory):
                                                 parent,
                                                 "command_receiver",
                                                 self.port)
-
-
-class CommandProcessorFactory(EndpointFactory):
-    def __init__(self) -> None:
-        super().__init__(command_processor)
-
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
-        return command_processor.CommandProcessor(self,
-                                                  parent)

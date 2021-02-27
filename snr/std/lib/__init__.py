@@ -5,9 +5,9 @@ Endpoints and some other utility classes are not exported here and must be
 imported if needed.
 '''
 
+from ..io.console.command_processor_factory import CommandProcessorFactory
+from ..io.console.command_receiver_factory import CommandReceiverFactory
 from ..io.console.console import LocalConsole
-from ..io.console.console_factory import (CommandProcessorFactory,
-                                          CommandReceiverFactory)
 from ..io.recorder.recorder_factory import RecorderFactory
 from ..io.replayer.page_reader import PageReader
 from ..io.replayer.replayer_factory import ReplayerFactory
