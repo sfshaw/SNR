@@ -1,7 +1,7 @@
 import functools
 import logging
-import operator
 import multiprocessing as mp
+import operator
 import time
 
 from snr.protocol import *
