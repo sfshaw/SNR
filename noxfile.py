@@ -14,7 +14,6 @@ supported_python_versions: List[str] = [
 @nox.session(python=supported_python_versions,
              reuse_venv=True)
 def tests(session: nox.Session):
-    # list(map(
     session.install('.[test]')
     session.run('pytest', external=False)
 
@@ -24,6 +23,7 @@ def tests(session: nox.Session):
 def mypy(session: nox.Session):
     session.install('.[mypy]')
     session.run('mypy', '-p', 'snr')
+
 
 @nox.session(python='3',
              reuse_venv=True)
