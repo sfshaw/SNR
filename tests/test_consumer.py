@@ -90,7 +90,8 @@ class TestConsumer(SNRTestCase):
             self.assertFalse(consumer.is_alive())
             check(3)
         finally:
-            consumer.join_from("test complete")
+            if consumer.is_alive():
+                consumer.join_from("test complete")
 
 
 if __name__ == '__main__':
