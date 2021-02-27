@@ -1,3 +1,4 @@
+import logging
 import threading
 
 from snr.core.base import *
@@ -19,6 +20,7 @@ class TextReplayer(ThreadLoop):
                          parent,
                          NAME_PREFIX + data_name,
                          tick_rate_hz=100)
+        self.log.setLevel(logging.WARNING)
         self.task_handlers = {
             (TaskType.process_data, data_name): self.retire_data
         }
@@ -33,6 +35,7 @@ class TextReplayer(ThreadLoop):
         if not self.done:
             if not self.data_in_flight.is_set():
                 line = self.reader.read()
+                self.dbg("Read line %s", line)
                 if line:
                     self.parent.store_data(self.data_name, line)
                 elif not self.done:
