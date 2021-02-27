@@ -8,22 +8,13 @@ class Context(ContextProtocol):
 
     def __init__(self,
                  name: str,
-                 parent: ContextProtocol,
-                 profiler: Optional[ProfilerProtocol] = None
+                 settings: Settings,
+                 profiler: Optional[ProfilerProtocol],
                  ) -> None:
         self.name = name
-
         self.log = logging.getLogger(self.name)
-
-        self.settings = parent.settings
+        self.settings = settings
         self.profiler = profiler
-
-    def terminate(self) -> None:
-        self.dbg("Terminating context %s", self.name)
-        if self.profiler:
-            self.profiler.join_from("context temrinate")
-            self.profiler.dump()
-        self.info("Context %s terminated", self.name)
 
     def fatal(self,
               message: str,
@@ -68,7 +59,7 @@ class Context(ContextProtocol):
                 handler: Callable[..., T],
                 *args: Any) -> T:
         if self.profiler:
-            return self.profiler.time(f"{task_name}:{self.name}",
+            return self.profiler.time(f"{task_name}:{handler.__module__}",
                                       handler, *args)
         else:
             return handler(*args)

@@ -8,6 +8,8 @@ can be defined in one place.
 from snr.protocol import *
 from snr.types import *
 
+from ..core.utils.profiler import Profiler
+
 
 class Config(ConfigProtocol):
     def __init__(self,
@@ -16,9 +18,15 @@ class Config(ConfigProtocol):
                  ) -> None:
         self.mode = mode
         self.factories = factories
+        self.settings = Settings()
         if not factories:
             raise Exception("No factories provided")
 
     def get(self, role: str) -> List[FactoryProtocol]:
         factories = self.factories[role]
         return factories
+
+    def get_profiler(self) -> Optional[ProfilerProtocol]:
+        if self.mode in [Mode.DEBUG]:
+            return Profiler(self.settings)
+        return None

@@ -1,12 +1,14 @@
-from snr.core.base import *
 from snr.protocol import *
 from snr.types import *
 
+from ..base import *
+from ..context.root_context import RootContext
 
-class MockNode(Context):
 
-    def __init__(self, parent: ContextProtocol) -> None:
-        super().__init__("mock_node", parent)
+class MockNode(RootContext, NodeProtocol):
+
+    def __init__(self) -> None:
+        super().__init__("mock_node", None)
         self.role: Role = "test"
         self.mode = Mode.TEST
         self.endpoints: Dict[str, EndpointProtocol] = {}

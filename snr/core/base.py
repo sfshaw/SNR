@@ -13,4 +13,7 @@ from .endpoint.endpoint import Endpoint
 from .endpoint.endpoint_factory import EndpointFactory
 from .loop.loop_factory import LoopFactory
 from .loop.thread_loop import ThreadLoop
+from .runner.cli_runner import CLIRunner
+from .runner.multi_proc_runner import MultiProcRunner
+from .runner.synchronus_runner import SynchronousRunner
 from .runner.test_runner import TestRunner

@@ -8,37 +8,33 @@ from snr.protocol import *
 from snr.types import *
 from snr.types.task import task_store_page
 
-from .context.context import Context
 from .context.root_context import RootContext
 from .datastore import Datastore
 from .endpoint.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
-from .utils.profiler import Profiler
 from .utils.timer import Timer
 
-SLEEP_TIME = 0.00005
+SLEEP_TIME = 0.000001
 
 
-class Node(Context, NodeProtocol):
+class Node(RootContext, NodeProtocol):
     def __init__(self,
-                 parent: RootContext,
                  role: Role,
-                 mode: Mode,
-                 factories: List[FactoryProtocol],
+                 config: ConfigProtocol,
                  ) -> None:
-        super().__init__(role + "_node",
-                         parent,
-                         Profiler(parent.settings))
+        super().__init__(role + "_node", None)
         self.log.setLevel(logging.WARN)
         self.role = role
-        self.mode = mode
-        self.context = self
+        self.mode = config.mode
+        self.profiler_getter: Callable[
+            [],
+            Optional[ProfilerProtocol]] = config.get_profiler
         self.timer = Timer()
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
         self.__datastore = Datastore(self, self.schedule, self.timer)
         self.endpoints: Dict[str, EndpointProtocol] = {}
         self.add_component(NodeCoreFactory())
-        for factory in factories:
+        for factory in config.get(role):
             self.add_component(factory)
         self.__terminate_flag = mp.Event()
         self.__is_terminated = mp.Event()
@@ -46,6 +42,7 @@ class Node(Context, NodeProtocol):
                   len(self.endpoints))
 
     def loop(self) -> None:
+        self.profiler = self.profiler_getter()
         for endpoint in self.endpoints.values():
             endpoint.start()
 
@@ -84,7 +81,7 @@ class Node(Context, NodeProtocol):
                       ) -> Optional[List[Task]]:
         self.dbg("Executing %s task with %s",
                  t.name, handler)
-        result = self.profile(t.name, handler, t, k)
+        result = self.profile(f"{t.type}({t.name})", handler, t, k)
         if isinstance(result, Task):
             return [result]
         else:
@@ -137,7 +134,8 @@ class Node(Context, NodeProtocol):
 
         self.__datastore.dump_data()
 
-        super().terminate()
+        self.terminate_context()
+
         self.__is_terminated.set()
         self.info("Node %s finished terminating", self.role)
 

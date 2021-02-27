@@ -1,7 +1,6 @@
 from snr.protocol import *
 from snr.types import *
 
-from ..context.root_context import RootContext
 from ..node import Node
 
 
@@ -14,12 +13,8 @@ class SynchronousRunner(RunnerProtocol):
         self.config = config
 
     def run(self) -> None:
-        context = RootContext("synchronous_runner")
-        components = self.config.get(self.role)
-        node: NodeProtocol = Node(context,
-                                  self.role,
-                                  self.config.mode,
-                                  components)
+        node: NodeProtocol = Node(self.role,
+                                  self.config)
         try:
             node.loop()  # Blocking loop
         except KeyboardInterrupt:

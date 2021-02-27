@@ -29,7 +29,7 @@ class ThreadLoop(Context, LoopProtocol):
                  name: str,
                  tick_rate_hz: float = DEFAULT_TICK_RATE
                  ) -> None:
-        super().__init__(name, parent)
+        super().__init__(name, parent.settings, parent.profiler)
         self.factory = factory
         self.task_handlers: TaskHandlerMap = {}
         self.parent = parent
@@ -63,7 +63,7 @@ class ThreadLoop(Context, LoopProtocol):
         try:
             while not self.__terminate_flag.is_set():
                 if self.profiler:
-                    self.profile(self.name, self.loop_handler, [])
+                    self.profile(self.name, self.loop_handler)
                 else:
                     self.loop_handler()
                 self.tick()

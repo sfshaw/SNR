@@ -1,3 +1,4 @@
+import threading
 import time
 import unittest
 
@@ -17,8 +18,6 @@ class SNRTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.startTime = time.time()
         self.test_name = self.id().split(".")[-1]
-        self.root_context = RootContext(self.test_name)
-        self.log = self.root_context.log
 
     def tearDown(self) -> None:
         t = time.time() - self.startTime
@@ -27,9 +26,6 @@ class SNRTestCase(unittest.TestCase):
         for thread in threading.enumerate():
             if not thread.is_alive():
                 print("Zombie thread %s culled", thread.name)
-
-    def context(self):
-        return Context(self.id(), self.root_context)
 
     def expector(self,
                  expectations: Expectations
@@ -47,6 +43,9 @@ class SNRTestCase(unittest.TestCase):
                    ) -> Config:
         return Config(mode, {"test": factories})
 
+    def get_context(self) -> ContextProtocol:
+        return RootContext("test_context", None)
+
     def run_test_node(self,
                       factories: List[FactoryProtocol],
                       mode: Mode = Mode.TEST
@@ -56,7 +55,7 @@ class SNRTestCase(unittest.TestCase):
         runner.run()
 
     def mock_node(self) -> NodeProtocol:
-        return MockNode(self.root_context)
+        return MockNode()
 
     def temp_file(self,
                   filename: Optional[str] = None,

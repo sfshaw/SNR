@@ -35,10 +35,8 @@ class TestNode(SNRTestCase):
     def test_get_task_handlers(self):
         node = None
         try:
-            node = Node(self.root_context,
-                        "test",
-                        Mode.TEST,
-                        [
+            node = Node("test",
+                        self.get_config([
                             DummyEndpointFactory("dummy_endpoint_1", {
                                 (TaskType.event, "by_type_and_name"): no_op,
                                 TaskType.process_data: no_op
@@ -47,6 +45,7 @@ class TestNode(SNRTestCase):
                                 TaskType.process_data: no_op
                             }),
                         ])
+                        )
 
             handlers = node.get_task_handlers(task_terminate("test"))
             self.assertEqual(1, len(handlers))

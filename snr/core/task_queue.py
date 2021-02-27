@@ -13,7 +13,7 @@ class TaskQueue(Context):
                  task_source: TaskSource
                  ) -> None:
         super().__init__("task_queue",
-                         parent,
+                         parent.settings,
                          parent.profiler)
         self.get_new_tasks = task_source
         self.queue: queue.Queue[Task] = queue.Queue()

@@ -1,32 +1,34 @@
 import collections
 import logging
 
+from snr.protocol import *
 from snr.types import *
 
 from .consumer import Consumer
 from .timer import Timer
 
 DAEMON_THREAD = False
-SLEEP_TIME_S = 0.0005
-JOIN_TIMEOUT = 1
+SLEEP_TIME_S = 0.00005
 
 ProfilingResult = Tuple[str, float]
 
 T = TypeVar("T")
 
 
-class Profiler(Consumer[ProfilingResult]):
-    def __init__(self, settings: Settings):
+class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
+    def __init__(self, settings: Settings) -> None:
         if not settings.ENABLE_PROFILING:
+            # TODO: Correclty short circuit constructor
             return None
+        self.settings = settings
+        self.time_dict: Dict[str, Deque[float]] = {}
+        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
         super().__init__("profiler",
                          self.store_task,
                          SLEEP_TIME_S,
-                         True)  # TODO: Use of daemon thread is a hack
-        self.settings = settings
-        self.log = logging.getLogger(self.name)
-        self.time_dict: Dict[str, Deque[float]] = {}
-        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
+                         daemon=DAEMON_THREAD,  # TODO: Daemon thread is hack
+                         )
+        self.log.setLevel(logging.WARNING)
 
     def time(self,
              name: str,
@@ -75,3 +77,11 @@ class Profiler(Consumer[ProfilingResult]):
         if time_s > 0.000000001:
             return "{:6.3f} ns".format(time_s * 1000000000)
         return "Could not format time"
+
+
+def profiler_getter(settings: Settings) -> Optional[Profiler]:
+    return Profiler(settings)
+
+
+def no_profiler(settings: Settings) -> Optional[Profiler]:
+    return None

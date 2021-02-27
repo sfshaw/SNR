@@ -16,7 +16,9 @@ class Datastore(Context):
                  task_scheduler: TaskScheduler,
                  timer: Timer,
                  ) -> None:
-        super().__init__("datastore", parent)
+        super().__init__("datastore",
+                         parent.settings,
+                         parent.profiler)
         self.timer = timer
         self.parent = parent
         self.data_dict: DataDict = {}

@@ -7,7 +7,7 @@ class TestContext(SNRTestCase):
         def no_op(arg: str) -> str:
             return arg
 
-        context = Context("test_context", self.root_context, profiler=None)
+        context = Context("test_context", Settings(), None)
         result = context.profile(self.test_name, no_op, "hello")
         self.assertEqual("hello", result)
 
