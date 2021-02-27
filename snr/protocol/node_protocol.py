@@ -45,7 +45,7 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
         ...
 
     def synchronous_store(self, page: Page) -> None:
-        '''For use by node core endpoints to write pages to a the datastore.
+        '''For use by node core endpoints to write pages to the datastore.
         Not for use by Loops running outside the main thread,
         such as ThreadLoops
         '''
