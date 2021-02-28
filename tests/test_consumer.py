@@ -4,7 +4,6 @@ import time
 from snr.core.base import *
 from snr.core.utils.consumer import Consumer
 from snr.core.utils.test_base import *
-from snr.core.utils.utils import no_op
 
 SLEEP_TIME_S = 0.00005
 
@@ -28,7 +27,7 @@ class TestConsumer(SNRTestCase):
     def test_consumer_start_join(self):
         CATCH_UP_TIME = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
-                                 no_op,
+                                 lambda _: None,
                                  SLEEP_TIME_S)
 
         time.sleep(CATCH_UP_TIME)

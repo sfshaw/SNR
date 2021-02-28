@@ -1,6 +1,5 @@
 from snr import *
 from snr.core.node import Node
-from snr.core.utils.utils import no_op
 from snr.types.task import task_process_data
 
 
@@ -33,6 +32,10 @@ class TestNode(SNRTestCase):
         self.assertIsNone(get((Type.c, "1")))
 
     def test_get_task_handlers(self):
+
+        def no_op(*args: Any) -> None:
+            return None
+
         node = None
         try:
             node = Node("test",

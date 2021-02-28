@@ -39,7 +39,7 @@ class CameraManager(ThreadLoop):
         # self.start_loop()
 
     def setup(self):
-        fac: Any = no_op
+        fac: Any = lambda: None
         if self.role is ManagerRole.Source:
             fac = VideoSourceFactory
         elif self.role is ManagerRole.Receiver:

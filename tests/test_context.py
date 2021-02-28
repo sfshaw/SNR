@@ -3,12 +3,8 @@ from snr import *
 
 class TestContext(SNRTestCase):
     def test_context_handler_no_profiler(self):
-
-        def no_op(arg: str) -> str:
-            return arg
-
         context = Context("test_context", Settings(), None)
-        result = context.profile(self.test_name, no_op, "hello")
+        result = context.profile(self.test_name, lambda arg: arg, "hello")
         self.assertEqual("hello", result)
 
 
