@@ -15,7 +15,7 @@ ProfilingResult = Tuple[str, float]
 T = TypeVar("T")
 
 
-class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
+class Profiler(Consumer[ProfilingResult]):
     def __init__(self, settings: Settings) -> None:
         if not settings.ENABLE_PROFILING:
             # TODO: Correclty short circuit constructor
