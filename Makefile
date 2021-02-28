@@ -67,6 +67,11 @@ t: test
 test: 
 	$(PYTHON) -m pytest
 
+.PHONY: unittest
+ut: unittest
+unittest: 
+	$(PYTHON) -m unittest
+
 .PHONY: test_all
 ta: test_all
 test_all:
