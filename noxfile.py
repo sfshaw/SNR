@@ -3,6 +3,7 @@ from typing import List
 import nox
 
 supported_python_versions: List[str] = [
+    '3.6',
     '3.7',
     '3.8',
     '3.9',
