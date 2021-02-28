@@ -3,7 +3,7 @@ import queue
 import threading
 import time
 
-from snr.types.base import *
+from snr.types import *
 
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
