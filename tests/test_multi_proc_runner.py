@@ -1,4 +1,3 @@
-import logging
 from snr import *
 from snr.core.runner.multi_proc_runner import MultiProcRunner
 from snr.std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS

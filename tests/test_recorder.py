@@ -11,11 +11,12 @@ class TestRecorder(SNRTestCase):
         with self.temp_file() as f:
             recorder: Optional[RecorderEndpoint] = None
             try:
-                recorder = RecorderEndpoint(None,
+                data_keys = ["data_key"]
+                recorder = RecorderEndpoint(RecorderFactory(f.path, data_keys),
                                             self.mock_node(),
                                             "test_recorder",
                                             f.path,
-                                            ["data"])
+                                            data_keys)
                 recorder.log.setLevel(logging.CRITICAL)
                 wrong_event_task = task_process_data("boring_data")
                 self.assertIsNone(recorder.task_handler(wrong_event_task,
@@ -26,14 +27,15 @@ class TestRecorder(SNRTestCase):
                     wrong_event_task,
                     (TaskType.process_data, "totally invalid")))
                 self.assertIsNone(recorder.task_handler(
-                    task_process_data("data"),
-                    (TaskType.process_data, "data")))
+                    task_process_data("data_key"),
+                    (TaskType.process_data, "data_key")))
             finally:
                 if recorder:
                     recorder.join()
 
     def test_recorder_encoding(self):
-        logging.getLogger("Page").setLevel(logging.WARN)
+        log = logging.getLogger("Page")
+        log.setLevel(logging.WARN)
         with self.expector({(
             TaskType.process_data, "raw_data"): 1,
         }) as expector:
@@ -61,8 +63,8 @@ class TestRecorder(SNRTestCase):
                         self.assertEqual("test_data", page.data)
                         self.assertEqual("test_node", page.origin)
                     else:
-                        self.log.error("Deserialization of %s failed, got %s",
-                                       line, page)
+                        log.error("Deserialization of %s failed, got %s",
+                                  line, page)
                         self.assertTrue(False,
                                         "Deserialization of page failed")
 
