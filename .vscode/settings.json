@@ -1,4 +1,10 @@
 {
+    "files.watcherExclude": {
+        "**/.mypy_cache/**": true,
+        "**/.nox/**": true,
+        "**/pytest_cache/**": true,
+        "**/__pycache__/**": true,
+    },
     "python.testing.unittestArgs": [
         "-v",
         "-s",
@@ -6,7 +12,7 @@
         "-p",
         "test_*.py"
     ],
-    "python.testing.pytestEnabled": false,
+    "python.testing.pytestEnabled": true,
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestEnabled": true,
     "python.pythonPath": "/usr/bin/python3",
