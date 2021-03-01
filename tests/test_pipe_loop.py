@@ -27,7 +27,7 @@ class TestPipeLoop(SNRTestCase):
             PipeLoopFactory(pipe[0]),
             TimeoutLoopFactory(ms=1),
         ])
-        self.assertTrue(pipe[1].poll(0.0001))
+        self.assertTrue(pipe[1].poll(0.005))
         self.assertRaises(EOFError, lambda: pipe[1].recv())
 
     @pytest.mark.timeout(200)

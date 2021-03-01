@@ -2,18 +2,19 @@ from snr.core.base import *
 
 from .connection import Connection
 
-POLL_TIMEOUT = 0.00001
+POLL_TIMEOUT = 0.000001
 
 
-class PipeLoop(ThreadLoop):
+class CommsLoopBase(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: NodeProtocol,
-                 pipe: Connection,
+                 name: str,
+                 conn: Connection,
                  data_keys: List[DataKey],
                  ) -> None:
-        super().__init__(factory, parent, "pipe_loop")
-        self.pipe = pipe
+        super().__init__(factory, parent, name)
+        self.connection: Connection = conn
         self.task_handlers: TaskHandlerMap = {}
         for key in data_keys:
             self.task_handlers[(TaskType.process_data, key)
@@ -23,20 +24,25 @@ class PipeLoop(ThreadLoop):
         page = self.parent.get_page(task.name)
         if page:
             try:
-                self.pipe.send(page.serialize())
+                self.connection.send(page.serialize())
             except Exception as e:
                 self.err("Error send: %s", e)
                 raise e
         else:
             self.err("Data with key %s not found", task.name)
 
-    def setup(self) -> None:
-        pass
+    # def setup(self) -> None:
+    #     ...
 
     def loop_handler(self) -> None:
+        if self.connection.is_closed():
+            self.err("Connection %s is closed", self.connection)
+        else:
+            # Pipe is open, good
+            pass
         try:
-            if self.pipe.poll(POLL_TIMEOUT):
-                page = Page.deserialize(self.pipe.recv())
+            if self.connection.poll(POLL_TIMEOUT):
+                page = Page.deserialize(self.connection.recv())
                 if page:
                     self.parent.store_page(page)
                 else:
@@ -47,5 +53,5 @@ class PipeLoop(ThreadLoop):
             self.err("Error recv: %s", e)
             # raise e
 
-    def terminate(self) -> None:
-        self.pipe.close()
+    # def terminate(self) -> None:
+    #     ...

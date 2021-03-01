@@ -5,6 +5,8 @@ Endpoints and some other utility classes are not exported here and must be
 imported if needed.
 '''
 
+from ..comms.comms_loop.comms_loop import CommsLoopBase
+from ..comms.pipe.pipe_loop_factory import PipeLoopFactory
 from ..io.console.command_processor_factory import CommandProcessorFactory
 from ..io.console.command_receiver_factory import CommandReceiverFactory
 from ..io.console.console import LocalConsole
@@ -14,7 +16,6 @@ from ..io.replayer.replayer_factory import ReplayerFactory
 from ..io.replayer.text_reader import TextReader
 from ..io.replayer.text_replayer_factory import TextReplayerFactory
 from ..kalman.kalman_filter_factory import KalmanFilterFactory
-from ..pipe.pipe_loop_factory import PipeLoopFactory
 from ..utils.dummy_endpoint import DummyEndpointFactory
 from ..utils.expector_endpoint import ExpectorEndpointFactory
 from ..utils.stopwatch_endpoint_factory import StopwatchEndpointFactory
