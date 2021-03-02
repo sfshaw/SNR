@@ -1,12 +1,15 @@
 from multiprocessing.connection import Connection as MPConnection
 
+from snr.core.base import *
 from snr.types import *
 
-from ..comms_loop.connection import Connection
 
-
-class PipeWrapper(Connection):
-    def __init__(self, pipe: MPConnection) -> None:
+class PipeWrapper(Context):
+    def __init__(self,
+                 pipe: MPConnection,
+                 parent: ContextProtocol,
+                 ) -> None:
+        super().__init__("pipe_wrapper", parent.settings, parent.profiler)
         self.pipe = pipe
 
     def open(self) -> None:

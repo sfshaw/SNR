@@ -19,5 +19,6 @@ class PipeLoopFactory(LoopFactory):
         return comms_loop.CommsLoopBase(self,
                                         parent,
                                         "pipe_loop",
-                                        pipe_wrapper.PipeWrapper(self.pipe),
+                                        pipe_wrapper.PipeWrapper(self.pipe,
+                                                                 parent),
                                         self.data_keys)
