@@ -3,6 +3,10 @@ from snr.types import *
 
 @runtime_checkable
 class Connection(Protocol):
+
+    def open(self) -> None:
+        ...
+
     def is_closed(self) -> bool:
         ...
 

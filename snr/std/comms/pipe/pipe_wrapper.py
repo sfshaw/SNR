@@ -9,6 +9,9 @@ class PipeWrapper(Connection):
     def __init__(self, pipe: MPConnection) -> None:
         self.pipe = pipe
 
+    def open(self) -> None:
+        pass
+
     def is_closed(self) -> bool:
         return self.pipe.closed
 

@@ -2,8 +2,8 @@ from multiprocessing.connection import Connection as MPConnection
 
 from snr.core.base import *
 
-from . import pipe_loop
-from .pipe_wrapper import PipeWrapper
+from ..comms_loop import comms_loop
+from . import pipe_wrapper
 
 
 class PipeLoopFactory(LoopFactory):
@@ -11,9 +11,13 @@ class PipeLoopFactory(LoopFactory):
                  pipe: MPConnection,
                  data_keys: List[DataKey] = [],
                  ) -> None:
-        super().__init__(pipe_loop)
-        self.pipe = PipeWrapper(pipe)
+        super().__init__(pipe_wrapper)
+        self.pipe = pipe
         self.data_keys = data_keys
 
     def get(self, parent: NodeProtocol) -> LoopProtocol:
-        return pipe_loop.PipeLoop(self, parent, self.pipe, self.data_keys)
+        return comms_loop.CommsLoopBase(self,
+                                        parent,
+                                        "pipe_loop",
+                                        pipe_wrapper.PipeWrapper(self.pipe),
+                                        self.data_keys)

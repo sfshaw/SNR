@@ -31,8 +31,10 @@ class CommsLoopBase(ThreadLoop):
         else:
             self.err("Data with key %s not found", task.name)
 
-    # def setup(self) -> None:
-    #     ...
+    def setup(self) -> None:
+        self.connection.open()
+        if self.connection.is_closed():
+            self.err("Connection not open: %s", self.connection)
 
     def loop_handler(self) -> None:
         if self.connection.is_closed():
@@ -53,5 +55,5 @@ class CommsLoopBase(ThreadLoop):
             self.err("Error recv: %s", e)
             # raise e
 
-    # def terminate(self) -> None:
-    #     ...
+    def terminate(self) -> None:
+        self.connection.close()
