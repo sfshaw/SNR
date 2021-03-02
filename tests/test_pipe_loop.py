@@ -6,18 +6,6 @@ from snr import *
 
 class TestPipeLoop(SNRTestCase):
 
-    def test_expector_proc(self) -> None:
-        expectations: Expectations = {
-            "called": 1
-        }
-        with MPExpector(expectations, self) as expector:
-            def call():
-                expector.call("called")
-
-            proc = mp.Process(target=call)
-            proc.start()
-            proc.join()
-
     @pytest.mark.timeout(50)
     def test_pipe_noop(self) -> None:
 

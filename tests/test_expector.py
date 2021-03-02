@@ -1,6 +1,6 @@
-import unittest
+import multiprocessing as mp
 
-from snr.core.utils.expector import *
+from snr.core.utils.test_base import *
 
 
 class TestExpector(unittest.TestCase):
@@ -32,6 +32,18 @@ class TestExpector(unittest.TestCase):
             },
                     self) as _:
                 pass
+
+    def test_expector_proc(self) -> None:
+        expectations: Expectations = {
+            "called": 1
+        }
+        with MPExpector(expectations, self) as expector:
+            def call():
+                expector.call("called")
+
+            proc = mp.Process(target=call)
+            proc.start()
+            proc.join()
 
 
 if __name__ == '__main__':
