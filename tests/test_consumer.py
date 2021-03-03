@@ -25,20 +25,20 @@ class TestConsumer(SNRTestCase):
         self.assertEqual(3, self.num)
 
     def test_consumer_start_join(self):
-        CATCH_UP_TIME = SLEEP_TIME_S * 10
+        CATCH_UP_TIME_S = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
                                  lambda _: None,
                                  SLEEP_TIME_S)
 
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertTrue(consumer.is_alive())
 
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertTrue(consumer.is_alive())
 
         consumer.join_from("test complete")
         self.assertFalse(consumer.is_alive())
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertFalse(consumer.is_alive())
 
     def test_consumer_put(self):

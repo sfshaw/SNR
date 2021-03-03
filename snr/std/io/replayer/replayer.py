@@ -57,6 +57,6 @@ class Replayer(ThreadLoop):
         return None
 
     def wait(self, page: Page) -> None:
-        time_difference = page.created_at - self.parent.get_time()
-        if time_difference > 0:
-            time.sleep(time_difference)
+        time_difference_s = page.created_at_s - self.parent.get_time_s()
+        if time_difference_s > 0:
+            time.sleep(time_difference_s)

@@ -6,7 +6,7 @@ from snr import *
 
 class TestReplayerChronological(SNRTestCase):
 
-    @pytest.mark.timeout(500)
+    @pytest.mark.timeout(0.500)
     def test_replayer_chronological(self):
 
         with self.ordered_expector([

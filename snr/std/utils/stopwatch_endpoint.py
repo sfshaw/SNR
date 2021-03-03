@@ -12,5 +12,5 @@ class StopwatchEndpoint(Endpoint):
         self.times = times
 
     def task_handler(self, task: Task, key: TaskId) -> SomeTasks:
-        self.times.append(self.parent.get_time())
+        self.times.append(self.parent.get_time_s())
         return None

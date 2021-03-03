@@ -19,7 +19,7 @@ class Page(DataClassJsonMixin):
     key: DataKey  # The name used to lookup a page
     data: Any  # The actual data stored by a page
     origin: Role  # The node that the data came from
-    created_at: float  # The runtime in seconds when the page was created
+    created_at_s: float  # The runtime in seconds when the page was created
     process: bool = True  # If the data should be processed with task handlers
 
     def serialize(self) -> str:
@@ -55,5 +55,5 @@ class Page(DataClassJsonMixin):
             self.key,
             data,
             self.origin,
-            self.created_at,
+            self.created_at_s,
             self.process)

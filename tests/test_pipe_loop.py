@@ -6,7 +6,7 @@ from snr import *
 
 class TestPipeLoop(SNRTestCase):
 
-    @pytest.mark.timeout(50)
+    @pytest.mark.timeout(0.050)
     def test_pipe_noop(self) -> None:
 
         pipe = mp.Pipe(duplex=True)
@@ -18,7 +18,7 @@ class TestPipeLoop(SNRTestCase):
         self.assertTrue(pipe[1].poll(0.005))
         self.assertRaises(EOFError, lambda: pipe[1].recv())
 
-    @pytest.mark.timeout(200)
+    @pytest.mark.timeout(0.200)
     def test_one_pipe(self) -> None:
 
         data_key = "my_data"
@@ -37,7 +37,7 @@ class TestPipeLoop(SNRTestCase):
                                         exit_when_satisfied=True),
             ])
 
-    @pytest.mark.timeout(500)
+    @pytest.mark.timeout(0.500)
     def test_two_pipe_loops(self) -> None:
         # logging.getLogger().setLevel(logging.WARNING)
 

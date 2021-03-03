@@ -78,5 +78,5 @@ class SNRTestCase(unittest.TestCase):
         self.assertEqual(data, page.data)
         self.assertEqual(origin, page.origin)
         if created_at:
-            self.assertAlmostEqual(created_at, page.created_at)
+            self.assertAlmostEqual(created_at, page.created_at_s)
         self.assertEqual(process, page.process)

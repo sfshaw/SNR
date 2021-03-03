@@ -14,7 +14,7 @@ from .endpoint.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
 from .utils.timer import Timer
 
-SLEEP_TIME = 0.000001
+SLEEP_TIME_S = 0.000001
 
 
 class Node(RootContext, NodeProtocol):
@@ -53,8 +53,8 @@ class Node(RootContext, NodeProtocol):
             if t:
                 self.__execute_task(t)
             else:
-                if SLEEP_TIME > 0:
-                    time.sleep(SLEEP_TIME)
+                if SLEEP_TIME_S > 0:
+                    time.sleep(SLEEP_TIME_S)
 
         self.dbg("Node exiting main loop")
         self.terminate()
@@ -170,5 +170,5 @@ class Node(RootContext, NodeProtocol):
     def get_page(self, key: str) -> Optional[Page]:
         return self.__datastore.get_page(key)
 
-    def get_time(self) -> float:
+    def get_time_s(self) -> float:
         return self.timer.current()

@@ -15,7 +15,7 @@ class Consumer(threading.Thread, Generic[T]):
     def __init__(self,
                  parent_name: str,
                  action: Callable[[T], None],
-                 sleep_time: float,
+                 sleep_time_s: float,
                  daemon: bool = False
                  ) -> None:
         super().__init__(target=self.__loop,
@@ -24,7 +24,7 @@ class Consumer(threading.Thread, Generic[T]):
         self.log = logging.getLogger(self.name)
         self.log.setLevel(logging.WARNING)
         self.action = action
-        self.sleep_time = sleep_time
+        self.sleep_time_s = sleep_time_s
         self.queue: queue.Queue[T] = queue.Queue()
         self.__terminate_flag = threading.Event()
         self.flushed = threading.Event()
@@ -45,7 +45,7 @@ class Consumer(threading.Thread, Generic[T]):
         while not self.__terminate_flag.is_set():
             self.__iterate()
             # self.fed.wait(timeout=self.sleep_time)
-            time.sleep(self.sleep_time)
+            time.sleep(self.sleep_time_s)
 
         self.log.debug("Exited loop, flushing")
         # Flush remaining lines

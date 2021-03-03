@@ -201,7 +201,7 @@ class Settings:
     # Should only ever be 1, after 2 thigns have gone very wrong
     # Maximum number of times to try creating or opening a socket
     SOCKETS_CONNECT_ATTEMPTS = 120
-    SOCKETS_RETRY_WAIT = 1  # seconds to wait before retrying
+    SOCKETS_RETRY_WAIT_S = 1  # seconds to wait before retrying
     MAX_SOCKET_SIZE = 8192  # Maximum size for single receiving call
     '''Note: SOCKETS_CONNECT_ATTEMPTS * SOCKETS_RETRY_WAIT = sockets timeout
         connection
@@ -232,9 +232,9 @@ class Settings:
     SIMULATE_SERIAL = True
     SERIAL_BAUD = 115200  # Serial Baudrate
     SERIAL_MAX_ATTEMPTS = 4  # Maximum number of times to connect
-    SERIAL_RETRY_WAIT = 0.5  # Time to wait before retrying serial connection
+    SERIAL_RETRY_WAIT_S = 0.5  # Time to wait before retrying serial connection
     SERIAL_TIMEOUT = 4
-    SERIAL_SETUP_WAIT_PRE = 1
+    SERIAL_SETUP_WAIT_PRE_S = 1
     SERIAL_SETUP_WAIT_POST = 1
 
     # Zynq Zybo FPGA DMA

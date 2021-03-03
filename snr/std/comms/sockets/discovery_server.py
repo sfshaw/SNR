@@ -1,6 +1,6 @@
 import socket
-from socket import socket as Socket
 import threading
+from socket import socket as Socket
 
 from snr.core.base import *
 
@@ -54,7 +54,7 @@ class DiscoveryServer(Context):
         except socket.error as socket_error:
             self.err("Bind failed: {}", [socket_error])
             self.__shutdown()
-            # sleep(settings.SOCKETS_RETRY_WAIT)
+            # time.sleep(self.settings.SOCKETS_RETRY_WAIT_S)
         # Listen for connections
         try:
             self.s.listen(MAX_CONNECTIONS)

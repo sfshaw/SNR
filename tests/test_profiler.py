@@ -15,18 +15,18 @@ class TestProfiler(unittest.TestCase):
         profiler.dump()
 
     def test_profiler_start_join(self):
-        CATCH_UP_TIME = SLEEP_TIME_S * 10
+        CATCH_UP_TIME_S = SLEEP_TIME_S * 10
         profiler: ProfilerProtocol = Profiler(Settings())
 
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertTrue(profiler.is_alive())
 
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertTrue(profiler.is_alive())
 
         profiler.join_from("test complete")
         self.assertFalse(profiler.is_alive())
-        time.sleep(CATCH_UP_TIME)
+        time.sleep(CATCH_UP_TIME_S)
         self.assertFalse(profiler.is_alive())
 
     def test_consumer_put(self):

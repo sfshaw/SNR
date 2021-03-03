@@ -52,7 +52,7 @@ class SocketsClient(Context):
             self.warn("Failed to connect to server at {}:{}, trying again.",
                       [self.config.ip, str(self.config.port)])
             # Wait a second before retrying
-            time.sleep(self.settings.SOCKETS_RETRY_WAIT)
+            time.sleep(self.settings.SOCKETS_RETRY_WAIT_S)
 
         def failure(tries: int) -> None:
             if(self.config.required):
