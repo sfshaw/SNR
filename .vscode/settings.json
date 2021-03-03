@@ -4,6 +4,7 @@
         "**/.nox/**": true,
         "**/pytest_cache/**": true,
         "**/__pycache__/**": true,
+        "**/temp/**": true
     },
     "python.testing.unittestArgs": [
         "-v",
