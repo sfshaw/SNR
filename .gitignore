@@ -8,3 +8,4 @@ typings
 html
 .coverage*
 coverage.xml
+.mypy_cache
