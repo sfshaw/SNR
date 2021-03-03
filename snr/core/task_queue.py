@@ -1,10 +1,9 @@
-import logging
 import queue
 
 from snr.protocol import *
 from snr.types import *
 
-from .context.context import Context
+from .context.context import Context, logging
 
 
 class TaskQueue(Context):

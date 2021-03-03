@@ -1,5 +1,4 @@
 import functools
-import logging
 import multiprocessing as mp
 import operator
 import time
@@ -8,7 +7,7 @@ from snr.protocol import *
 from snr.types import *
 from snr.types.task import task_store_page
 
-from .context.root_context import RootContext
+from .context.root_context import RootContext, logging
 from .datastore import Datastore
 from .endpoint.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue

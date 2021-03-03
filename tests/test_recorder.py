@@ -1,5 +1,3 @@
-import logging
-
 from snr import *
 from snr.std.io.recorder.recorder_endpoint import RecorderEndpoint
 from snr.types.task import task_process_data
