@@ -31,7 +31,7 @@ class TestSocketsLoop(SNRTestCase):
         }
 
         with MPExpector(expectations, self) as expector, \
-            socket.create_server(addr) as server_socket, \
+            self.create_server(addr) as server_socket, \
                 socket.create_connection(addr) as client_socket:
 
             trigger = threading.Event()

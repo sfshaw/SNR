@@ -22,10 +22,10 @@ class TestSocketsLoop(SNRTestCase):
             conn.close()
             trigger.set()
 
-        addr = ("localhost", 54329)
+        addr = ("localhost", 39485)
         page = Page("key", "data", "origin", 0.75)
 
-        with socket.create_server(addr) as server_socket, \
+        with self.create_server(addr) as server_socket, \
                 socket.create_connection(addr) as client_socket:
             trigger = threading.Event()
             server_thread = threading.Thread(target=serve,

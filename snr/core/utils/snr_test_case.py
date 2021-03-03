@@ -1,3 +1,4 @@
+import socket
 import threading
 import time
 import unittest
@@ -80,3 +81,14 @@ class SNRTestCase(unittest.TestCase):
         if created_at:
             self.assertAlmostEqual(created_at, page.created_at_s)
         self.assertEqual(process, page.process)
+
+    def create_server(self, addr: Tuple[str, int],
+                      timeout_s: Optional[float] = None,
+                      ) -> socket.socket:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        if timeout_s:
+            sock.settimeout(timeout_s)
+        sock.bind(addr)
+        sock.listen(10)
+        return sock
