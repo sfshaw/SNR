@@ -4,9 +4,11 @@
 # """
 
 # import time
+
 # import serial
 # from serial.serialutil import SerialBase, SerialException
 # from snr.core.base import *
+
 # from .packet import *
 # from .serial_finder import SerialFinder
 
@@ -43,20 +45,24 @@
 #         return None
 
 #     def attempt_connect(self) -> None:
-#         def fail_once(e: Exception) -> None:
+#         def fail_once() -> None:
 #             self.warn("Failed to open serial port, trying again.")
 
 #         def failure(e: Exception) -> None:
 #             self.err("Could not open serial port after {} tries: {}",
 #                      [self.settings.SERIAL_MAX_ATTEMPTS, e])
 #             self.parent.schedule(
-#                 task.terminate("serial_error"))
+#                 task_terminate("serial_error"))
 
-#         self.serial_connection = attempt(
-#             self.try_open_serial,
-#             self.settings.SERIAL_MAX_ATTEMPTS,
-#             fail_once,
-#             failure)
+#         attempts = 0
+#         self.serial_connection = self.try_open_serial()
+#         while ((attempts < self.settings.SERIAL_MAX_ATTEMPTS) and
+#                not self.serial_connection):
+#             fail_once()
+#             attempts += 1
+#             self.serial_connection = self.try_open_serial()
+#         if not self.serial_connection:
+#             failure(Exception("Could not establish serial connection"))
 
 #     def handle_serial_com(self, t: Task, k: TaskId) -> SomeTasks:
 #         self.dbg("Executing serial com task: {}", [t.val_list])
@@ -80,7 +86,7 @@
 #             self.dbg("serial_sim",
 #                      "Not opening port", [])
 #             raise Exception("Not opening serial port if simulating")
-#         self.sleep(self.settings.SERIAL_SETUP_WAIT_PRE)
+#         time.sleep(self.settings.SERIAL_SETUP_WAIT_PRE_S)
 #         conn: SerialBase = serial.Serial(
 #             port=self.serial_port,
 #             baudrate=self.settings.SERIAL_BAUD,
@@ -107,7 +113,7 @@
 #                      cmd_type: str,
 #                      data: List[Any]
 #                      ) -> SomeTasks:
-#         t = []
+#         t: List[Task] = []
 
 #         if cmd_type.__eq__("blink"):
 #             p = self.new_packet(BLINK_CMD, data[0], data[1])
@@ -129,7 +135,7 @@
 #         return t
 
 #     # Send and receive a serial packet
-#     def send_receive_packet(self, p: Packet) -> Packet:
+#     def send_receive_packet(self, p: SerialPacket) -> SerialPacket:
 #         # send packet
 #         self.write_packet(p)
 #         # Recieve a packet from the Arduino/Teensy
@@ -143,7 +149,7 @@
 #         return p
 
 #     # Send a Packet over serial
-#     def write_packet(self, p: Packet) -> None:
+#     def write_packet(self, p: SerialPacket) -> None:
 #         data_bytes, expected_size = p.pack()
 #         self.dbg("Trying to send packet of expected size {}",
 #                  [expected_size])
@@ -155,7 +161,7 @@
 #             return
 
 #         try:
-#             if not self.serial_connection.is_open:
+#             if not self.serial_connection.isOpen():
 #                 self.err("Aborting send, Serial is not open: {}",
 #                          [self.serial_connection])
 #                 return
@@ -173,7 +179,7 @@
 
 #     # Read in a packet from serial
 #     # TODO: ensure that this effectively recieves data over serial
-#     def read_packet(self) -> Union[Packet, None]:
+#     def read_packet(self) -> Union[SerialPacket, None]:
 #         if self.settings.SIMULATE_SERIAL:
 #             self.dbg("Receiving packet of simulated bytes")
 #             recv_bytes = self.simulated_bytes
@@ -182,31 +188,31 @@
 #                 self.err("Aborting read, Serial is not open: {}",
 #                          [self.serial_connection])
 #                 return None
-
-#             self.dbg("Waiting for bytes, {} ready", [
-#                 self.serial_connection.in_waiting])
+#             assert self.serial_connection
+#             self.dbg("Waiting for bytes, %s ready",
+#                      self.serial_connection.in_waiting)
 #             tries = 0
 #             while self.serial_connection.in_waiting < PACKET_SIZE:
 #                 tries = tries + 1
-#             self.dbg("Received enough bytes after {} tries", [tries])
-#             self.dbg("Reading, {} bytes ready",
-#                      [self.serial_connection.in_waiting])
+#             self.dbg("Received enough bytes after %s tries", tries)
+#             self.dbg("Reading, %s bytes ready",
+#                      self.serial_connection.in_waiting)
 #             try:
-#                 recv_bytes = self.serial_connection.read(size=PACKET_SIZE)
+#                 recv_bytes = self.serial_connection.read(PACKET_SIZE)
 #             except Exception as error:
 #                 self.dbg("Error reading serial: {}",
 #                          [error.__repr__()])
 #         self.dbg("Read bytes from serial")
 #         self.dbg("type(recv_bytes) = %s",
 #                  type(recv_bytes))
-#         cmd = recv_bytes[0]
+#         cmd = int.from_bytes(recv_bytes[0], byteorder="little")
 #         val1 = recv_bytes[1]
 #         val2 = recv_bytes[2]
 #         self.dbg("Unpacked: cmd: {}.{}, val1: {}.{}, val2: {}.{}"
 #                  [cmd, cmd.__class__,
 #                   val1, val1.__class__,
 #                   val2, val2.__class__])
-#         p = Packet(cmd, val1, val2)
+#         p = SerialPacket(cmd, val1, val2)
 #         return p
 
 #     def map_thrust_value(self, speed: int) -> int:
@@ -218,7 +224,7 @@
 #         self.dbg("Converted motor speed from {} to {}", [speed, val])
 #         return val
 
-#     def generate_motor_packet(self, motor: int, speed: int) -> Packet:
+#     def generate_motor_packet(self, motor: int, speed: int) -> SerialPacket:
 #         mapped_speed = self.map_thrust_value(speed)
 #         return self.new_packet(SET_MOT_CMD, motor, mapped_speed)
 
@@ -228,12 +234,12 @@
 #         self.dbg("Preparing packet: cmd: {}, val1: {}, val2: {}",
 #                  [cmd, val1, val2])
 
-#         return Packet(cmd, val1, val2)
+#         return SerialPacket(cmd, val1, val2)
 
 #     def make_packet(self, cmd: int, val1: int, val2: int):
 #         """ Constructor for building packets (chksum is given)
 #         """
-#         return Packet(cmd, val1, val2)
+#         return SerialPacket(cmd, val1, val2)
 
 #     def terminate(self):
 #         if self.serial_connection is not None:
