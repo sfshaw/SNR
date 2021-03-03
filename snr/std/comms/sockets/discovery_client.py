@@ -8,8 +8,10 @@ TIMEOUT = 2
 
 
 class DiscoveryClient(Context):
-    def __init__(self, parent_context: Context):
-        super().__init__("discovery_client", parent_context)
+    def __init__(self, parent: ContextProtocol) -> None:
+        super().__init__("discovery_client",
+                         parent.settings,
+                         parent.profiler)
 
     def find_me(self,
                 local_role: str,
@@ -42,7 +44,7 @@ class DiscoveryClient(Context):
         return (local_host, hosts)
 
     def ping(self, target_host_tuple: Tuple[str, int]) -> str:
-        """Blocking call to discovery an SNR Node running on a host.
+        """Blocking call to discover an SNR Node running on a host.
         Returns a node name if the node discovery server responds,
         or None on timeout or error
         """
@@ -56,7 +58,6 @@ class DiscoveryClient(Context):
             data = s.recv(self.settings.MAX_SOCKET_SIZE).decode()
             s.shutdown(socket.SHUT_RDWR)
             s.close()
-            s = None
         except (Exception, socket.timeout) as e:
             self.warn("Did not find node at {}:{}: {}",
                       [target_host_tuple[0], target_host_tuple[1], e])

@@ -1,5 +1,7 @@
 import pickle
 import socket
+import time
+from socket import socket as Socket
 
 from snr.core.base import *
 from snr.std.comms.sockets.sockets_config import SocketsConfig
@@ -7,11 +9,15 @@ from snr.std.comms.sockets.sockets_config import SocketsConfig
 
 class SocketsClient(Context):
     def __init__(self,
-                 parent_context: Context,
-                 config: SocketsConfig):
-        super().__init__("dds_sockets_client", parent_context)
+                 parent: ContextProtocol,
+                 config: SocketsConfig,
+                 ) -> None:
+        super().__init__("dds_sockets_client",
+                         parent.settings,
+                         parent.profiler)
         self.config = config
-
+        self.conn: Socket
+        self.s: Optional[Socket]
         self.create_connection()
 
     def send_data(self, page: Page):
@@ -46,13 +52,13 @@ class SocketsClient(Context):
             self.warn("Failed to connect to server at {}:{}, trying again.",
                       [self.config.ip, str(self.config.port)])
             # Wait a second before retrying
-            self.sleep(self.settings.SOCKETS_RETRY_WAIT)
+            time.sleep(self.settings.SOCKETS_RETRY_WAIT)
 
         def failure(tries: int) -> None:
             if(self.config.required):
                 self.err("Couldn't connect to server at {}:{} after {} tries.",
                          [self.config.ip, str(self.config.port), tries])
-                print_exit("Start required sockets connection")
+                raise Exception("Start required sockets connection")
             else:
                 self.err(
                     "Aborted connection after {} tries. Not required.",
@@ -60,8 +66,16 @@ class SocketsClient(Context):
                 # settings.USE_SOCKETS = False
                 return
 
-        attempt(try_create_connection,
-                self.settings.SOCKETS_CONNECT_ATTEMPTS, fail_once, failure)
+        attempts = 0
+        try_create_connection()
+        while ((attempts < self.settings.SOCKETS_CONNECT_ATTEMPTS) and
+               not self.conn):
+            fail_once()
+            try_create_connection()
+            attempts += 1
+        if not self.conn:
+            failure(attempts)
+
         self.socket_connected = True
         self.dbg('Socket Connected to {}:{}',
                  [self.config.ip, str(self.config.port)])

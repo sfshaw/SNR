@@ -9,8 +9,8 @@ MAX_CONNECTIONS = 10
 
 
 class DiscoveryServer(Context):
-    def __init__(self, parent_context: Context, role: str, port: int):
-        super().__init__("discovery_server", parent_context)
+    def __init__(self, parent: ContextProtocol, role: str, port: int):
+        super().__init__("discovery_server", parent.settings, parent.profiler)
         self.role = role
         self.port = port
         self.host_tuple = (LOCALHOST, port)
