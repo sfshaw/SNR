@@ -5,7 +5,7 @@ from .connection import Connection
 POLL_TIMEOUT = 0.000001
 
 
-class CommsLoopBase(ThreadLoop):
+class CommsLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: NodeProtocol,
@@ -19,6 +19,7 @@ class CommsLoopBase(ThreadLoop):
         for key in data_keys:
             self.task_handlers[(TaskType.process_data, key)
                                ] = self.process_data
+        self.log.setLevel(logging.WARNING)
 
     def process_data(self, task: Task, key: TaskId):
         page = self.parent.get_page(task.name)
@@ -50,7 +51,8 @@ class CommsLoopBase(ThreadLoop):
                 else:
                     raise Exception("Failed to deserialize Page")
             else:
-                self.dbg("Did not recv anything")
+                # self.dbg("Did not recv anything")
+                pass
         except Exception as e:
             self.err("Error recv: %s", e)
             # raise e

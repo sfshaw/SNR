@@ -16,7 +16,7 @@ class PipeLoopFactory(LoopFactory):
         self.data_keys = data_keys
 
     def get(self, parent: NodeProtocol) -> LoopProtocol:
-        return comms_loop.CommsLoopBase(self,
+        return comms_loop.CommsLoop(self,
                                         parent,
                                         "pipe_loop",
                                         pipe_wrapper.PipeWrapper(self.pipe,
