@@ -2,8 +2,8 @@ import socket
 import threading
 
 from snr import *
-from snr.std.comms.sockets.sockets_header import pack_size
-from snr.std.comms.sockets.sockets_wrapper import SocketsWrapper
+from snr.core.utils.sockets.sockets_header import pack_size
+from snr.core.utils.sockets.sockets_wrapper import SocketsWrapper
 
 
 class TestSocketsLoop(SNRTestCase):

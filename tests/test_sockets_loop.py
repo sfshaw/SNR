@@ -2,8 +2,7 @@ import socket
 import threading
 
 from snr import *
-from snr.std.comms.sockets import sockets_header
-from snr.std.comms.sockets.sockets_loop_factory import SocketsLoopFactory
+from snr.core.utils.sockets import sockets_header
 
 
 class TestSocketsLoop(SNRTestCase):

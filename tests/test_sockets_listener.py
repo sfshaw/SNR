@@ -3,7 +3,7 @@ import socket
 import time
 
 from snr import *
-from snr.std.comms.sockets.sockets_wrapper import SocketsWrapper
+from snr.core.utils.sockets.sockets_wrapper import SocketsWrapper
 
 
 class TestSocketsLsitener(SNRTestCase):

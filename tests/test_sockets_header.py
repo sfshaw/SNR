@@ -1,5 +1,5 @@
 from snr import *
-from snr.std.comms.sockets.sockets_header import *
+from snr.core.utils.sockets.sockets_header import *
 
 
 class TestSocketsUtils(SNRTestCase):

@@ -1,9 +1,9 @@
 import socket
 
 from snr.core.base import *
+from snr.core.utils.sockets import sockets_wrapper
 
 from ..comms_loop.comms_loop import CommsLoop
-from . import sockets_wrapper
 
 
 class SocketsLoopFactory(LoopFactory):
