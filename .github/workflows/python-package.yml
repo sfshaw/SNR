@@ -37,7 +37,7 @@ jobs:
         mypy snr --ignore-missing-imports
     - name: Run Nox Tests 
       run: |
-        python -m nox -s tests-${{ matrix.python-version }}
+        python -m nox -s test_all-${{ matrix.python-version }}
     - name: Create Package distribution
       run: |
         python setup.py check
