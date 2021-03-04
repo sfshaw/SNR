@@ -32,6 +32,7 @@ class ThreadLoop(Context, LoopProtocol):
         self.factory = factory
         self.task_handlers: TaskHandlerMap = {}
         self.parent = parent
+        self.delay_s: float = 0.0
         self.set_delay(tick_rate_hz)
         self.__terminate_flag = threading.Event()
         self.__thread = threading.Thread(target=self.threaded_method,
