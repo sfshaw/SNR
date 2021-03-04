@@ -45,12 +45,16 @@ class SocketsWrapper(Context):
 
     def recv(self) -> Any:
         assert self.connection
-        data_len = sockets_header.unpack_size(
-            self.connection.recv(sockets_header.PACKET_SIZE_HEADER_LENGTH))
-        self.dbg("Prepared to recv %s", data_len)
-        data = self.connection.recv(data_len)
-        self.dbg("Recevied data on %s", self.connection.fileno())
-        return data
+        try:
+            data_len = sockets_header.unpack_size(
+                self.connection.recv(sockets_header.PACKET_SIZE_HEADER_LENGTH))
+            self.dbg("Prepared to recv %s", data_len)
+            data = self.connection.recv(data_len)
+            self.dbg("Recevied data on %s", self.connection.fileno())
+            return data
+        except Exception as e:
+            self.warn("Error in Recv: %s", str(e))
+            # raise e
 
     def close(self) -> None:
         assert self.connection
