@@ -22,7 +22,9 @@ class RecorderEndpoint(Endpoint):
         if t.type is TaskType.process_data:
             page = self.parent.get_page(t.name)
             if page:
-                json_data: str = page.serialize()
+                json_data = page.serialize()
+                if not isinstance(json_data, str):
+                    json_data = json_data.decode()
                 self.file.write(json_data)
                 self.file.write("\n")
                 self.file.flush()
