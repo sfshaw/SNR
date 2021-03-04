@@ -29,7 +29,8 @@ class TestReplayerChronological(SNRTestCase):
 
                 with input.open() as f:
                     for page in expected_pages:
-                        f.write(page.serialize() + "\n")
+                        f.write(page.serialize())
+                        f.write("\n")
                 input.assertExists()
 
                 times: List[float] = []
