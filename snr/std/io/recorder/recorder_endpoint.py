@@ -12,7 +12,7 @@ class RecorderEndpoint(Endpoint):
         self.task_handlers = self.map_handlers(data_keys)
         self.filename = filename
         self.file = open(filename, "w")
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
 
     def task_source(self) -> None:
         return None

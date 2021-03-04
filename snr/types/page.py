@@ -12,7 +12,7 @@ DataKey = str
 # TODO: Suprress inherited docstrings from str
 
 log = logging.getLogger("Page")
-log.setLevel(logging.WARN)
+log.setLevel(logging.WARNING)
 
 
 @dataclass

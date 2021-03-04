@@ -15,7 +15,7 @@ class OrderedExpector(ExpectorProtocol):
                  testcase: unittest.TestCase
                  ) -> None:
         self.log = logging.getLogger()
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
         self.expectations = expectations
         self.testcase = testcase
         self.met_expectations: OrderedExpectations = []
