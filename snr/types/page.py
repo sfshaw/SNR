@@ -11,6 +11,9 @@ DataKey = str
 '''
 # TODO: Suprress inherited docstrings from str
 
+log = logging.getLogger("Page")
+log.setLevel(logging.WARN)
+
 
 @dataclass
 class Page(DataClassJsonMixin):
@@ -27,7 +30,6 @@ class Page(DataClassJsonMixin):
         '''
         json = self.to_json()  # type: ignore
 
-        log = logging.getLogger("Page")
         log.debug("Page serialized to json: %s",
                   json)
         return json
