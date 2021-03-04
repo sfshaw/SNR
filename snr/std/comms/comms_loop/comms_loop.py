@@ -45,11 +45,15 @@ class CommsLoop(ThreadLoop):
             pass
         try:
             if self.connection.poll(POLL_TIMEOUT):
-                page = Page.deserialize(self.connection.recv())
-                if page:
-                    self.parent.store_page(page)
+                data = self.connection.recv()
+                if data:
+                    page = Page.deserialize(data)
+                    if page:
+                        self.parent.store_page(page)
+                    else:
+                        raise Exception("Failed to deserialize Page")
                 else:
-                    raise Exception("Failed to deserialize Page")
+                    self.warn("Did not receive data")
             else:
                 # self.dbg("Did not recv anything")
                 pass
