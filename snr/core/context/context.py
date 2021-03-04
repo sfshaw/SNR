@@ -63,3 +63,6 @@ class Context(ContextProtocol):
                                       handler, *args)
         else:
             return handler(*args)
+
+    def __repr__(self) -> str:
+        return self.name
