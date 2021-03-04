@@ -75,7 +75,7 @@ unittest:
 .PHONY: test_all
 ta: test_all
 test_all:
-	nox -s tests
+	nox -s test_all
 
 .PHONY: prep
 p: prep
