@@ -2,7 +2,6 @@ import socket
 import threading
 
 from snr import *
-from snr.core.utils.sockets import sockets_header
 
 
 class TestSocketsLoop(SNRTestCase):
@@ -14,11 +13,8 @@ class TestSocketsLoop(SNRTestCase):
                   page: Page,
                   trigger: threading.Event
                   ) -> None:
-            conn, _ = socket.accept()
-            data = page.serialize().encode()
-            conn.send(sockets_header.pack_size(data))
-            conn.send(data)
-            conn.close()
+            with self.wrap_socket(socket.accept()) as sw:
+                sw.send(page.serialize())
             trigger.set()
 
         data_key = "my_data"
