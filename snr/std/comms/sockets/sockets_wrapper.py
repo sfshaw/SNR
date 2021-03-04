@@ -27,11 +27,12 @@ class SocketsWrapper(Context):
     def is_closed(self) -> bool:
         return self.connection is None
 
-    def send(self, data: str):
-        payload: bytes = data.encode()
-        header = sockets_header.pack_size(payload)
+    def send(self, data: JsonData):
+        if isinstance(data, str):
+            data = data.encode()
+        header = sockets_header.pack_size(data)
         self.connection.send(header)
-        self.connection.send(payload)
+        self.connection.send(data)
         self.dbg("%s send payload of size %s",
                  self.connection.fileno(), header)
 
@@ -43,7 +44,7 @@ class SocketsWrapper(Context):
                 (result[0] == (self.connection.fileno(),
                                select.POLLIN)))
 
-    def recv(self) -> Any:
+    def recv(self) -> Optional[JsonData]:
         assert self.connection
         try:
             data_len = sockets_header.unpack_size(
@@ -54,7 +55,7 @@ class SocketsWrapper(Context):
             return data
         except Exception as e:
             self.warn("Error in Recv: %s", str(e))
-            # raise e
+            return None
 
     def close(self) -> None:
         assert self.connection
