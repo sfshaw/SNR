@@ -30,12 +30,12 @@ class SNRTestCase(unittest.TestCase):
                 print("Zombie thread %s culled", thread.name)
 
     def expector(self,
-                 expectations: Expectations
+                 expectations: Expectations,
                  ) -> ExpectorProtocol:
         return Expector(expectations, self)
 
     def ordered_expector(self,
-                         expectations: OrderedExpectations
+                         expectations: OrderedExpectations,
                          ) -> ExpectorProtocol:
         return OrderedExpector(expectations, self)
 
@@ -50,7 +50,7 @@ class SNRTestCase(unittest.TestCase):
 
     def run_test_node(self,
                       factories: List[FactoryProtocol],
-                      mode: Mode = Mode.TEST
+                      mode: Mode = Mode.TEST,
                       ) -> None:
         config = self.get_config(factories, mode)
         runner = TestRunner(config)
@@ -62,7 +62,7 @@ class SNRTestCase(unittest.TestCase):
     def temp_file(self,
                   filename: Optional[str] = None,
                   overwrite: bool = False,
-                  cleanup: bool = True
+                  cleanup: bool = True,
                   ) -> TempFile:
         if not filename:
             filename = self.test_name + ".tmp"
