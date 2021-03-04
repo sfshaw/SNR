@@ -15,8 +15,7 @@ class Replayer(ThreadLoop):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "replayer",
-                         tick_rate_hz=5000)
+                         "replayer")
         self.task_handlers: TaskHandlerMap = {
             TaskType.process_data: self.retire_data
         }
