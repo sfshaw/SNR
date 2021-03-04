@@ -16,7 +16,7 @@ class TaskQueue(Context):
                          parent.profiler)
         self.get_new_tasks = task_source
         self.queue: queue.Queue[Task] = queue.Queue()
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
 
     def schedule(self, t: SomeTasks) -> None:
         """ Adds a Task or a list of Tasks to the node's queue

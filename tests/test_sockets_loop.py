@@ -23,7 +23,6 @@ class TestSocketsLoop(SNRTestCase):
             trigger.set()
 
         data_key = "my_data"
-        addr = ("localhost", 54459)
 
         page = Page(data_key, "data", "origin", 0.75)
         expectations: Expectations = {
@@ -31,23 +30,25 @@ class TestSocketsLoop(SNRTestCase):
         }
 
         with MPExpector(expectations, self) as expector, \
-            self.create_server(addr) as server_socket, \
-                socket.create_connection(addr) as client_socket:
+                self.create_server(('', 0)) as server_socket:
+            addr = server_socket.getsockname()
+            with socket.create_connection(addr) \
+                    as client_socket:
 
-            trigger = threading.Event()
-            server_thread = threading.Thread(target=serve,
-                                             args=(server_socket,
-                                                   page,
-                                                   trigger))
-            server_thread.start()
-            trigger.wait()
-            self.run_test_node([
-                SocketsLoopFactory((client_socket, addr), []),
-                ExpectorEndpointFactory(expector,
-                                        exit_when_satisfied=True),
-            ])
+                trigger = threading.Event()
+                server_thread = threading.Thread(target=serve,
+                                                 args=(server_socket,
+                                                       page,
+                                                       trigger))
+                server_thread.start()
+                trigger.wait()
+                self.run_test_node([
+                    SocketsLoopFactory((client_socket, addr), []),
+                    ExpectorEndpointFactory(expector,
+                                            exit_when_satisfied=True),
+                ])
 
-            server_thread.join()
+                server_thread.join()
 
 
 if __name__ == '__main__':

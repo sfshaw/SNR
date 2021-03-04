@@ -22,30 +22,30 @@ class TestSocketsLoop(SNRTestCase):
             conn.close()
             trigger.set()
 
-        addr = ("localhost", 39485)
         page = Page("key", "data", "origin", 0.75)
 
-        with self.create_server(addr) as server_socket, \
-                socket.create_connection(addr) as client_socket:
-            trigger = threading.Event()
-            server_thread = threading.Thread(target=serve,
-                                             args=(server_socket,
-                                                   page,
-                                                   trigger))
-            server_thread.start()
-            sw = SocketsWrapper((client_socket, addr), self.get_context())
-            sw.open()
-            trigger.wait()
-            self.assertTrue(sw.poll(0.005))
-            data = Page.deserialize(sw.recv())
-            self.assertPage(data,
-                            page.key,
-                            page.data,
-                            page.origin,
-                            page.created_at_s,
-                            page.process)
-            sw.close()
-            server_thread.join()
+        with self.create_server(('', 0)) as server_socket:
+            addr = server_socket.getsockname()
+            with socket.create_connection(addr) as client_socket:
+                trigger = threading.Event()
+                server_thread = threading.Thread(target=serve,
+                                                 args=(server_socket,
+                                                       page,
+                                                       trigger))
+                server_thread.start()
+                sw = SocketsWrapper((client_socket, addr), self.get_context())
+                sw.open()
+                trigger.wait()
+                self.assertTrue(sw.poll(0.005))
+                data = Page.deserialize(sw.recv())
+                self.assertPage(data,
+                                page.key,
+                                page.data,
+                                page.origin,
+                                page.created_at_s,
+                                page.process)
+                sw.close()
+                server_thread.join()
 
 
 if __name__ == '__main__':

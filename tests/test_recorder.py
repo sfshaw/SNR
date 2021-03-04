@@ -33,7 +33,7 @@ class TestRecorder(SNRTestCase):
 
     def test_recorder_encoding(self):
         log = logging.getLogger("Page")
-        log.setLevel(logging.WARN)
+        log.setLevel(logging.WARNING)
         with self.expector({(
             TaskType.process_data, "raw_data"): 1,
         }) as expector:

@@ -22,7 +22,7 @@ class Node(RootContext, NodeProtocol):
                  config: ConfigProtocol,
                  ) -> None:
         super().__init__(role + "_node", None)
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
         self.role = role
         self.mode = config.mode
         self.profiler_getter: Callable[
@@ -145,11 +145,11 @@ class Node(RootContext, NodeProtocol):
         component = factory.get(self)
         if isinstance(component, EndpointProtocol):
             self.endpoints[component.name] = component
+            self.info("%s added %s", factory, component)
             return component.name
         else:
             self.err("Unknown component type: %s", component)
-        self.info("%s added %s", factory, component)
-        return None
+            return None
 
     def schedule(self, t: SomeTasks) -> None:
         self.__task_queue.schedule(t)

@@ -11,7 +11,7 @@ class PingTestEndpoint(Endpoint):
         super().__init__(factory,
                          parent_node,
                          name)
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
         self.                    task_handlers = {
             (TaskType.event, "ping_request"):
             self.store_ping,

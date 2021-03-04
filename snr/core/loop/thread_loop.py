@@ -37,7 +37,7 @@ class ThreadLoop(Context, LoopProtocol):
         self.__terminate_flag = threading.Event()
         self.__thread = threading.Thread(target=self.threaded_method,
                                          name=self.name + "_thread")
-        self.log.setLevel(logging.WARN)
+        self.log.setLevel(logging.WARNING)
 
     def set_delay(self, tick_rate_hz: float):
         if tick_rate_hz == 0:
