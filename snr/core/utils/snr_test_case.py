@@ -9,6 +9,7 @@ from .expector import Expectations, Expector
 from .expector_protocol import ExpectorProtocol
 from .mock_node import MockNode
 from .ordered_expector import OrderedExpectations, OrderedExpector
+from .sockets.sockets_wrapper import SocketsWrapper
 from .temp_file import TempFile
 
 PRINT_INDIVIDUAL_RUNTIME: bool = True
@@ -92,3 +93,8 @@ class SNRTestCase(unittest.TestCase):
         sock.bind(addr)
         sock.listen(10)
         return sock
+
+    def wrap_socket(self,
+                    connection: Tuple[socket.socket, Any],
+                    ) -> SocketsWrapper:
+        return SocketsWrapper(connection, self.get_context())
