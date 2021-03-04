@@ -1,9 +1,11 @@
 import io
+import socket
 import sys
 import threading
 
 from snr.core.base import *
-from snr.core.utils.sockets.tcp_connection import TCPConnection
+from snr.core.context.root_context import RootContext
+from snr.core.utils.sockets.sockets_wrapper import SocketsWrapper
 
 PROMPT = "> "
 
@@ -17,6 +19,7 @@ class RemoteConsole(threading.Thread):
         super().__init__(target=self.thread_fn,
                          name="console_thread",
                          daemon=False)
+        self.root_context = RootContext("remote_console", None, Settings())
         self.server_tuple = server_tuple
         self.retry_wait_s = retry_wait_s
         self.input_file = sys.stdin
@@ -30,19 +33,18 @@ class RemoteConsole(threading.Thread):
         #     "list": self.cmd_list,
         # }
         self.__terminate_flag = threading.Event()
-        self.connection = TCPConnection[Page](self.server_tuple,
-                                              retry_wait_s=self.retry_wait_s)
-        if self.connection.is_alive():
-            self.start()
-        else:
-            print("Thread not started, connection failed")
+        self.connection = SocketsWrapper(
+            (socket.create_connection(self.server_tuple),
+             self.server_tuple),
+            self.root_context)
+        self.start()
 
     def thread_fn(self) -> None:
-        with self.connection as connection:
+        with self.connection as _:
             while not self.is_terminated():
                 input = self.get_input()
                 if input:
-                    self.handle_input(input, connection)
+                    self.handle_input(input)
                 else:
                     self.set_terminate_flag()
 
@@ -59,9 +61,9 @@ class RemoteConsole(threading.Thread):
             self.set_terminate_flag()
         return input
 
-    def handle_input(self, input: str, connection: TCPConnection[Page]):
+    def handle_input(self, input: str):
         page = Page("console_cmd", input, self.name, 0)
-        connection.send(page)
+        self.connection.send(page.serialize())
         if input == "exit":
             self.set_terminate_flag()
 
