@@ -1,7 +1,6 @@
 import pickle
 import socket
 import sys
-from socket import socket as Socket
 
 from snr.core.base import *
 
@@ -23,7 +22,8 @@ class CommandReceiver(ThreadLoop):
         return None
 
     def loop_handler(self) -> None:
-        with Socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        with socket.socket(socket.AF_INET,
+                           socket.SOCK_STREAM) as sock:
             sock.bind(("localhost", self.port))
             sock.listen()
             (connection, _) = sock.accept()
