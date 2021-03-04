@@ -42,15 +42,15 @@ class Task(DataClassJsonMixin):
     def id(self) -> TaskId:
         return (self.type, self.name)
 
-    def serialize(self) -> str:
-        return self.to_json()  # type: ignore
+    def serialize(self) -> bytes:
+        return self.to_json().encode()  # type: ignore
 
     @classmethod
-    def deserialize(cls, json: str) -> Optional["Task"]:
+    def deserialize(cls, json: Optional[JsonData]) -> Optional['Task']:
         try:
             return cls.from_json(json)  # type: ignore
         except Exception as e:
-            log = logging.getLogger("Task")
+            log = logging.getLogger('Task')
             log.error("Could not deserialize Task from json: %s, e: %s",
                       json, e)
             return None

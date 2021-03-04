@@ -1,7 +1,5 @@
 from snr.core.base import *
 
-from .connection import Connection
-
 POLL_TIMEOUT = 0.000001
 
 
@@ -10,11 +8,11 @@ class CommsLoop(ThreadLoop):
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  name: str,
-                 conn: Connection,
+                 conn: ConnectionProtocol,
                  data_keys: List[DataKey],
                  ) -> None:
         super().__init__(factory, parent, name)
-        self.connection: Connection = conn
+        self.connection: ConnectionProtocol = conn
         self.task_handlers: TaskHandlerMap = {}
         for key in data_keys:
             self.task_handlers[(TaskType.process_data, key)

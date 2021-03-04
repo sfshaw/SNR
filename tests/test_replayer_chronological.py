@@ -29,7 +29,7 @@ class TestReplayerChronological(SNRTestCase):
 
                 with input.open() as f:
                     for page in expected_pages:
-                        f.write(page.serialize())
+                        f.write(page.serialize().decode())
                         f.write("\n")
                 input.assertExists()
 

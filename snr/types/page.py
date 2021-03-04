@@ -11,7 +11,7 @@ DataKey = str
 '''
 # TODO: Suprress inherited docstrings from str
 
-log = logging.getLogger("Page")
+log = logging.getLogger('Page')
 log.setLevel(logging.WARNING)
 
 
@@ -25,17 +25,17 @@ class Page(DataClassJsonMixin):
     created_at_s: float  # The runtime in seconds when the page was created
     process: bool = True  # If the data should be processed with task handlers
 
-    def serialize(self) -> JsonData:
+    def serialize(self) -> bytes:
         ''' Convert an instance of a Page into a JSON str
         '''
-        json = self.to_json()  # type: ignore
+        json = self.to_json().encode()  # type: ignore
 
         log.debug("Page serialized to json: %s",
                   json)
         return json
 
     @classmethod
-    def deserialize(cls, json: JsonData) -> Optional["Page"]:
+    def deserialize(cls, json: Optional[JsonData]) -> Optional['Page']:
         '''Attempt to convert a JSON str into a Page
         If the JSON str does not contain the information needed to construct a
         page, an error is logged and None is returned. In some cases, such as
@@ -44,7 +44,7 @@ class Page(DataClassJsonMixin):
         try:
             return Page.from_json(json)  # type: ignore
         except Exception as e:
-            log = logging.getLogger("Page")
+            log = logging.getLogger('Page')
             log.error("Could not deserialize Page from json: %s, e: %s",
                       json, e)
             return None

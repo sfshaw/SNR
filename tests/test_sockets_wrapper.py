@@ -16,7 +16,7 @@ class TestSocketsLoop(SNRTestCase):
                   trigger: threading.Event
                   ) -> None:
             conn, _ = socket.accept()
-            data = page.serialize().encode()
+            data = page.serialize()
             conn.send(pack_size(data))
             conn.send(data)
             conn.close()
@@ -37,8 +37,8 @@ class TestSocketsLoop(SNRTestCase):
                 sw.open()
                 trigger.wait()
                 self.assertTrue(sw.poll(0.005))
-                data = Page.deserialize(sw.recv())
-                self.assertPage(data,
+                new_page = Page.deserialize(sw.recv())
+                self.assertPage(new_page,
                                 page.key,
                                 page.data,
                                 page.origin,

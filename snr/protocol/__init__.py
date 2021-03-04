@@ -11,6 +11,7 @@ professor provides instructions for an assignment.
 
 from .component_protocol import ComponentProtocol
 from .config_protocol import ConfigProtocol
+from .connection_protocol import ConnectionProtocol
 from .context_protocol import ContextProtocol
 from .datastore_protocol import DatastoreProtocol
 from .endpoint_protocol import EndpointProtocol

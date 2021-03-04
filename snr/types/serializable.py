@@ -3,9 +3,9 @@ from .base import *
 
 @runtime_checkable
 class Serializable(Protocol):
-    def serialize(self) -> JsonData:
+    def serialize(self) -> bytes:
         ...
 
     @classmethod
-    def deserialize(cls, json: JsonData) -> Optional["Serializable"]:
+    def deserialize(cls, json: Optional[JsonData]) -> Optional["Serializable"]:
         ...

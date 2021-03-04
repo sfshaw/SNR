@@ -7,7 +7,7 @@ from snr.types import *
 from . import sockets_header
 
 
-class SocketsWrapper(Context):
+class SocketsWrapper(Context, ConnectionProtocol):
 
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
@@ -26,9 +26,7 @@ class SocketsWrapper(Context):
     def is_closed(self) -> bool:
         return self.connection is None
 
-    def send(self, data: JsonData):
-        if isinstance(data, str):
-            data = data.encode()
+    def send(self, data: bytes):
         header = sockets_header.pack_size(data)
         self.connection.send(header)
         self.connection.send(data)

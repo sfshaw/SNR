@@ -4,7 +4,7 @@ from snr.core.base import *
 from snr.types import *
 
 
-class PipeWrapper(Context):
+class PipeWrapper(Context, ConnectionProtocol):
     def __init__(self,
                  pipe: MPConnection,
                  parent: ContextProtocol,
@@ -18,13 +18,13 @@ class PipeWrapper(Context):
     def is_closed(self) -> bool:
         return self.pipe.closed
 
-    def send(self, data: str) -> None:
+    def send(self, data: bytes) -> None:
         self.pipe.send(data)
 
     def poll(self, timeout_ms: float) -> bool:
         return self.pipe.poll(timeout_ms)
 
-    def recv(self) -> Optional[str]:
+    def recv(self) -> Optional[JsonData]:
         return self.pipe.recv()
 
     def close(self) -> None:
