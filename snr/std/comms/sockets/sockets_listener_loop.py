@@ -22,7 +22,7 @@ class SocketsListenerLoop(ThreadLoop):
         super().__init__(factory, parent, "sockets_listener_loop")
         self.port = port
         self.data_keys = data_keys
-        self.socket: Optional[Socket] = None
+        self.socket: Optional[socket.socket] = None
         self.select = select.poll()
         self.handler_que: queue.Queue[Tuple[socket.socket, Any]] = queue.Queue(
         )

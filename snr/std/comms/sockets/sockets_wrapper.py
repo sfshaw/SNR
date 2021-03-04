@@ -1,6 +1,5 @@
 import select
 import socket
-from socket import socket as Socket
 
 from snr.core.base import *
 from snr.types import *
@@ -11,11 +10,11 @@ from . import sockets_header
 class SocketsWrapper(Context):
 
     def __init__(self,
-                 connection: Tuple[Socket, Any],
+                 connection: Tuple[socket.socket, Any],
                  parent: ContextProtocol,
                  ) -> None:
         super().__init__("sockets_wrapper", parent.settings, parent.profiler)
-        self.connection: Socket = connection[0]
+        self.connection = connection[0]
         self.something_else = connection[1]
         self.select = select.poll()
         self.log.setLevel(logging.WARNING)

@@ -1,12 +1,14 @@
+import socket
+
 from snr.core.base import *
-from socket import socket as Socket
+
 from ..comms_loop.comms_loop import CommsLoop
 from . import sockets_wrapper
 
 
 class SocketsLoopFactory(LoopFactory):
     def __init__(self,
-                 connection: Tuple[Socket, Any],
+                 connection: Tuple[socket.socket, Any],
                  data_keys: List[str],
                  ) -> None:
         super().__init__(sockets_wrapper)
