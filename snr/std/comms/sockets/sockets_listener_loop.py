@@ -1,7 +1,6 @@
 import queue
 import select
 import socket
-from socket import socket as Socket
 
 from snr.core.base import *
 
@@ -34,8 +33,9 @@ class SocketsListenerLoop(ThreadLoop):
 
     def setup(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind(('', self.port))
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.settimeout(TIMEOUT_S)
+        self.socket.bind(('', self.port))
         self.socket.listen(10)
         self.select.register(self.socket.fileno(), select.POLLIN)
         self.dbg("Opened socket server on %s", self.socket.fileno())

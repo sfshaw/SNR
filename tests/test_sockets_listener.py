@@ -12,7 +12,7 @@ class TestSocketsLsitener(SNRTestCase):
     def test_sockets_listener_recv(self) -> None:
 
         data_key = "my_data"
-        addr = ("localhost", 54459)
+        addr = ("localhost", 54941)
 
         page = Page(data_key, "data", "origin", 0.75)
         expectations: Expectations = {
@@ -29,7 +29,7 @@ class TestSocketsLsitener(SNRTestCase):
             proc = mp.Process(target=self.run_test_node,
                               args=(factories,))
             proc.start()
-            time.sleep(0.025)
+            time.sleep(0.050)
             with socket.create_connection(addr) as client:
                 sock = SocketsWrapper((client, addr), self.get_context())
                 sock.send(page.serialize())
@@ -45,7 +45,7 @@ class TestSocketsLsitener(SNRTestCase):
     def test_sockets_listener_send(self) -> None:
 
         data_key = "my_data"
-        addr = ("localhost", 54459)
+        addr = ("localhost", 54849)
         page = Page(data_key, "data", "origin", 0.75)
         expectations: Expectations = {
             (TaskType.process_data, data_key): 1
@@ -61,7 +61,7 @@ class TestSocketsLsitener(SNRTestCase):
             proc = mp.Process(target=self.run_test_node,
                               args=(factories,))
             proc.start()
-            time.sleep(0.025)
+            time.sleep(0.050)
             with socket.create_connection(addr) as client:
                 sock = SocketsWrapper((client, addr), self.get_context())
                 sock.send(page.serialize())

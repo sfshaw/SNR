@@ -8,6 +8,7 @@ imported if needed.
 from ..comms.comms_loop.comms_loop import CommsLoop
 from ..comms.pipe.pipe_loop_factory import PipeLoopFactory
 from ..comms.sockets.sockets_listener_factory import SocketsListenerFactory
+from ..comms.sockets.sockets_loop_factory import SocketsLoopFactory
 from ..io.console.command_processor_factory import CommandProcessorFactory
 from ..io.console.command_receiver_factory import CommandReceiverFactory
 from ..io.console.console import LocalConsole
