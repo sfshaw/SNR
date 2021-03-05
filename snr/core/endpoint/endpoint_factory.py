@@ -1,15 +1,12 @@
-import importlib
-
 from snr.protocol import *
 from snr.types import *
 
 
 class EndpointFactory(FactoryProtocol):
     def __init__(self,
-                 child_module: Optional[ModuleType] = None,
+                 reload_targets: Union[ModuleType,
+                                       List[ModuleType]] = [],
                  ) -> None:
-        self.child_module = child_module
-
-    def reload(self) -> None:
-        if self.child_module:
-            importlib.reload(self.child_module)
+        if isinstance(reload_targets, ModuleType):
+            reload_targets = [reload_targets]
+        self.reload_targets = reload_targets
