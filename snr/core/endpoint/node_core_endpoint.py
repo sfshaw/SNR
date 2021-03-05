@@ -7,6 +7,7 @@ from .endpoint_factory import EndpointFactory
 NODE_CORE_NAME_SUFFIX = "_core_endpoint"
 
 TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
+REMOVE_ENDPOINT_TASK_NAME = "remove_endpoint"
 
 
 class NodeCoreEndpoint(Endpoint):
@@ -30,6 +31,8 @@ class NodeCoreEndpoint(Endpoint):
             TaskType.terminate: self.task_handler_terminate,
             TaskType.store_page: self.task_handler_store_page,
             TaskType.reload: self.task_handler_reload,
+            (TaskType.event, REMOVE_ENDPOINT_TASK_NAME):
+            self.task_handler_remove_endpoint,
         }
 
     def start(self) -> None:
@@ -74,4 +77,13 @@ class NodeCoreEndpoint(Endpoint):
         else:
             self.warn("Endpoint %s not found", endpoint_name)
 
+        return None
+
+    def task_handler_remove_endpoint(self,
+                                     task: Task,
+                                     key: TaskId,
+                                     ) -> SomeTasks:
+        target_name = task.val_list[0]
+        self.info("Removing endpoint %s", target_name)
+        self.parent.endpoints.pop(target_name)
         return None
