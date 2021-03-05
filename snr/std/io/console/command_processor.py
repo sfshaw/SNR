@@ -46,7 +46,7 @@ class CommandProcessor(Endpoint):
 
     def cmd_reload(self, args: List[str]) -> SomeTasks:
         if len(args) == 1:
-            return task_reload(args[1])
+            return task_reload(args[0])
         else:
             self.warn("Invalid reload args: %s", args)
             return None
