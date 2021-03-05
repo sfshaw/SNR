@@ -1,3 +1,10 @@
+'''Factory class for injecting a sockets wrapper into a CommsLoop
+
+Since this factory uses `snr.core.utils.sockets.sockets_wrapper` as its child
+module, the wrapper moduel is reloaded instead of
+`snr.std.comms.comms_loop.CommsLoop`.
+'''
+
 import socket
 
 from snr.core.base import *
@@ -7,6 +14,7 @@ from .. import comms_loop
 
 
 class SocketsLoopFactory(LoopFactory):
+
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
                  data_keys: List[str],
