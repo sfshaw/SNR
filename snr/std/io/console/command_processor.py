@@ -22,12 +22,15 @@ class CommandProcessor(Endpoint):
             "reload": self.cmd_reload,
             "list": self.cmd_list,
         }
+        self.log.setLevel(logging.WARNING)
 
     def task_source(self) -> None:
         return None
 
-    def process_command(self, cmd_task: Task, key: TaskId) -> SomeTasks:
-        args: List[str] = cmd_task.val_list
+    def process_command(self, task: Task, key: TaskId) -> SomeTasks:
+        command_page: Page = task.val_list[0]
+        assert command_page is not None
+        args: List[str] = command_page.data
         self.dbg("Processing command: %s", args)
         if args:
             command = self.commands.get(args[0])
