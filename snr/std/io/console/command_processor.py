@@ -1,6 +1,7 @@
 from snr.core.base import *
 from snr.types import *
-from snr.types.task import task_reload
+
+from . import console
 
 Command = Callable[[List[str]], SomeTasks]
 
@@ -12,9 +13,9 @@ class CommandProcessor(Endpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "console_server")
+                         "command_processor")
         self.task_handlers = {
-            (TaskType.process_data, "console_cmd"):
+            (TaskType.store_page, console.COMMAND_DATA_NAME):
             self.process_command}
         self.commands: Dict[str, Command] = {
             "exit": self.cmd_exit,
