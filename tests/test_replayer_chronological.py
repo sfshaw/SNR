@@ -3,7 +3,7 @@ from snr import *
 
 class TestReplayerChronological(SNRTestCase):
 
-    @pytest.mark.timeout(0.500)
+    @pytest.mark.timeout(0.750)
     def test_replayer_chronological(self):
 
         time_step_s: float = 0.025
