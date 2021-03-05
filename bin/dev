@@ -9,7 +9,7 @@ def main():
     runner = TestRunner(
         Config(Mode.TEST, {
             "test": [
-                CommandReceiverFactory(CONSOLE_PORT),
+                SocketsListenerFactory(CONSOLE_PORT),
                 CommandProcessorFactory()
             ],
             "other": [
