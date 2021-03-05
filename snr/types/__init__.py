@@ -9,6 +9,4 @@ from .role import Role  # Node roles
 from .serializable import Serializable  # JSON serialization protocol
 from .settings import Settings  # Settings dictionary (legacy)
 # Task types
-from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
-                   TaskScheduler, TaskSource, TaskType, task_event,
-                   task_terminate)
+from .task import *
