@@ -30,28 +30,38 @@ class SocketsWrapper(Context, ConnectionProtocol):
         header = sockets_header.pack_size(data)
         self.connection.send(header)
         self.connection.send(data)
-        self.dbg("%s send payload of size %s",
-                 self.connection.fileno(), header)
+        self.dbg("Sock %s: sent payload of size %s:\n%s",
+                 self.connection.fileno(),
+                 sockets_header.unpack_size(header),
+                 data.decode())
 
     def poll(self, timeout_ms: float) -> bool:
         assert self.connection
         result: List[Tuple[int, int]] = self.select.poll(timeout_ms / 1000)
-        self.dbg("Ran poll on %s: %s", self.connection.fileno(), result)
-        return ((len(result) > 0) and
-                (result[0] == (self.connection.fileno(),
-                               select.POLLIN)))
+        ready = ((len(result) > 0) and
+                 (result[0] == (self.connection.fileno(),
+                                select.POLLIN)))
+        if ready:
+            self.dbg("Ran poll on %s: %s => ready",
+                     self.connection.fileno(),
+                     result)
+        return ready
 
     def recv(self) -> Optional[JsonData]:
         assert self.connection
         try:
             data_len = sockets_header.unpack_size(
                 self.connection.recv(sockets_header.PACKET_SIZE_HEADER_LENGTH))
-            self.dbg("Prepared to recv %s", data_len)
+            self.dbg("Received header for %s bytes on sock %s",
+                     data_len,
+                     self.connection.fileno())
             data = self.connection.recv(data_len)
-            self.dbg("Recevied data on %s", self.connection.fileno())
+            self.dbg("Recevied %s bytes of data on %s",
+                     len(data),
+                     self.connection.fileno())
             return data
         except Exception as e:
-            self.warn("Error in Recv: %s", str(e))
+            self.warn("Error in Recv: %s", e.__repr__())
             return None
 
     def close(self) -> None:
