@@ -1,4 +1,3 @@
-import threading
 import time
 
 from snr.core.base import *
@@ -16,11 +15,7 @@ class Replayer(ThreadLoop):
         super().__init__(factory,
                          parent,
                          "replayer")
-        self.task_handlers: TaskHandlerMap = {
-            TaskType.process_data: self.retire_data
-        }
         self.reader = PageReader(self, "page_reader", filename)
-        self.data_in_flight = threading.Event()
         self.last_data: Optional[DataKey] = None
         self.done: bool = False
         self.exit_when_done = exit_when_done
@@ -32,12 +27,11 @@ class Replayer(ThreadLoop):
                                process=False)
 
     def loop_handler(self) -> None:
-        if not self.done and not self.data_in_flight.is_set():
+        if not self.done:
             page = self.reader.read()
             if page:
                 self.wait(page)
                 self.parent.store_page(page)
-                self.data_in_flight.set()
                 self.last_data = page.key
             elif not self.done:
                 self.dbg("Reader Done")
@@ -48,12 +42,6 @@ class Replayer(ThreadLoop):
 
     def terminate(self) -> None:
         self.reader.close()
-
-    def retire_data(self, t: Task, k: TaskId) -> None:
-        if t.name == self.last_data:
-            self.dbg("Retiring last data: %s", self.last_data)
-            self.data_in_flight.clear()
-        return None
 
     def wait(self, page: Page) -> None:
         time_difference_s = page.created_at_s - self.parent.get_time_s()

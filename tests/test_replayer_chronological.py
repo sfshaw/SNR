@@ -9,11 +9,11 @@ class TestReplayerChronological(SNRTestCase):
         time_step_s: float = 0.025
 
         with self.ordered_expector([
-            (TaskType.process_data, "raw_data1"),
-            (TaskType.process_data, "raw_data2"),
-            (TaskType.process_data, "raw_data3"),
-            (TaskType.process_data, "raw_data4"),
-            (TaskType.process_data, "raw_data5"),
+            (TaskType.store_page, "raw_data1"),
+            (TaskType.store_page, "raw_data2"),
+            (TaskType.store_page, "raw_data3"),
+            (TaskType.store_page, "raw_data4"),
+            (TaskType.store_page, "raw_data5"),
         ]) as ordered_expector:
 
             with self.temp_file("input.tmp") as input, \
