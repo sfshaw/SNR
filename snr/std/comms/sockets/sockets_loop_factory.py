@@ -3,7 +3,7 @@ import socket
 from snr.core.base import *
 from snr.core.utils.sockets import sockets_wrapper
 
-from ..comms_loop.comms_loop import CommsLoop
+from .. import comms_loop
 
 
 class SocketsLoopFactory(LoopFactory):
@@ -16,9 +16,10 @@ class SocketsLoopFactory(LoopFactory):
         self.data_keys = data_keys
 
     def get(self, parent: NodeProtocol) -> ThreadLoop:
-        return CommsLoop(self,
-                         parent,
-                         "sockets_loop",
-                         sockets_wrapper.SocketsWrapper(self.connection,
-                                                        parent),
-                         self.data_keys)
+        return comms_loop.CommsLoop(self,
+                                    parent,
+                                    "sockets_loop",
+                                    sockets_wrapper.SocketsWrapper(
+                                        self.connection,
+                                        parent),
+                                    self.data_keys)

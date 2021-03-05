@@ -2,7 +2,7 @@ from multiprocessing.connection import Connection as MPConnection
 
 from snr.core.base import *
 
-from ..comms_loop import comms_loop
+from .. import comms_loop
 from . import pipe_wrapper
 
 

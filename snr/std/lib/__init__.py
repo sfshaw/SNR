@@ -5,7 +5,7 @@ Endpoints and some other utility classes are not exported here and must be
 imported if needed.
 '''
 
-from ..comms.comms_loop.comms_loop import CommsLoop
+from ..comms.comms_loop import CommsLoop
 from ..comms.pipe.pipe_loop_factory import PipeLoopFactory
 from ..comms.sockets.sockets_listener_factory import SocketsListenerFactory
 from ..comms.sockets.sockets_loop_factory import SocketsLoopFactory
