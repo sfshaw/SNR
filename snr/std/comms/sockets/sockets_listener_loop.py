@@ -15,10 +15,11 @@ class SocketsListenerLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: NodeProtocol,
+                 name: str,
                  port: int,
                  data_keys: List[DataKey],
                  ) -> None:
-        super().__init__(factory, parent, "sockets_listener_loop")
+        super().__init__(factory, parent, name)
         self.port = port
         self.data_keys = data_keys
         self.socket: Optional[socket.socket] = None
