@@ -1,4 +1,5 @@
 from snr.core.base import *
+from snr.core.endpoint.node_core_endpoint import REMOVE_ENDPOINT_TASK_NAME
 
 POLL_TIMEOUT = 0.000001
 
@@ -13,7 +14,6 @@ class CommsLoop(ThreadLoop):
                  ) -> None:
         super().__init__(factory, parent, name)
         self.connection: ConnectionProtocol = conn
-        self.task_handlers: TaskHandlerMap = {}
         for key in data_keys:
             self.task_handlers[(TaskType.process_data, key)
                                ] = self.process_data
@@ -46,12 +46,16 @@ class CommsLoop(ThreadLoop):
                 data = self.connection.recv()
                 if data:
                     page = Page.deserialize(data)
+                    self.dbg("Decoded page: %s", page)
                     if page:
                         self.parent.store_page(page)
                     else:
                         raise Exception("Failed to deserialize Page")
                 else:
-                    self.warn("Did not receive data")
+                    self.warn("Recieved zero bytes, shutting down")
+                    self.parent.schedule(task_event(
+                        REMOVE_ENDPOINT_TASK_NAME, [self.name]))
+                    self.set_terminate_flag()
             else:
                 # self.dbg("Did not recv anything")
                 pass
