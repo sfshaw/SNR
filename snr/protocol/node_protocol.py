@@ -38,6 +38,13 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
     def schedule(self, t: SomeTasks) -> None:
         ...
 
+    def make_page(self,
+                  key: DataKey,
+                  data: Any,
+                  process: bool = True,
+                  ) -> Page:
+        ...
+
     def store_page(self, page: Page) -> None:
         ...
 
