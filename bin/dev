@@ -5,12 +5,10 @@ from snr import *
 
 
 def main():
-    CONSOLE_PORT: int = 54321
     runner = TestRunner(
         Config(Mode.TEST, {
             "test": [
-                SocketsListenerFactory(CONSOLE_PORT),
-                CommandProcessorFactory()
+                CommandReceiverFactory(),
             ],
             "other": [
 

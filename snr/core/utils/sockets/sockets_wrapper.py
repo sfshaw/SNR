@@ -68,11 +68,10 @@ class SocketsWrapper(Context, ConnectionProtocol):
         assert self.connection
         self.info("Shutting down socket %s", self.connection.fileno())
         try:
-            self.connection.shutdown(socket.SHUT_RDWR)
+            self.connection.detach()
         except OSError as e:
             if e.errno in [107, 9]:
                 # Socket is already closed
                 pass
             else:
                 raise e
-        self.connection.close()

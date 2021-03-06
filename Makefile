@@ -14,6 +14,7 @@ UNITTEST_MOD=-m unittest
 DIST_TARGETS=sdist bdist_wheel
 
 ROOT_MODULE=snr
+BIN_DIR=./bin
 LIB_DIR=./$(ROOT_MODULE)
 BUILD_DIR=./build
 DIST_DIR=./dist
@@ -28,7 +29,7 @@ CLEAN_DIRS=$(BUILD_DIR) $(DIST_DIR) $(EGG_INFO_DIR) $(HTML_DOCS_DIR) $(COVERAGE_
 .PHONY: dev
 d: dev
 dev:
-	$(PYTHON) $(LIB_DIR)/dev.py
+	$(PYTHON) $(BIN_DIR)/dev
 
 .PHONY: develop
 develop:
@@ -36,7 +37,7 @@ develop:
 
 .PHONY: console
 console:
-	$(PYTHON) $(STD_DIR)/io/console/console.py
+	$(PYTHON) $(BIN_DIR)/console
 
 check_manifest:
 	$(PYTHON) -m check_manifest
