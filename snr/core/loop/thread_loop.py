@@ -26,7 +26,7 @@ class ThreadLoop(Context, LoopProtocol):
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  name: str,
-                 tick_rate_hz: float = DEFAULT_TICK_RATE
+                 tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
         super().__init__(name, parent.settings, parent.profiler)
         self.factory = factory

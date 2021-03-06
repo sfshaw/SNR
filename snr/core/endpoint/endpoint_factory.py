@@ -4,8 +4,7 @@ from snr.types import *
 
 class EndpointFactory(FactoryProtocol):
     def __init__(self,
-                 reload_targets: Union[ModuleType,
-                                       List[ModuleType]] = [],
+                 reload_targets: ReloadTargets = [],
                  ) -> None:
         if isinstance(reload_targets, ModuleType):
             reload_targets = [reload_targets]
