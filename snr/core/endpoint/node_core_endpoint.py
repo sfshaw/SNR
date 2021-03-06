@@ -4,8 +4,6 @@ from snr.types import *
 from .endpoint import Endpoint
 from .endpoint_factory import EndpointFactory
 
-NODE_CORE_NAME_SUFFIX = "_core_endpoint"
-
 TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
 REMOVE_ENDPOINT_TASK_NAME = "remove_endpoint"
 
@@ -26,7 +24,7 @@ class NodeCoreEndpoint(Endpoint):
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         parent.name + NODE_CORE_NAME_SUFFIX)
+                         "node_core")
         self.task_handlers = {
             TaskType.terminate: self.task_handler_terminate,
             TaskType.store_page: self.task_handler_store_page,
