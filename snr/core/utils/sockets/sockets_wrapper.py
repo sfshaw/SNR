@@ -35,9 +35,9 @@ class SocketsWrapper(Context, ConnectionProtocol):
                  sockets_header.unpack_size(header),
                  data.decode())
 
-    def poll(self, timeout_ms: float) -> bool:
+    def poll(self, timeout_s: float = 0) -> bool:
         assert self.connection
-        result: List[Tuple[int, int]] = self.select.poll(timeout_ms / 1000)
+        result: List[Tuple[int, int]] = self.select.poll(timeout_s * 1000)
         ready = ((len(result) > 0) and
                  (result[0] == (self.connection.fileno(),
                                 select.POLLIN)))

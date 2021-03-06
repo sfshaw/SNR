@@ -21,8 +21,8 @@ class PipeWrapper(Context, ConnectionProtocol):
     def send(self, data: bytes) -> None:
         self.pipe.send(data)
 
-    def poll(self, timeout_ms: float) -> bool:
-        return self.pipe.poll(timeout_ms)
+    def poll(self, timeout_s: float) -> bool:
+        return self.pipe.poll(timeout_s)
 
     def recv(self) -> Optional[JsonData]:
         return self.pipe.recv()

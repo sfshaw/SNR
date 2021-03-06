@@ -13,7 +13,7 @@ class ConnectionProtocol(Protocol):
     def send(self, data: bytes) -> None:
         ...
 
-    def poll(self, timeout_ms: float) -> bool:
+    def poll(self, timeout_s: float) -> bool:
         ...
 
     def recv(self) -> Optional[JsonData]:
