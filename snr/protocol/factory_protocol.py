@@ -10,7 +10,7 @@ class FactoryProtocol(Protocol):
     reload_targets: List[ModuleType]
 
     def get(self, parent: Any) -> ComponentProtocol:
-        raise NotImplementedError
+        ...
 
     def reload(self) -> None:
         for module in self.reload_targets:
