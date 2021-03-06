@@ -63,10 +63,11 @@ class NodeCoreEndpoint(Endpoint):
     def task_handler_reload(self, t: Task, key: TaskId) -> SomeTasks:
         endpoint_name = t.name
         endpoint = self.parent.endpoints.get(endpoint_name)
-        if isinstance(endpoint, EndpointProtocol):
+        if endpoint:
             self.info("Reloading endoint: %s", endpoint_name)
-            self.parent.endpoints.pop(endpoint_name)
-            new_name = self.parent.add_component(endpoint.reload())
+            target = self.parent.endpoints.pop(endpoint_name)
+            target.join()
+            new_name = self.parent.add_component(target.reload())
             if new_name:
                 self.parent.endpoints[new_name].start()
             else:
