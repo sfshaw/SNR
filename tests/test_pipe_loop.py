@@ -6,7 +6,7 @@ from snr import *
 
 class TestPipeLoop(SNRTestCase):
 
-    @pytest.mark.timeout(0.050)
+    @pytest.mark.timeout(0.200)
     def test_pipe_noop(self) -> None:
 
         pipe = mp.Pipe(duplex=True)
