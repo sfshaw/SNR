@@ -6,7 +6,3 @@ class TestContext(SNRTestCase):
         context = Context("test_context", Settings(), None)
         result = context.profile(self.test_name, lambda arg: arg, "hello")
         self.assertEqual("hello", result)
-
-
-if __name__ == '__main__':
-    unittest.main()

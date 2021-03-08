@@ -1,5 +1,6 @@
+import pytest
 from snr import *
-from snr.core.utils.sockets.sockets_header import *
+from snr.std_mods.comms.sockets_base import sockets_header
 
 
 class TestSocketsUtils(SNRTestCase):
@@ -9,10 +10,6 @@ class TestSocketsUtils(SNRTestCase):
         test_values = ["", "a", "abc", "abc_def_ghi"]
         for string in test_values:
             data = string.encode()
-            size = pack_size(data)
-            size2 = unpack_size(size)
+            size = sockets_header.pack_size(data)
+            size2 = sockets_header.unpack_size(size)
             self.assertEqual(len(data), size2)
-
-
-if __name__ == '__main__':
-    unittest.main()

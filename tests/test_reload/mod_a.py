@@ -1,4 +1,3 @@
-from snr.core.utils.expector_protocol import ExpectorProtocol
 from snr import *
 
 

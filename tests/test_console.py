@@ -1,18 +1,17 @@
 from snr import *
+from snr.std_mods.io.console import DEFAULT_PORT
 
 
 class TestConsole(SNRTestCase):
 
     def test_console_fails_to_connect(self):
-        CONSOLE_PORT: int = 54321
-
         commands = [
             "list endpoints",
             "exit"
         ]
 
         def try_console():
-            console = LocalConsole(CONSOLE_PORT,
+            console = LocalConsole(DEFAULT_PORT,
                                    commands,
                                    retry_wait_s=0.001)
             # Console constructor should block and raise
@@ -25,7 +24,3 @@ class TestConsole(SNRTestCase):
         # runner = SynchronusTestRunner(config)
         # runner.run()
     pass
-
-
-if __name__ == '__main__':
-    unittest.main()

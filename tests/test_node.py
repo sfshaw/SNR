@@ -1,17 +1,20 @@
 from snr import *
-from snr.core.node import Node
-from snr.types.task import task_process_data
+
+
+class Type(Enum):
+    a = "a"
+    b = "b"
+    c = "c"
+
+
+Id = Tuple[Type, str]
+Key = Union[Type, Id]
 
 
 class TestNode(SNRTestCase):
 
     def test_lookup_proof_of_concept(self):
-        class Type(Enum):
-            a = "a"
-            b = "b"
-            c = "c"
-        Id = Tuple[Type, str]
-        Key = Union[Type, Id]
+
         d: Dict[Key, int] = {
             Type.a: 1,
             (Type.a, "2"): 2,
@@ -70,7 +73,3 @@ class TestNode(SNRTestCase):
                 node.set_terminate_flag("test done")
                 node.terminate()
                 node = None
-
-
-if __name__ == '__main__':
-    unittest.main()

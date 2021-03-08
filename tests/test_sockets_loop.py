@@ -1,6 +1,7 @@
 import socket
 import threading
 
+import pytest
 from snr import *
 
 
@@ -44,7 +45,3 @@ class TestSocketsLoop(SNRTestCase):
                 ])
 
                 server_thread.join()
-
-
-if __name__ == '__main__':
-    unittest.main()

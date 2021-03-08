@@ -39,7 +39,7 @@ class TestPipeLoop(SNRTestCase):
 
     @pytest.mark.timeout(0.500)
     def test_two_pipe_loops(self) -> None:
-        # logging.getLogger().setLevel(logging.WARNING)
+        logging.getLogger().setLevel(logging.WARNING)
 
         data_key = "my_data"
         expectations: Expectations = {
@@ -72,7 +72,3 @@ class TestPipeLoop(SNRTestCase):
             runner: MultiRunnerProtocol = MultiProcRunner(config,
                                                           ["test1", "test2"])
             runner.run()
-
-
-if __name__ == '__main__':
-    unittest.main()

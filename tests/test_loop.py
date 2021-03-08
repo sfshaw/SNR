@@ -1,5 +1,5 @@
 from snr import *
-from snr.std.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
+from snr.std_mods.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
 
 
 class LoopUnderTest(ThreadLoop):
@@ -43,7 +43,3 @@ class TestLoop(SNRTestCase):
             ])
             runner = TestRunner(config)
             runner.run()
-
-
-if __name__ == '__main__':
-    unittest.main()

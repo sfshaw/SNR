@@ -2,8 +2,8 @@ import multiprocessing as mp
 import socket
 import time
 
+import pytest
 from snr import *
-from snr.core.utils.sockets.sockets_wrapper import SocketsWrapper
 
 
 class TestSocketsLsitener(SNRTestCase):
@@ -80,7 +80,3 @@ class TestSocketsLsitener(SNRTestCase):
             except AssertionError as e:
                 proc.terminate()
                 raise e
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,4 +1,3 @@
-from snr.core.utils.expector_protocol import ExpectorProtocol
 from snr import *
 
 
@@ -18,6 +17,9 @@ class ThreadLoopUnderTest(ThreadLoop):
 
     def loop_handler(self) -> None:
         self.expector.call("loop")
+
+    def halt(self) -> None:
+        self.expector.call("halt")
 
     def terminate(self) -> None:
         self.expector.call("terminate")

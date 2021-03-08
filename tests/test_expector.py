@@ -1,6 +1,7 @@
 import multiprocessing as mp
+import unittest
 
-from snr.core.utils.test_base import *
+from snr import *
 
 
 class TestExpector(unittest.TestCase):
@@ -44,7 +45,3 @@ class TestExpector(unittest.TestCase):
             proc = mp.Process(target=call)
             proc.start()
             proc.join()
-
-
-if __name__ == '__main__':
-    unittest.main()

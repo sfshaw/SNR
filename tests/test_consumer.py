@@ -1,9 +1,7 @@
 import threading
 import time
 
-from snr.core.base import *
-from snr.core.utils.consumer import Consumer
-from snr.core.utils.test_base import *
+from snr import *
 
 SLEEP_TIME_S = 0.00005
 
@@ -91,7 +89,3 @@ class TestConsumer(SNRTestCase):
         finally:
             if consumer.is_alive():
                 consumer.join_from("test complete")
-
-
-if __name__ == '__main__':
-    unittest.main()

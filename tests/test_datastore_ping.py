@@ -1,4 +1,7 @@
+import logging
 import time
+from types import ModuleType
+from typing import List
 
 from snr import *
 
@@ -41,7 +44,8 @@ class PingTestEndpoint(Endpoint):
 
 class PingTestFactory(EndpointFactory):
     def __init__(self):
-        super().__init__(None)
+        reload_targets: List[ModuleType] = []
+        super().__init__(reload_targets)
 
     def get(self, parent: NodeProtocol) -> EndpointProtocol:
         return PingTestEndpoint(self,
@@ -62,7 +66,3 @@ class TestDatastorePing(SNRTestCase):
                 PingTestFactory(),
                 ExpectorEndpointFactory(expector),
             ])
-
-
-if __name__ == '__main__':
-    unittest.main()

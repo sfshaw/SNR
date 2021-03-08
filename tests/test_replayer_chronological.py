@@ -1,3 +1,4 @@
+import pytest
 from snr import *
 
 
@@ -63,7 +64,3 @@ class TestReplayerChronological(SNRTestCase):
                         logging.CRITICAL)  # Supress error
                     self.assertIsNone(Page.deserialize(f.readline()))
                     self.assertEqual(expected_pages, actual_pages)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,10 +1,9 @@
 import time
+import unittest
 
-from snr.core.base import *
-from snr.core.utils.profiler import Profiler
-from snr.core.utils.test_base import *
+from snr import *
 
-SLEEP_TIME_S = 0.00005
+SLEEP_TIME_S: float = 0.00005
 
 
 class TestProfiler(unittest.TestCase):
@@ -16,20 +15,20 @@ class TestProfiler(unittest.TestCase):
 
     def test_profiler_start_join(self):
         CATCH_UP_TIME_S = SLEEP_TIME_S * 10
-        profiler: ProfilerProtocol = Profiler(Settings())
+        prof: ProfilerProtocol = Profiler(Settings())
 
         time.sleep(CATCH_UP_TIME_S)
-        self.assertTrue(profiler.is_alive())
+        self.assertTrue(prof.is_alive())
 
         time.sleep(CATCH_UP_TIME_S)
-        self.assertTrue(profiler.is_alive())
+        self.assertTrue(prof.is_alive())
 
-        profiler.join_from("test complete")
-        self.assertFalse(profiler.is_alive())
+        prof.join_from("test complete")
+        self.assertFalse(prof.is_alive())
         time.sleep(CATCH_UP_TIME_S)
-        self.assertFalse(profiler.is_alive())
+        self.assertFalse(prof.is_alive())
 
-    def test_consumer_put(self):
+    def test_profiler_put(self):
 
         profiler = Profiler(Settings())
 
@@ -61,7 +60,3 @@ class TestProfiler(unittest.TestCase):
         finally:
             if profiler.is_alive():
                 profiler.join_from("test complete")
-
-
-if __name__ == '__main__':
-    unittest.main()

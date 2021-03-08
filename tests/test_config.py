@@ -1,3 +1,5 @@
+from typing import List
+
 from snr import *
 
 
@@ -19,7 +21,3 @@ class TestConfig(SNRTestCase):
         ]
         config = Config(Mode.TEST, {"test": factories})
         self.assertEqual(config.get("test"), factories)
-
-
-if __name__ == '__main__':
-    unittest.main()

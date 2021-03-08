@@ -1,6 +1,5 @@
 from snr import *
-from snr.std.io.recorder.recorder_endpoint import RecorderEndpoint
-from snr.types.task import task_process_data
+from snr.std_mods.io.recorder.recorder_endpoint import RecorderEndpoint
 
 
 class TestRecorder(SNRTestCase):
@@ -65,7 +64,3 @@ class TestRecorder(SNRTestCase):
                                   line, page)
                         self.assertTrue(False,
                                         "Deserialization of page failed")
-
-
-if __name__ == '__main__':
-    unittest.main()

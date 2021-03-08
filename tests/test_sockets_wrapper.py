@@ -1,9 +1,9 @@
 import socket
 import threading
 
+import pytest
 from snr import *
-from snr.core.utils.sockets.sockets_header import pack_size
-from snr.core.utils.sockets.sockets_wrapper import SocketsWrapper
+from snr.std_mods.comms.sockets_base import sockets_header
 
 
 class TestSocketsLoop(SNRTestCase):
@@ -17,7 +17,7 @@ class TestSocketsLoop(SNRTestCase):
                   ) -> None:
             conn, _ = socket.accept()
             data = page.serialize()
-            conn.send(pack_size(data))
+            conn.send(sockets_header.pack_size(data))
             conn.send(data)
             conn.close()
             trigger.set()
@@ -46,7 +46,3 @@ class TestSocketsLoop(SNRTestCase):
                                 page.process)
                 sw.close()
                 server_thread.join()
-
-
-if __name__ == '__main__':
-    unittest.main()

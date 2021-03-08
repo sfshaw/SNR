@@ -1,5 +1,6 @@
+from typing import Union
+
 from snr import *
-from snr.core.utils.expector_protocol import ExpectorProtocol
 
 from .test_reload import mod_a, mod_b
 

@@ -43,22 +43,18 @@ class TestKalman(SNRTestCase):
                 ])
 
             output2.assertExists()
-            with self.get_context() as context:
-                with PageReader(context,
-                                "test_reader",
-                                output2.path) as reader:
-                    self.assertPage(reader.read(),
-                                    "filtered_data",
-                                    "1,2,3",
-                                    "test_node",
-                                    process=True)
-                    self.assertPage(reader.read(),
-                                    "filtered_data",
-                                    "4,5,6",
-                                    "test_node",
-                                    process=True)
-                    self.assertIsNone(reader.read())
-
-
-if __name__ == '__main__':
-    unittest.main()
+            context = self.get_context()
+            with PageReader(context,
+                            "test_reader",
+                            output2.path) as reader:
+                self.assertPage(reader.read(),
+                                "filtered_data",
+                                "1,2,3",
+                                "test_node",
+                                process=True)
+                self.assertPage(reader.read(),
+                                "filtered_data",
+                                "4,5,6",
+                                "test_node",
+                                process=True)
+                self.assertIsNone(reader.read())
