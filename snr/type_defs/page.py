@@ -1,7 +1,11 @@
+import dataclasses
 import logging
+from typing import Any, Optional
 
-from .base import *
+import dataclasses_json
+
 from .role import Role
+from .serializable import *
 
 MAX_PRINTABLE_DATA_LEN = 60
 
@@ -15,8 +19,8 @@ log = logging.getLogger('Page')
 log.setLevel(logging.WARNING)
 
 
-@dataclass
-class Page(DataClassJsonMixin):
+@dataclasses.dataclass
+class Page(dataclasses_json.DataClassJsonMixin):
     '''Basic unit of data handled by the Datastore
     '''
     key: DataKey  # The name used to lookup a page

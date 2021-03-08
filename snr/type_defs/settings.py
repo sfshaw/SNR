@@ -2,7 +2,10 @@
 """
 
 
-from .base import *
+import logging
+from typing import Dict, List, Union
+
+from snr.type_defs.mode import Mode
 
 
 class Settings:
@@ -180,6 +183,13 @@ class Settings:
         "num_buttons": [None],
         "num_dpad": [None],
         "num_axes": [None],
+    }
+
+    # Log Levels
+    log_level: Dict[Mode, int] = {
+        Mode.TEST: logging.WARNING,
+        Mode.DEBUG: logging.INFO,
+        Mode.DEPLOYED: logging.WARNING,
     }
 
     # Robot Control

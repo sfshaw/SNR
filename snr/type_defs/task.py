@@ -1,9 +1,14 @@
 """ Defines the basic unit of work for Nodes and Endpoints
 """
+import dataclasses
 import logging
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from .base import *
+import dataclasses_json
+
 from .page import Page
+from .serializable import JsonData
 
 
 class TaskPriority(Enum):
@@ -14,10 +19,20 @@ class TaskPriority(Enum):
 
 class TaskType(Enum):
     event = 'event'
+    '''A generic event
+    '''
     store_page = 'store_page'
+    '''Triggered to write a page to the datastore
+    '''
     process_data = 'process_data'
+    '''Triggered after a page is written to the datastore
+    '''
     reload = 'reload'
+    '''Triggered to cause a specific endpoint to be reloaded
+    '''
     terminate = 'terminate'
+    '''Triggered to terminate the node
+    '''
 
     def __repr__(self) -> str:
         return self.value
@@ -26,8 +41,8 @@ class TaskType(Enum):
 TaskId = Union[TaskType, Tuple[TaskType, str]]
 
 
-@dataclass
-class Task(DataClassJsonMixin):
+@dataclasses.dataclass
+class Task(dataclasses_json.DataClassJsonMixin):
     def __init__(self,
                  type: TaskType,
                  name: str,
@@ -67,6 +82,13 @@ class Task(DataClassJsonMixin):
             self.name, self.type, self.priority, self.val_list)
 
 
+SomeTasks = Union[None, Task, List[Task]]
+TaskHandler = Callable[[Task, TaskId], SomeTasks]
+TaskHandlerMap = Dict[TaskId, TaskHandler]
+TaskSource = Callable[[], SomeTasks]
+TaskScheduler = Callable[[Task], None]
+
+
 def task_event(name: str, val_list: List[Any] = []) -> Task:
     return Task(TaskType.event, name, val_list=val_list)
 
@@ -85,10 +107,3 @@ def task_reload(endpoint_name: str) -> Task:
 
 def task_terminate(reason: str) -> Task:
     return Task(TaskType.terminate, reason)
-
-
-SomeTasks = Union[None, Task, List[Task]]
-TaskHandler = Callable[[Task, TaskId], SomeTasks]
-TaskHandlerMap = Dict[TaskId, TaskHandler]
-TaskSource = Callable[[], SomeTasks]
-TaskScheduler = Callable[[Task], None]
