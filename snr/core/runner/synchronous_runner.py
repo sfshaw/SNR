@@ -1,5 +1,7 @@
+import threading
+
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from ..node import Node
 
@@ -27,3 +29,6 @@ class SynchronousRunner(RunnerProtocol):
             if node:
                 if not node.is_terminated():
                     node.set_terminate_flag("Runner clean up")
+            for thread in threading.enumerate():
+                if not thread.is_alive():
+                    print("Zombie thread %s culled", thread.name)
