@@ -36,10 +36,13 @@ jobs:
         # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install .
     - name: Run MyPy check
-      if: "matrix.python-version != 'pypy3'"
+      if: "matrix.python-version != 'pypy-3.7'"
       run: |
         python -m pip install mypy
         mypy snr --ignore-missing-imports
+    - name: Run Flake8 lint 
+      run: |
+        python -m nox -s lint
     - name: Run Nox Tests 
       run: |
         python -m nox -s test_all-${{ matrix.python-version }}

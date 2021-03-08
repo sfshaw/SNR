@@ -8,7 +8,7 @@ SUPPORTED_PYTHON_VERSIONS: List[str] = [
     '3.8',
     '3.9',
     '3.10',
-    'pypy3.7',
+    'pypy-3.7',
 ]
 
 
