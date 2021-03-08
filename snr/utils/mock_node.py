@@ -1,17 +1,27 @@
-from snr.protocol import *
-from snr.types import *
+import logging
+from typing import Dict, Tuple
 
-from ..base import *
-from ..context.root_context import RootContext
+from snr.core import *
+from snr.protocol import *
+
+
+class MockTimer(TimerProtocol):
+    def __init__(self):
+        self.time = 0
+
+    def current_s(self) -> float:
+        self.time += 1
+        return self.time
 
 
 class MockNode(RootContext, NodeProtocol):
 
     def __init__(self) -> None:
-        super().__init__("mock_node", None)
+        super().__init__("mock_node", logging.WARNING)
         self.role: Role = "test"
         self.mode = Mode.TEST
         self.endpoints: Dict[str, EndpointProtocol] = {}
+        self.timer = MockTimer()
 
     def loop(self) -> None:
         pass
@@ -37,17 +47,8 @@ class MockNode(RootContext, NodeProtocol):
     def store_page(self, page: Page) -> None:
         pass
 
-    def store_data(self, key: str, data: Any, process: bool = True) -> None:
-        pass
-
     def synchronous_store(self, page: Page) -> None:
         pass
 
     def get_page(self, key: str) -> Optional[Page]:
         pass
-
-    def get_data(self, key: str) -> Optional[Any]:
-        pass
-
-    def get_time(self) -> float:
-        return 0.0

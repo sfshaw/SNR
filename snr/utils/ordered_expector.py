@@ -1,7 +1,8 @@
 import logging
 import unittest
+from typing import Any, Iterable, List
 
-from snr.types.base import *
+from snr.type_defs import *
 
 from .expector_protocol import ExpectorProtocol
 

@@ -1,4 +1,4 @@
-from snr.core.base import *
+from snr.core import *
 
 
 class StopwatchEndpoint(Endpoint):

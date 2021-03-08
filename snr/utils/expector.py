@@ -1,23 +1,22 @@
 import logging
-import multiprocessing as mp
 import unittest
+from typing import Any, Iterable
 
-from snr.types.base import *
+from snr.type_defs import *
 
 from .expector_protocol import Expectations, ExpectorProtocol
 
 
-class MPExpector(ExpectorProtocol):
+class Expector(ExpectorProtocol):
 
     def __init__(self,
                  expectations: Expectations,
                  testcase: unittest.TestCase
                  ) -> None:
-        manager = mp.Manager()
         self.expectations = expectations
         self.testcase = testcase
         self.log = logging.getLogger()
-        self.times_called: Expectations = manager.dict()
+        self.times_called: Expectations = {}
         for key in expectations:
             self.times_called[str(key)] = 0
 
@@ -52,5 +51,5 @@ class MPExpector(ExpectorProtocol):
     def dump(self) -> None:
         self.log.debug(self.times_called)
 
-    def __enter__(self) -> "MPExpector":
+    def __enter__(self) -> "Expector":
         return self

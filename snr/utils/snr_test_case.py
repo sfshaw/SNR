@@ -2,15 +2,17 @@ import socket
 import threading
 import time
 import unittest
+from typing import Any, List, Optional, Tuple
 
-from ..base import *
-from ..context.root_context import RootContext
+from snr.core import *
+from snr.protocol import *
+from snr.std_mods import *
+from snr.type_defs import *
+
 from .expector import Expectations, Expector
 from .expector_protocol import ExpectorProtocol
 from .mock_node import MockNode
 from .ordered_expector import OrderedExpectations, OrderedExpector
-from .sockets.sockets_wrapper import SocketsWrapper
-from .temp_file import TempFile
 
 PRINT_INDIVIDUAL_RUNTIME: bool = True
 
@@ -46,7 +48,7 @@ class SNRTestCase(unittest.TestCase):
         return Config(mode, {"test": factories})
 
     def get_context(self) -> ContextProtocol:
-        return RootContext("test_context", None)
+        return RootContext("test_context", Mode.TEST)
 
     def run_test_node(self,
                       factories: List[FactoryProtocol],

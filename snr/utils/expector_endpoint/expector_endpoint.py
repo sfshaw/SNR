@@ -1,7 +1,8 @@
 import logging
 
-from snr.core.base import *
-from snr.core.utils.expector_protocol import ExpectorProtocol
+from snr.core import *
+
+from ..expector_protocol import ExpectorProtocol
 
 
 class ExpectorEndpoint(Endpoint):
@@ -37,19 +38,3 @@ class ExpectorEndpoint(Endpoint):
         if self.exit_when_satisfied and self.expector.check():
             return task_terminate("expector_satisfied")
         return None
-
-
-class ExpectorEndpointFactory(EndpointFactory):
-    def __init__(self,
-                 expector: ExpectorProtocol,
-                 exit_when_satisfied: bool = False
-                 ) -> None:
-        super().__init__()
-        self.expector = expector
-        self.exit_when_satisfied = exit_when_satisfied
-
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
-        return ExpectorEndpoint(self,
-                                parent,
-                                self.expector,
-                                self.exit_when_satisfied)
