@@ -1,4 +1,7 @@
-from snr.types import *
+from typing import Any, Optional
+
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable

@@ -1,4 +1,7 @@
-from snr.types import *
+from typing import List, Optional
+
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .factory_protocol import FactoryProtocol
 from .profiler_protocol import ProfilerProtocol

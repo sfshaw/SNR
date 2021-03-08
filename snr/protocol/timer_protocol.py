@@ -3,11 +3,7 @@ from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable
-class ComponentProtocol(Protocol):
-    name: str
+class TimerProtocol(Protocol):
 
-    def start(self) -> None:
-        ...
-
-    def join(self) -> None:
+    def current_s(self) -> float:
         ...

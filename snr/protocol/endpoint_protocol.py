@@ -1,4 +1,5 @@
-from snr.types import *
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .handles_task import HandlesTasks
 from .reloadable import Reloadable
@@ -11,4 +12,7 @@ class EndpointProtocol(HandlesTasks, Reloadable, Protocol):
         ...
 
     def set_terminate_flag(self) -> None:
+        ...
+
+    def terminate(self) -> None:
         ...

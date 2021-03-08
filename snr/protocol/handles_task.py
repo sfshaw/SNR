@@ -1,8 +1,12 @@
-from snr.types import *
+from typing import Optional, Tuple
+
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .component_protocol import ComponentProtocol
 
 
+@runtime_checkable
 class HandlesTasks(ComponentProtocol, Protocol):
 
     task_handlers: TaskHandlerMap

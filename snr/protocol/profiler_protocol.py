@@ -1,4 +1,7 @@
-from snr.types import *
+from typing import Any, Callable, Optional, Tuple, TypeVar
+
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 ProfilingResult = Tuple[str, float]
 
@@ -16,8 +19,12 @@ class ProfilerProtocol(Protocol):
              ) -> T:
         ...
 
-    def dump(self) -> None:
+    def dump(self) -> str:
         ...
 
     def join_from(self, joiner: str) -> None:
         ...
+
+
+ProfilerGetter = Callable[[],
+                          Optional[ProfilerProtocol]]

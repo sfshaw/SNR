@@ -1,5 +1,7 @@
-from snr.protocol.endpoint_protocol import EndpointProtocol
-from snr.types import *
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
+
+from .endpoint_protocol import EndpointProtocol
 
 
 @runtime_checkable
@@ -16,9 +18,6 @@ class LoopProtocol(EndpointProtocol, Protocol):
         ...
 
     def loop_handler(self) -> None:
-        ...
-
-    def terminate(self) -> None:
         ...
 
     def is_terminated(self) -> bool:

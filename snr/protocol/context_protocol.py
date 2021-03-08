@@ -1,6 +1,8 @@
 import logging
+from typing import Optional
 
-from snr.types import *
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .component_protocol import ComponentProtocol
 from .profiler_protocol import ProfilerProtocol

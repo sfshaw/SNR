@@ -6,7 +6,8 @@ application of `Runner`s is to provide a CLI interface for running a `Node`.
 These features are implemented in the concrete implementations of `Runner`s.
 '''
 
-from snr.types import *
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .config_protocol import ConfigProtocol
 

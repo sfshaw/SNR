@@ -1,6 +1,9 @@
 import importlib
+from types import ModuleType
+from typing import Any, Dict, List
 
-from snr.types import *
+from snr.type_defs import *
+from typing_extensions import Protocol, runtime_checkable
 
 from .component_protocol import ComponentProtocol
 
