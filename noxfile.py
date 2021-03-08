@@ -4,12 +4,11 @@ import nox
 
 DEFAULT_PYTHON_VERSION: str = '3'
 SUPPORTED_PYTHON_VERSIONS: List[str] = [
-    '3.6',
     '3.7',
     '3.8',
     '3.9',
     '3.10',
-    'pypy3',
+    'pypy3.7',
 ]
 
 

@@ -8,7 +8,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='SNR',
-    version='0.5.1',
+    version='0.6.1',
     author='Spencer Shaw',
     author_email='calpolyroboticsclub@gmail.com',
     packages=find_packages(include=['snr']),
@@ -24,8 +24,6 @@ setup(
         # 'pygame>=2.0.0'                             # Controller
         'pyserial>=3.5',                            # Serial connection
         # 'pysimplegui=4.29.0',                       # GUI
-        'typing;python_version<"3.7"',              # Typing backports
-        'typing-extensions;python_version<"3.7"',   # Protocol backport
     ],
     extras_require={
         'package': [
@@ -45,5 +43,5 @@ setup(
             'flake8>=3.8',      # Linter
         ],
     },
-    python_requires='>=3.6.12'
+    python_requires='>=3.7'
 )
