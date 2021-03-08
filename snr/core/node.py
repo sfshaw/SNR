@@ -8,7 +8,6 @@ from snr.types import *
 from snr.types.task import task_store_page
 
 from .context.root_context import RootContext, logging
-from .datastore import Datastore
 from .endpoint.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
 from .utils.timer import Timer
@@ -30,7 +29,7 @@ class Node(RootContext, NodeProtocol):
             Optional[ProfilerProtocol]] = config.get_profiler
         self.timer = Timer()
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
-        self.__datastore = Datastore(self, self.schedule, self.timer)
+        self.__datastore: Dict[DataKey, Page] = {}
         self.endpoints: Dict[str, EndpointProtocol] = {}
         self.add_component(NodeCoreFactory())
         for factory in config.get(role):
@@ -107,9 +106,7 @@ class Node(RootContext, NodeProtocol):
 
     def set_terminate_flag(self, reason: str) -> None:
         self.info("Setting terminate flag for: %s", reason)
-        self.__datastore.synchronous_store(self.__datastore.page("exit_reason",
-                                                                 reason,
-                                                                 False))
+        self.store_data("exit_reason", reason, False)
         self.__terminate_flag.set()
         for endpoint in self.endpoints.values():
             endpoint.set_terminate_flag()
@@ -131,7 +128,7 @@ class Node(RootContext, NodeProtocol):
         self.info("Terminated all %s endpoints",
                   len(self.endpoints))
 
-        self.__datastore.dump_data()
+        self.dbg(self.dump_data())
 
         self.terminate_context()
 
@@ -155,26 +152,26 @@ class Node(RootContext, NodeProtocol):
         self.__task_queue.schedule(t)
 
     def synchronous_store(self, page: Page) -> None:
-        self.__datastore.synchronous_store(page)
+        self.check_main_thread(
+            "Synchronous store called from outside main thread.")
+        self.__datastore[page.key] = page
+        self.dbg("Page stored: (%s)", page.key)
 
-    def make_page(self,
-                  key: DataKey,
-                  data: Any,
-                  process: bool = True,
-                  ) -> Page:
-        return self.__datastore.page(key, data, process)
+    def page(self, key: DataKey, data: Any, process: bool = True) -> Page:
+        created_at = self.timer.current_s()
+        return Page(key, data, self.name, created_at, process)
 
     def store_page(self, page: Page) -> None:
         self.schedule(task_store_page(page))
 
-    def store_data(self, key: str, data: Any, process: bool = True) -> None:
-        self.store_page(self.make_page(key, data, process))
-
-    def get_data(self, key: str) -> Optional[Any]:
-        return self.__datastore.get_data(key)
-
     def get_page(self, key: str) -> Optional[Page]:
-        return self.__datastore.get_page(key)
+        return self.__datastore.get(key)
 
     def get_time_s(self) -> float:
-        return self.timer.current()
+        return self.timer.current_s()
+
+    def dump_data(self) -> str:
+        lines = ["Datastore dump:"]
+        for page in self.__datastore.values():
+            lines.append(f"\t{page}")
+        return "\n".join(lines)
