@@ -1,5 +1,7 @@
+from types import ModuleType
+
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 
 class EndpointFactory(FactoryProtocol):

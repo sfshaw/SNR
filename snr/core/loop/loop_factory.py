@@ -1,5 +1,6 @@
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
+from types import ModuleType
 
 
 class LoopFactory(FactoryProtocol):

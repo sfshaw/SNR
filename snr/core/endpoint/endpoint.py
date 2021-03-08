@@ -1,5 +1,5 @@
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from ..context.context import Context
 from .endpoint_factory import EndpointFactory

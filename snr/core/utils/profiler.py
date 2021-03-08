@@ -1,13 +1,13 @@
 import collections
 import logging
+from typing import Any, Callable, Deque, Dict, Optional, Tuple, TypeVar
 
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from .consumer import Consumer
 from .timer import Timer
 
-DAEMON_THREAD = False
 SLEEP_TIME_S = 0.00005
 
 ProfilingResult = Tuple[str, float]
@@ -15,7 +15,7 @@ ProfilingResult = Tuple[str, float]
 T = TypeVar("T")
 
 
-class Profiler(Consumer[ProfilingResult]):
+class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
     def __init__(self, settings: Settings) -> None:
         if not settings.ENABLE_PROFILING:
             # TODO: Correclty short circuit constructor
@@ -26,7 +26,6 @@ class Profiler(Consumer[ProfilingResult]):
         super().__init__("profiler",
                          self.store_task,
                          SLEEP_TIME_S,
-                         daemon=DAEMON_THREAD,  # TODO: Daemon thread is hack
                          )
         self.log.setLevel(logging.WARNING)
 
@@ -37,7 +36,7 @@ class Profiler(Consumer[ProfilingResult]):
              ) -> T:
         timer = Timer()
         result = handler(*args)
-        self.store_event(name, timer.current())
+        self.store_event(name, timer.current_s())
         return result
 
     def store_event(self, task_type: str, runtime: float):
@@ -58,11 +57,11 @@ class Profiler(Consumer[ProfilingResult]):
         self.time_dict[task_type] = collections.deque(
             maxlen=self.moving_avg_len)
 
-    def dump(self):
-        self.log.info("Task/Loop type:\t\tAvg runtime: ")
+    def dump(self) -> str:
+        lines = ["Task/Loop type:\t\tAvg runtime: "]
         for k, deq in self.time_dict.items():
-            self.log.info("%s:\t\t%s",
-                          k, self.avg_time(k, deq))
+            lines.append(f"\t{k}:\t\t{self.avg_time(k, deq)}")
+        return "\n".join(lines)
 
     def avg_time(self, key: str, deque: Deque[float]) -> str:
         return self.format_time(float(sum(deque)) / float(len(deque)))

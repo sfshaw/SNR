@@ -2,13 +2,13 @@ import functools
 import multiprocessing as mp
 import operator
 import time
+from typing import Any, Dict, List, Optional, Tuple
 
 from snr.protocol import *
-from snr.types import *
-from snr.types.task import task_store_page
+from snr.type_defs import *
 
-from .context.root_context import RootContext, logging
-from .endpoint.node_core_factory import NodeCoreFactory
+from .context import RootContext
+from .endpoint import NodeCoreFactory
 from .task_queue import TaskQueue
 from .utils.timer import Timer
 
@@ -20,13 +20,11 @@ class Node(RootContext, NodeProtocol):
                  role: Role,
                  config: ConfigProtocol,
                  ) -> None:
-        super().__init__(role + "_node", None)
-        self.log.setLevel(logging.WARNING)
+        super().__init__(role + "_node", config.mode)
+        self.info("Initializing in mode %s", config.mode)
         self.role = role
         self.mode = config.mode
-        self.profiler_getter: Callable[
-            [],
-            Optional[ProfilerProtocol]] = config.get_profiler
+        self.profiler_getter: ProfilerGetter = config.get_profiler
         self.timer = Timer()
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
         self.__datastore: Dict[DataKey, Page] = {}
@@ -45,8 +43,6 @@ class Node(RootContext, NodeProtocol):
             endpoint.start()
 
         while not self.__terminate_flag.is_set():
-            # if self.__task_queue.is_empty():
-            #     self.__datastore.flush()
             t: Optional[Task] = self.__task_queue.get_next()
             if t:
                 self.__execute_task(t)
@@ -100,7 +96,9 @@ class Node(RootContext, NodeProtocol):
         if new_tasks:
             self.__task_queue.schedule(new_tasks)
 
-    def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
+    def get_task_handlers(self,
+                          t: Task,
+                          ) -> List[Tuple[TaskHandler, TaskId]]:
         return list(filter(None, map(lambda e: e.get_task_handler(t),
                                      self.endpoints.values())))
 
@@ -125,6 +123,7 @@ class Node(RootContext, NodeProtocol):
 
         for e in self.endpoints.values():
             e.join()
+            e.terminate()
         self.info("Terminated all %s endpoints",
                   len(self.endpoints))
 
@@ -175,3 +174,8 @@ class Node(RootContext, NodeProtocol):
         for page in self.__datastore.values():
             lines.append(f"\t{page}")
         return "\n".join(lines)
+
+
+__all__ = [
+    "Node"
+]

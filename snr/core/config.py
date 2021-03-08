@@ -5,15 +5,17 @@ system or robot. With one Config definition, the components of multiple nodes
 can be defined in one place.
 '''
 
+from typing import List, Optional
+
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from ..core.utils.profiler import Profiler
 
 
 class Config(ConfigProtocol):
     def __init__(self,
-                 mode: Mode,
+                 mode: Mode = Mode.DEPLOYED,
                  factories: ComponentsByRole = {},
                  ) -> None:
         self.mode = mode

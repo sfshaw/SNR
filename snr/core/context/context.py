@@ -1,7 +1,9 @@
 import logging
+import threading
+from typing import Any, Callable, Optional, TypeVar
 
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 
 class Context(ContextProtocol):
@@ -46,12 +48,6 @@ class Context(ContextProtocol):
              ) -> None:
         self.log.info(message, *format_args)
 
-    def dump(self,
-             message: str,
-             *format_args: Any
-             ) -> None:
-        self.log.info(message, *format_args)
-
     T = TypeVar("T")
 
     def profile(self,
@@ -63,6 +59,10 @@ class Context(ContextProtocol):
                                       handler, *args)
         else:
             return handler(*args)
+
+    def check_main_thread(self, message: str) -> None:
+        if threading.main_thread() != threading.current_thread():
+            self.err(message)
 
     def __repr__(self) -> str:
         return self.name

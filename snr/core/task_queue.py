@@ -1,9 +1,11 @@
+import logging
 import queue
+from typing import Union
 
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
-from .context.context import Context, logging
+from .context import Context
 
 
 class TaskQueue(Context):

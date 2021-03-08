@@ -1,7 +1,8 @@
 import multiprocessing as mp
+from typing import List
 
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from ..node import Node
 

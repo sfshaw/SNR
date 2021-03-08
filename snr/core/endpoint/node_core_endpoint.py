@@ -1,5 +1,5 @@
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from .endpoint import Endpoint
 from .endpoint_factory import EndpointFactory
@@ -49,6 +49,8 @@ class NodeCoreEndpoint(Endpoint):
         page = t.val_list[0]
         if isinstance(page, Page):
             self.parent.synchronous_store(page)
+            if page.process:
+                return task_process_data(page.key)
         else:
             self.err("Store page task value was not a page: %s", page)
         return None

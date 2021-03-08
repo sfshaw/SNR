@@ -2,7 +2,7 @@ import threading
 import time
 
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from ..context.context import Context, logging
 from .loop_factory import LoopFactory
@@ -71,7 +71,7 @@ class ThreadLoop(Context, LoopProtocol):
             pass
 
         self.dbg("Thread Loop %s exited loop", self.name)
-        self.terminate()
+        self.halt()
 
     def tick(self):
         if (self.delay_s == 0.0):

@@ -1,30 +1,32 @@
+from typing import Optional, Union
+
 from snr.protocol import *
-from snr.types import *
+from snr.type_defs import *
 
 from .context import Context, logging
 
 LOG_FORMAT = "[%(name)s:\t%(levelname)s]\t%(message)s\t"
-LOG_LEVEL = logging.WARNING
 
 
 class RootContext(Context):
     def __init__(self,
                  name: str,
-                 profiler: Optional[ProfilerProtocol],
+                 mode: Union[Mode, LogLevel],
+                 profiler: Optional[ProfilerProtocol] = None,
                  settings: Settings = Settings(),
+
                  ) -> None:
         self.profiler = profiler
         logging.basicConfig(format=LOG_FORMAT)
         self.log = logging.getLogger()
+        if isinstance(mode, Mode):
+            level = settings.log_level[mode]
+        else:
+            level = mode
+        self.log.setLevel(level)
         super().__init__(name, settings, self.profiler)
 
     def terminate_context(self) -> None:
         if self.profiler:
             self.profiler.join_from("terminate_root_context")
-            self.profiler.dump()
-
-    def __enter__(self) -> "RootContext":
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        self.terminate_context()
+            self.info(self.profiler.dump())
