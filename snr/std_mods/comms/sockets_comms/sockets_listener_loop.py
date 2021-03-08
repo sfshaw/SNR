@@ -20,11 +20,12 @@ class SocketsListenerLoop(ThreadLoop):
                  name: str,
                  port: int,
                  data_keys: List[DataKey],
+                 existing_socket: Optional[socket.socket] = None,
                  ) -> None:
         super().__init__(factory, parent, name)
         self.port = port
         self.data_keys = data_keys
-        self.socket: Optional[socket.socket] = None
+        self.socket = existing_socket
         self.select = select.poll()
         self.handler_que: queue.Queue[Tuple[socket.socket, Any]] = queue.Queue(
         )
@@ -35,13 +36,17 @@ class SocketsListenerLoop(ThreadLoop):
         self.log.setLevel(logging.WARNING)
 
     def setup(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.settimeout(TIMEOUT_S)
-        self.socket.bind(('', self.port))
-        self.socket.listen(10)
+        if self.socket:
+            self.info("Socket already open")
+        else:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.socket.settimeout(TIMEOUT_S)
+            self.socket.bind(('', self.port))
+            self.socket.listen(10)
         self.select.register(self.socket.fileno(), select.POLLIN)
-        self.dbg("Opened socket server on %s", self.socket.fileno())
+        self.factory.existing_socket = self.socket  # type: ignore
+        self.dbg("Socket server on fd(%s) ready", self.socket.fileno())
 
     def loop_handler(self) -> None:
         assert self.socket
@@ -66,6 +71,9 @@ class SocketsListenerLoop(ThreadLoop):
             self.dbg("Added sockets loop to handle connection")
         else:
             self.err("Failed to add sockets_loop to parent node")
+
+    def halt(self) -> None:
+        pass
 
     def terminate(self) -> None:
         assert self.socket

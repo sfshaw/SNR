@@ -1,3 +1,5 @@
+import socket
+
 from snr.core import *
 from snr.std_mods.comms.sockets_base import sockets_wrapper
 
@@ -17,10 +19,12 @@ class SocketsListenerFactory(LoopFactory):
         self.port = port
         self.data_keys = data_keys
         self.loop_name = loop_name
+        self.existing_socket: Optional[socket.socket] = None
 
     def get(self, parent: NodeProtocol) -> ThreadLoop:
         return sockets_listener_loop.SocketsListenerLoop(self,
                                                          parent,
                                                          self.loop_name,
                                                          self.port,
-                                                         self.data_keys)
+                                                         self.data_keys,
+                                                         self.existing_socket)
