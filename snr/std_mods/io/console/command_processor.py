@@ -109,8 +109,8 @@ class CommandProcessor(Endpoint):
 
     def cmd_dump(self, args: List[str]) -> str:
         if len(args) > 0 and args[0] == "profiler":
-            if self.profiler:
-                message = self.profiler.dump()
+            if self.parent.profiler:
+                message = self.parent.profiler.dump()
             else:
                 message = "No profiling data found"
 
