@@ -16,21 +16,22 @@ Install SNR from source
 Typical usage for the CPRC UROV might have a `main.py` like this:
 
     from snr import *
+    from urov import *
     
     def main():
         sockets_pair = SocketsPair(...)
         config = Config(Mode.DEPLOYED, {
             'topside': [
-                XBoxControllerFactory(),
-                InputProcessorFactory(),
+                XBoxControllerFactory(...),
+                InputProcessorFactory(...),
                 sockets_pair.server_factory,
                 ],
             'urov': [
                 sockets_pair.client_factory,
                 ControlsProcessorFactory(),
-                MotorControllerFactory(),
-                SerialConnectionFactory(),
-                SensorsProcessorFactory(),
+                MotorControllerFactory(...),
+                SerialConnectionFactory(...),
+                SensorsProcessorFactory(...),
                 ],
         })
         runner = CLIRunner(config)
@@ -91,16 +92,20 @@ To run the node on the UROV itself:
     git clone https://github.com/sfshaw-calpoly/SNR
     cd SNR
     python3 -m pip install -e .[dev]
+    # break the code
     make test
 
 ### Nox
+
 Nox is a tool that makes testing a against multiple interpretters very easy. Running Nox will create virtual environments for all available and supported Python interpreters. MyPy and Flake8 are also run in the nox suite.
 
     nox
 
-## Style
+## Style and Environment
 
-    // TODO
+Since SNR targets use in education, code should be easy to read and understand. SNR requires versions of python that support improve type annotations and other typing features, including Protocols. Protocol (interface) defintions and type annotations are very important for student learning. Inspecting type annotations is a great way for students to learn what the program is actually doing, rather than just memorizing constructs.
+
+Visual Studio Code provides and environment conducive to investigation of underlying code. SNR code should be compliant with Pylance's (VSCode Python extension) analysis type checking set to strict. MyPy and Flake8 are also use to improve correctness.
 
 ## Contributors
 
