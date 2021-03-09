@@ -33,6 +33,7 @@ def test_all(session: nox.Session):
 def mypy(session: nox.Session):
     session.install('mypy')
     session.run('mypy', '-p', 'snr')
+    session.run('mypy', '-p', 'tests')
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION,
