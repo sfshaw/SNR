@@ -1,10 +1,11 @@
+import logging
 import threading
 import time
 
 from snr.protocol import *
 from snr.type_defs import *
 
-from ..context.context import Context, logging
+from ..context.context import Context
 from .loop_factory import LoopFactory
 
 DEFAULT_TICK_RATE = 1000
