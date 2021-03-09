@@ -3,7 +3,7 @@
 [![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)](https://github.com/sfshaw-calpoly/SNR/actions?query=workflow%3A%22Python+unit+tests%22)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-SNR provides a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack.
+SNR provides a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack to avoid compounding learning curves.
 
 # Features
 
@@ -16,7 +16,7 @@ SNR provides a python-based robotics framework for education. It was originally 
 
 ## Install
 
-Install SNR from source
+Install SNR from source and dependancies from PyPi
 
     git clone https://github.com/sfshaw-calpoly/SNR
     cd SNR
@@ -24,7 +24,7 @@ Install SNR from source
 
 ## Typical usage
 
-Typical usage for the CPRC UROV might have a `main.py` like this:
+Typical usage for the CPRC UROV project might have a `main.py` like this:
 
     from snr import *
     from urov import *
@@ -79,30 +79,14 @@ More examples can be found in [Examples](#Examples) and in the `tests` module
 
 ## Submodules (shown in order of dependance)
 
-    ./snr/type_defs # Type definitions used throughout the project 
-    ./snr/protocol  # Protocol (interface) definitions implemented by core, standard, and user code
-    ./snr/core      # Concrete implementations of core classes including runners, Node, Endpoint, ThreadLoop, and other base classes 
-    ./snr/utils     # Testing utilities
-    ./snr/std_mods  # Standard ready made components that can be used by user code
+    ./snr/type_defs     # Type definitions used throughout the project 
+    ./snr/protocol      # Protocol (interface) definitions implemented by core, standard, and user code
+    ./snr/core          # Concrete implementations of core classes including runners, Node, Endpoint, ThreadLoop, and other base classes 
+    ./snr/std_mods      # Standard ready made components that can be used by user code
+    ./snr/utils         # Testing utilities
+    ./tests             # Unit tests of core and standard implemations
 
-## Top level project files
-
-    CHANGES.txt     # Project changelog
-    LICENSE.txt     # Project license
-    MANIFEST.in     # Python package manifest file
-    Makefile        # "A Bash Notebook" for usefule shell commands
-    README.md       # This README file
-    bin/            # Executable scripts
-    mypy.ini        # MyPy configuration
-    noxfile.py      # Cross version testing framework configuration
-    pyproject.toml  # PEP 518 project configuration 
-    python_version  # Lowest supported Python Version
-    setup.cfg       # Coverage and Flake8 configuration
-    setup.py        # Python package confirugation
-    snr/            # Root module source directory
-    tests/          # Python module containing unit tests
-
-### Examples
+## Examples
 
 The `std_mods` module cantains numerous examples of Endpoint, Loop, and Factory implementations. Introductory usage of basic components will be detailed here. Note that these examples might not be kept up to date or correct. This exemplifies the difference between documentation and code. Code is executable and can be check for correctness automatically. The `tests` module is executed by Github Actions on every push. Passing tests are more likely to show working code than documentation is. 
 
@@ -204,7 +188,6 @@ Factory classes are used to load and reload Endpoints and Loops
                                   "my_loop_instance",
                                   self.state)
 
-
 ## Development
 
     git clone https://github.com/sfshaw-calpoly/SNR
@@ -212,6 +195,23 @@ Factory classes are used to load and reload Endpoints and Loops
     python3 -m pip install -e .[dev]
     # break the code
     make test
+
+### Top level project files
+
+    CHANGES.txt     # Project changelog
+    LICENSE.txt     # Project license
+    MANIFEST.in     # Python package manifest file
+    Makefile        # "A Bash Notebook" for usefule shell commands
+    README.md       # This README file
+    bin/            # Executable scripts
+    mypy.ini        # MyPy configuration
+    noxfile.py      # Cross version testing framework configuration
+    pyproject.toml  # PEP 518 project configuration 
+    python_version  # Lowest supported Python Version
+    setup.cfg       # Coverage and Flake8 configuration
+    setup.py        # Python package confirugation
+    snr/            # Root module source directory
+    tests/          # Python module containing unit tests
 
 ### Style and Environment
 
@@ -239,4 +239,4 @@ Nox is a tool that makes testing against multiple interpretters very easy. Runni
 ## Contributors
 
 - Spencer Shaw
-- Your name here
+- Your name or cheesy pseudonym here
