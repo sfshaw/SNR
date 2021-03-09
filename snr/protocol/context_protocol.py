@@ -6,6 +6,7 @@ from typing_extensions import Protocol, runtime_checkable
 
 from .component_protocol import ComponentProtocol
 from .profiler_protocol import ProfilerProtocol
+from .timer_protocol import TimerProtocol
 
 
 @runtime_checkable
@@ -13,3 +14,4 @@ class ContextProtocol(ComponentProtocol, Protocol):
     log: logging.Logger
     settings: Settings
     profiler: Optional[ProfilerProtocol]
+    timer: TimerProtocol

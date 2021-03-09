@@ -25,7 +25,6 @@ class Node(RootContext, NodeProtocol):
         self.role = role
         self.mode = config.mode
         self.profiler_getter: ProfilerGetter = config.get_profiler
-        self.timer = Timer()
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
         self.__datastore: Dict[DataKey, Page] = {}
         self.endpoints: Dict[str, EndpointProtocol] = {}

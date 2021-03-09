@@ -15,7 +15,8 @@ class TaskQueue(Context):
                  ) -> None:
         super().__init__("task_queue",
                          parent.settings,
-                         parent.profiler)
+                         parent.profiler,
+                         parent.timer)
         self.get_new_tasks = task_source
         self.queue: queue.Queue[Task] = queue.Queue()
         self.log.setLevel(logging.WARNING)

@@ -29,7 +29,10 @@ class ThreadLoop(Context, LoopProtocol):
                  name: str,
                  tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
-        super().__init__(name, parent.settings, parent.profiler)
+        super().__init__(name,
+                         parent.settings,
+                         parent.profiler,
+                         parent.timer)
         self.factory = factory
         self.task_handlers: TaskHandlerMap = {}
         self.parent = parent

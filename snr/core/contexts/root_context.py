@@ -4,6 +4,7 @@ from typing import Optional, Union
 from snr.protocol import *
 from snr.type_defs import *
 
+from ..core_utils import Timer
 from .context import Context
 
 LOG_FORMAT = "[%(name)s:\t%(levelname)s]\t%(message)s\t"
@@ -25,7 +26,7 @@ class RootContext(Context):
         else:
             level = mode
         self.log.setLevel(level)
-        super().__init__(name, settings, self.profiler)
+        super().__init__(name, settings, self.profiler, Timer())
 
     def terminate_context(self) -> None:
         if self.profiler:

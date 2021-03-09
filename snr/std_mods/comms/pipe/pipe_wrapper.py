@@ -11,7 +11,10 @@ class PipeWrapper(Context, ConnectionProtocol):
                  pipe: mp.connection.Connection,
                  parent: ContextProtocol,
                  ) -> None:
-        super().__init__("pipe_wrapper", parent.settings, parent.profiler)
+        super().__init__("pipe_wrapper",
+                         parent.settings,
+                         parent.profiler,
+                         parent.timer)
         self.pipe = pipe
 
     def open(self) -> None:

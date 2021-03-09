@@ -16,7 +16,10 @@ class SocketsWrapper(Context, ConnectionProtocol):
                  connection: Tuple[socket.socket, Any],
                  parent: ContextProtocol,
                  ) -> None:
-        super().__init__("sockets_wrapper", parent.settings, parent.profiler)
+        super().__init__("sockets_wrapper",
+                         parent.settings,
+                         parent.profiler,
+                         parent.timer)
         self.connection = connection[0]
         self.something_else = connection[1]
         self.select = select.poll()

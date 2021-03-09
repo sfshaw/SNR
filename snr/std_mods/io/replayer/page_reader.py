@@ -12,7 +12,10 @@ class PageReader(Context):
                  name: str,
                  filename: str,
                  ) -> None:
-        super().__init__(name, parent.settings, parent.profiler)
+        super().__init__(name,
+                         parent.settings,
+                         parent.profiler,
+                         parent.timer)
 
         self.filename = filename
         self.file: Optional[TextIO] = None

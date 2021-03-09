@@ -11,7 +11,10 @@ class Endpoint(Context, EndpointProtocol):
                  parent: NodeProtocol,
                  name: str,
                  ) -> None:
-        super().__init__(name, parent.settings, parent.profiler)
+        super().__init__(name,
+                         parent.settings,
+                         parent.profiler,
+                         parent.timer)
         self.factory = factory
         self.parent = parent
 

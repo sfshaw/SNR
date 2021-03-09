@@ -8,7 +8,6 @@ from .component_protocol import ComponentProtocol
 from .context_protocol import ContextProtocol
 from .endpoint_protocol import EndpointProtocol
 from .factory_protocol import FactoryProtocol
-from .timer_protocol import TimerProtocol
 
 
 @runtime_checkable
@@ -16,7 +15,6 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
     role: Role
     mode: Mode
     endpoints: Dict[str, EndpointProtocol]
-    timer: TimerProtocol
 
     def loop(self) -> None:
         ...

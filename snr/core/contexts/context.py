@@ -12,11 +12,13 @@ class Context(ContextProtocol):
                  name: str,
                  settings: Settings,
                  profiler: Optional[ProfilerProtocol],
+                 timer: TimerProtocol,
                  ) -> None:
         self.name = name
         self.log = logging.getLogger(self.name)
         self.settings = settings
         self.profiler = profiler
+        self.timer = timer
 
     def fatal(self,
               message: str,
