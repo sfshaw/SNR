@@ -49,6 +49,7 @@ class TestReplayerChronological(SNRTestCase):
                     ExpectorEndpointFactory(ordered_expector),
                 ])
 
+                self.assertEqual(times, sorted(times))
                 time_diffs: List[float] = []
                 for i in range(len(times) - 1):
                     time_diffs.append(times[i + 1] - times[i])
