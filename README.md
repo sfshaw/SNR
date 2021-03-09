@@ -3,7 +3,7 @@
 [![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)](https://github.com/sfshaw-calpoly/SNR/actions?query=workflow%3A%22Python+unit+tests%22)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-SNR provides a soft-realtime robotics framework for education. It was originally developed for the Cal Poly Robotics Club Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack.
+SNR provides a python-based robotics framework for education. It was originally developed for the Cal Poly Robotics Club Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack.
 
 ## Get Started
 
@@ -53,8 +53,8 @@ To run the node on the UROV itself:
 - User code resides in Endpoints and Loops, encouraging discrete modules of functionality
 - Endpoints: provide synchronous task handlers to the Node's event loop
 - Loops: run in their own loop context, separate from the Node's event loop
-- Each node has a role, a set of Endpoints and Loops, and a Datastore
-- Endpints and Loops can read and write key-value pairs (Pages) to their parent node's Datastore
+- Each node, identified by a 'role', has a set of Endpoints and Loops, and a datastore (dictionary)
+- Endpints and Loops can read and write key-value pairs (Pages) to their parent node's datastore
 - Endpoints and Loops can schedule events (Tasks) for their parent node's event loop (TaskQueue)
 - Nodes are wrapped in Runners, which construct them based on a Config
 - Configs contain a map of roles to component Factories
@@ -64,10 +64,10 @@ To run the node on the UROV itself:
 
 ### Submodules (shown in order of dependance)
 
-    ./snr/types     # Type definitions used throughout the project 
+    ./snr/type_defs # Type definitions used throughout the project 
     ./snr/protocol  # Protocol (interface) definitions implemented by core, std, and user code
     ./snr/core      # Concrete implementations of core classes including runners, Node, and other base classes 
-    ./snr/std       # Standard ready made components that can be used by user code
+    ./snr/std_mods  # Standard ready made components that can be used by user code
 
 ### Top level project files
 
@@ -86,6 +86,23 @@ To run the node on the UROV itself:
     snr             # Root module source directory
     tests           # Automated tests
 
+## Development
+
+    git clone https://github.com/sfshaw-calpoly/SNR
+    cd SNR
+    python3 -m pip install -e .[dev]
+    make test
+
+### Nox
+Nox is a tool that makes testing a against multiple interpretters very easy. Running Nox will create virtual environments for all available and supported Python interpreters. MyPy and Flake8 are also run in the nox suite.
+
+    nox
+
+## Style
+
+    // TODO
+
 ## Contributors
 
 - Spencer Shaw
+- Your name here
