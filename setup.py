@@ -11,7 +11,8 @@ setup(
     version='0.6.1',
     author='Spencer Shaw',
     author_email='calpolyroboticsclub@gmail.com',
-    packages=find_packages(include=['snr']),
+    packages=find_packages(where='.',
+                           exclude=['tests']),
     url='http://github.com/sfshaw-calpoly/SNR',
     license='LICENSE.txt',
     description='Soft-realtime robotics framework for education',
@@ -26,20 +27,15 @@ setup(
         # 'pysimplegui=4.29.0',                       # GUI
     ],
     extras_require={
-        'package': [
+        'dev': [
             'pip>=21.0',
             'setuptools',
             'wheel',
-        ],
-        'docs': 'pdoc>=6.1',    # Doc generation
-        'test': [
+            'pdoc>=6.1',        # Doc generation
+            'nox',              # Test automation, venv
             'pytest',           # Type checking
             'pytest-timeout',   # Test timeout
-        ],
-        'mypy': [
             'mypy>=0.800',      # Type checking
-        ],
-        'lint': [
             'flake8>=3.8',      # Linter
         ],
     },
