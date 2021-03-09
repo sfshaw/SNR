@@ -38,20 +38,21 @@ class Node(RootContext, NodeProtocol):
                   len(self.endpoints))
 
     def loop(self) -> None:
-        self.profiler = self.profiler_getter()
-        for endpoint in self.endpoints.values():
-            endpoint.start()
+        try:
+            self.profiler = self.profiler_getter()
+            for endpoint in self.endpoints.values():
+                endpoint.start()
 
-        while not self.__terminate_flag.is_set():
-            t: Optional[Task] = self.__task_queue.get_next()
-            if t:
-                self.__execute_task(t)
-            else:
-                if SLEEP_TIME_S > 0:
-                    time.sleep(SLEEP_TIME_S)
-
-        self.dbg("Node exiting main loop")
-        self.terminate()
+            while not self.__terminate_flag.is_set():
+                t: Optional[Task] = self.__task_queue.get_next()
+                if t:
+                    self.__execute_task(t)
+                else:
+                    if SLEEP_TIME_S > 0:
+                        time.sleep(SLEEP_TIME_S)
+        finally:
+            self.dbg("Node exiting main loop")
+            self.terminate()
 
     def __get_new_tasks(self) -> SomeTasks:
         """Retrieve tasks from endpoints and queue them.
