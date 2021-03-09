@@ -3,9 +3,18 @@
 [![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)](https://github.com/sfshaw-calpoly/SNR/actions?query=workflow%3A%22Python+unit+tests%22)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-SNR provides a python-based robotics framework for education. It was originally developed for the Cal Poly Robotics Club Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack.
+SNR provides a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime) but in a simpler stack.
 
-## Get Started
+# Features
+
+- Task handling event loop in main thread
+- Additional loops in child threads
+- Thread-safe message passing via task events and data storage
+- Ability to reload \[Python] modules within the main event loop 
+
+# Get Started
+
+## Install
 
 Install SNR from source
 
@@ -13,33 +22,36 @@ Install SNR from source
     cd SNR
     python3 -m pip install . --user --upgrade
 
+## Typical usage
+
 Typical usage for the CPRC UROV might have a `main.py` like this:
 
     from snr import *
     from urov import *
     
-    def main():
-        sockets_pair = SocketsPair(...)
-        config = Config(Mode.DEPLOYED, {
-            'topside': [
-                XBoxControllerFactory(...),
-                InputProcessorFactory(...),
-                sockets_pair.server_factory,
-                ],
-            'urov': [
-                sockets_pair.client_factory,
-                ControlsProcessorFactory(),
-                MotorControllerFactory(...),
-                SerialConnectionFactory(...),
-                SensorsProcessorFactory(...),
-                ],
-        })
-        runner = CLIRunner(config)
-        runner.run()
-
+    # Define a configuration
+    sockets_pair = SocketsPair(...)
+    config = Config(factories={
+        # Define factories for the 'topside' role 
+        'topside': [                      
+            XBoxControllerFactory(...),
+            InputProcessorFactory(...),
+            sockets_pair.server_factory,
+            ],
+        # Define factories for the 'urov' role
+        'urov': [
+            sockets_pair.client_factory,
+            ControlsProcessorFactory(),
+            MotorControllerFactory(...),
+            SerialConnectionFactory(...),
+            SensorsProcessorFactory(...),
+            ],
+    })
+        
 
     if __name__ == '__main__':
-        main()
+        # Run the configuration based on command line inputs
+        CLIRunner(config).run()
 
 To run the node on the topside control unit:
 
@@ -48,6 +60,10 @@ To run the node on the topside control unit:
 To run the node on the UROV itself:
 
     python3 main.py urov
+
+More examples can be found in [Examples](#Examples) and in the `tests` module
+
+# Architecture and Repo Structure
 
 ## Paradigms
 
@@ -61,9 +77,7 @@ To run the node on the UROV itself:
 - Configs contain a map of roles to component Factories
 - Factories construct Endpoints and Loops, enabling hot-reloading
 
-## Architecture and Repo Structure
-
-### Submodules (shown in order of dependance)
+## Submodules (shown in order of dependance)
 
     ./snr/type_defs # Type definitions used throughout the project 
     ./snr/protocol  # Protocol (interface) definitions implemented by core, standard, and user code
@@ -71,7 +85,7 @@ To run the node on the UROV itself:
     ./snr/utils     # Testing utilities
     ./snr/std_mods  # Standard ready made components that can be used by user code
 
-### Top level project files
+## Top level project files
 
     CHANGES.txt     # Project changelog
     LICENSE.txt     # Project license
@@ -86,7 +100,110 @@ To run the node on the UROV itself:
     setup.cfg       # Coverage and Flake8 configuration
     setup.py        # Python package confirugation
     snr/            # Root module source directory
-    tests/          # Automated tests
+    tests/          # Python module containing unit tests
+
+### Examples
+
+The `std_mods` module cantains numerous examples of Endpoint, Loop, and Factory implementations. Introductory usage of basic components will be detailed here. Note that these examples might not be kept up to date or correct. This exemplifies the difference between documentation and code. Code is executable and can be check for correctness automatically. The `tests` module is executed by Github Actions on every push. Passing tests are more likely to show working code than documentation is. 
+
+These component modules provide an interface from SNR's event loops and user code (in this case, the made up class `MyPersistentState`). `my_endpoint.py` defines an Endpoint that stores a new piece of data whenever it handles a task.
+
+    from snr.core import *
+    from . import MyPersistentState
+
+    class MyEndpointEndpoint(Endpoint):
+        def __init__(self,
+                    factory: EndpointFactory,
+                    parent: NodeProtocol,
+                    name: str,
+                    some_persistent_state: MyPersistentState
+                    ...,
+                    ) -> None:
+            super().__init__(factory, parent, name)
+            self.task_handlers = {
+                (TaskType.store_page, "relevant_data_key"): self.process_data,
+            }
+            self.state = some_persistent_state
+
+        def process_data(self, task: Task, key: TaskId) -> SomeTasks:
+            result_data = task.val_list[0] + 1
+            return self.parent.task_store_data("output_data_key",
+                                            result_data)
+
+`my_loop.py` defines a Loop that runs in its own thread. Synchronous task handlers can also be defined here, but they are run in the main event loop thread. 
+
+    from snr.core import *
+    from . import MyPersistentState
+
+
+    class MyLoop(ThreadLoop):
+        def __init__(self,
+                    factory: LoopFactory,
+                    parent: NodeProtocol,
+                    name: str,
+                    data_keys: List[DataKey],
+                    some_persistent_state: MyPersistentState
+                    ) -> None:
+            super().__init__(factory, parent, name)
+            self.log.setLevel(logging.WARNING)
+            self.state = some_persistent_state
+            for key in data_keys:
+                self.task_handlers[(TaskType.process_data,
+                                    key)
+                                ] = self.process_data
+
+        def process_data(self, task: Task, key: TaskId):
+            page = self.parent.get_page(task.name)
+            if page:
+                self.state.do_something(page.key, page.data)
+
+        def setup(self) -> None:
+            self.state.open()
+
+        def loop_handler(self) -> None:
+            new_data = self.state.check()
+
+        def halt(self) -> None:
+            pass
+
+        def terminate(self) -> None:
+            self.state.close()
+    
+Factory classes are used to load and reload Endpoints and Loops
+
+    from typing import Optional
+    from . import my_endpoint, my_loop
+
+
+    class MyEndpointFactory(EndpointFactory):
+        def __init__(self):
+            super().__init__(my_endpoint)
+            self.state: Optional[MyPersisentState]
+
+        def get(self, parent: NodeProtocol) -> Endpoint:
+            if not self.state:
+                self.state = MyPersistentState()
+            return my_endpoint.MyEndpoint(self,
+                                          parent,
+                                          "my_endpoint_instance",
+                                          self.data_keys
+                                          self.state)
+
+
+    class MyEndpointFactory(EndpointFactory):
+        def __init__(self, data_keys: List[DataKey]):
+            super().__init__(my_endpoint)
+            self.data_keys = data_keys
+            self.state: Optional[MyPersisentState]
+
+        def get(self, parent: NodeProtocol) -> Endpoint:
+            if not self.state:
+                self.state = MyPersistentState()
+            return my_loop.MyLoop(self,
+                                  parent,
+                                  "my_loop_instance",
+                                  self.state)
+
 
 ## Development
 
@@ -95,6 +212,18 @@ To run the node on the UROV itself:
     python3 -m pip install -e .[dev]
     # break the code
     make test
+
+### Style and Environment
+
+Since SNR targets use in education, code should be easy to read and understand. SNR requires versions of python that support improved type annotations and other typing features, including Protocols. Protocol (interface) defintions and type annotations are very important for student learning. Inspecting type annotations is a great way for students to learn what the program is actually doing, rather than just memorizing constructs.
+
+Visual Studio Code provides and environment conducive to investigation of underlying code. SNR code should be compliant with Pylance's (VSCode Python extension) analysis type checking set to strict. MyPy and Flake8 are also used to improve correctness.
+
+#### Formatting
+
+- AutoPEP8 should be sufficient for formatting source code.
+- If a method signautre or call does not fit on one line, put all parameters, return types, and arguments on individual lines.
+- Follow final list items including parameters with a comma to make diffs adding additional items cleaner.
 
 ### Nox
 
@@ -106,12 +235,6 @@ Nox is a tool that makes testing against multiple interpretters very easy. Runni
     nox -s test_all-3.9  # Run tests against a specific interpreter
     nox -s mypy          # Run MyPy from nox
     nox -s lint          # Run Flake8 from nox
-
-## Style and Environment
-
-Since SNR targets use in education, code should be easy to read and understand. SNR requires versions of python that support improve type annotations and other typing features, including Protocols. Protocol (interface) defintions and type annotations are very important for student learning. Inspecting type annotations is a great way for students to learn what the program is actually doing, rather than just memorizing constructs.
-
-Visual Studio Code provides and environment conducive to investigation of underlying code. SNR code should be compliant with Pylance's (VSCode Python extension) analysis type checking set to strict. MyPy and Flake8 are also use to improve correctness.
 
 ## Contributors
 

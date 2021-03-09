@@ -56,6 +56,13 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
                     self.timer.current_s(),
                     process)
 
+    def task_store_data(self,
+                        key: DataKey,
+                        data: Any,
+                        process: bool = True,
+                        ) -> Task:
+        return task_store_page(self.page(key, data, process))
+
     def store_page(self, page: Page) -> None:
         '''Thread-safe method for scheduling a task to store a page.
         '''
