@@ -78,10 +78,6 @@ ta: test_all
 test_all:
 	nox -s test_all
 
-.PHONY: prep
-p: prep
-prep: lint test_all check
-
 .PHONY: lint
 l: lint
 lint: mypy 
@@ -91,6 +87,11 @@ lint: mypy
 my: mypy
 mypy:
 	nox -s mypy
+
+.PHONY: diagram
+diagram: classes.png
+classes.png: lint mypy
+	pyreverse -o png snr.protocol
 
 .PHONY: coverage
 cov: coverage
