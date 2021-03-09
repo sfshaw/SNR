@@ -2,6 +2,7 @@ from typing import Any, Optional, TextIO
 
 from snr.core import *
 from snr.protocol import *
+from snr.type_defs import *
 
 
 class PageReader(Context):

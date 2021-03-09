@@ -1,6 +1,8 @@
-from typing import TextIO
+from typing import Optional, TextIO
 
 from snr.core import *
+from snr.protocol import *
+from snr.type_defs import *
 
 
 class TextReader(Context):

@@ -1,7 +1,10 @@
 import socket
+from typing import List, Optional
 
 from snr.core import *
+from snr.protocol import *
 from snr.std_mods.comms.sockets_base import sockets_wrapper
+from snr.type_defs import *
 
 from . import sockets_listener_loop
 

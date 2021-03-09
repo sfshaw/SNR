@@ -1,6 +1,9 @@
 import logging
+from typing import List
 
 from snr.core import *
+from snr.protocol import *
+from snr.type_defs import *
 
 
 class RecorderEndpoint(Endpoint):

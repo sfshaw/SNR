@@ -1,6 +1,8 @@
 import logging
 
 from snr.core import *
+from snr.protocol import *
+from snr.type_defs import *
 
 from ..expector_protocol import ExpectorProtocol
 

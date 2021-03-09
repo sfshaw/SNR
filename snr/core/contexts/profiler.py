@@ -1,13 +1,11 @@
 import collections
 import logging
-from typing import Any, Callable, Deque, Dict, Optional, Tuple, TypeVar
+from typing import Any, Callable, Deque, Dict, Tuple, TypeVar
 
 from snr.protocol import *
 from snr.type_defs import *
 
-from .consumer import Consumer
-from .moving_avg_filter import MovingAvgFilter
-from .timer import Timer
+from ..core_utils import Consumer, MovingAvgFilter, Timer
 
 SLEEP_TIME_S = 0.00005
 
@@ -19,9 +17,6 @@ T = TypeVar("T")
 
 class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
     def __init__(self, settings: Settings) -> None:
-        if not settings.ENABLE_PROFILING:
-            # TODO: Correclty short circuit constructor
-            return None
         self.settings = settings
         self.time_dict: Dict[str, ProfileingData] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
@@ -67,13 +62,20 @@ class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
                 MovingAvgFilter(collections.deque(maxlen=self.moving_avg_len)))
 
     def dump(self) -> str:
-        lines = ["Task/Loop type,\t\tTimes called,\t\tAvg runtime,"]
+
         items = [(data[0], data[1].avg(), k)
                  for k, data in self.time_dict.items()]
-        for n, avg_time, key in sorted(items):
-            lines.append("{:>12d}\tx\t{}:\t{}".format(
+        total_time = sum([n * avg for n, avg, _ in items])
+        items_with_stats = [(n, avg, (100 * n*avg/total_time), k)
+                            for n, avg, k in items]
+
+        lines = ["Times called,\tAvg runtime,\t\tTask/Loop type,"]
+        for n, avg_time, percentage, key in sorted(items_with_stats,
+                                                   reverse=True):
+            lines.append("{:>12d} x\t{} -> {:>7.3f}%:\t{}".format(
                 n,
                 self.format_time(avg_time),
+                percentage,
                 key))
         return "\n".join(lines)
 
@@ -82,19 +84,11 @@ class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
 
     def format_time(self, time_s: float) -> str:
         if time_s > 1:
-            return "{:6.3f} s".format(time_s)
+            return "{:>7.3f} s".format(time_s)
         if time_s > 0.001:
-            return "{:6.3f} ms".format(time_s * 1000)
+            return "{:>7.3f} ms".format(time_s * 1000)
         if time_s > 0.000001:
-            return "{:6.3f} us".format(time_s * 1000000)
+            return "{:>7.3f} us".format(time_s * 1000000)
         if time_s > 0.000000001:
-            return "{:6.3f} ns".format(time_s * 1000000000)
+            return "{:>7.3f} ns".format(time_s * 1000000000)
         return "Could not format time"
-
-
-def profiler_getter(settings: Settings) -> Optional[Profiler]:
-    return Profiler(settings)
-
-
-def no_profiler(settings: Settings) -> Optional[Profiler]:
-    return None

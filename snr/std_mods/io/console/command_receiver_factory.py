@@ -1,13 +1,14 @@
 from snr.core import *
-from snr.std_mods.comms.sockets_comms import sockets_listener_factory
+from snr.protocol import *
 
-from . import command_processor_factory, console
+from ...comms.sockets_comms import sockets_listener_factory
+from . import command_processor_factory, remote_console
 
 
 class CommandReceiverFactory(LoopFactory):
-    def __init__(self, port: int = console.DEFAULT_PORT) -> None:
+    def __init__(self, port: int = remote_console.DEFAULT_PORT) -> None:
         super().__init__([command_processor_factory,
-                          console,
+                          remote_console,
                           sockets_listener_factory])
         self.port = port
 
@@ -16,6 +17,6 @@ class CommandReceiverFactory(LoopFactory):
             command_processor_factory.CommandProcessorFactory())
         return sockets_listener_factory.SocketsListenerFactory(
             self.port,
-            data_keys=[console.COMMAND_ACK_DATA_NAME],
+            data_keys=[remote_console.COMMAND_ACK_DATA_NAME],
             loop_name="command_receiver_loop",
         ).get(parent)

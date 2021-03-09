@@ -10,7 +10,7 @@ from typing import List, Optional
 from snr.protocol import *
 from snr.type_defs import *
 
-from ..core.utils.profiler import Profiler
+from ..core.contexts import profiler
 
 
 class Config(ConfigProtocol):
@@ -30,5 +30,5 @@ class Config(ConfigProtocol):
 
     def get_profiler(self) -> Optional[ProfilerProtocol]:
         if self.mode in [Mode.DEBUG]:
-            return Profiler(self.settings)
+            return profiler.Profiler(self.settings)
         return None

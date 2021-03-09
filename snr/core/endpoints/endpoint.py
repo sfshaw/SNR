@@ -1,7 +1,7 @@
 from snr.protocol import *
 from snr.type_defs import *
 
-from ..context.context import Context
+from ..contexts import Context
 from .endpoint_factory import EndpointFactory
 
 

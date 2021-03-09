@@ -5,7 +5,7 @@
 import logging
 from typing import Dict, List, Union
 
-from snr.type_defs.mode import Mode
+from .mode import Mode
 
 
 class Settings:

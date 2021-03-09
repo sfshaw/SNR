@@ -1,4 +1,5 @@
 from snr.core import *
+from snr.protocol import *
 
 from . import command_processor
 

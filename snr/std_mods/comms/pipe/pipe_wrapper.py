@@ -1,6 +1,8 @@
 import multiprocessing as mp
+from typing import Optional
 
 from snr.core import *
+from snr.protocol import *
 from snr.type_defs import *
 
 

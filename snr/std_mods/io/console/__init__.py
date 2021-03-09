@@ -3,7 +3,8 @@
  also defined.
 '''
 
-from .console import DEFAULT_PORT, LocalConsole, RemoteConsole
+from .local_console import LocalConsole
+from .remote_console import DEFAULT_PORT, RemoteConsole
 
 __all__ = [
     "DEFAULT_PORT",

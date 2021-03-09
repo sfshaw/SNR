@@ -1,8 +1,9 @@
 import logging
-from typing import Dict, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from snr.core import *
 from snr.protocol import *
+from snr.type_defs import *
 
 
 class MockTimer(TimerProtocol):

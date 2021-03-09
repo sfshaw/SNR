@@ -1,5 +1,6 @@
-
 from snr.core import *
+from snr.protocol import *
+from snr.type_defs import *
 
 
 class KalmanEndpoint(Endpoint):
@@ -25,6 +26,7 @@ class KalmanEndpoint(Endpoint):
 
     def filter(self, t: Task, k: TaskId) -> SomeTasks:
         input = self.parent.get_data(self.input_data_name)
+        # TODO: Use Kalman filter impleemntation
         output = input  # No op
         self.parent.store_data(self.output_data_name, output)
         return None

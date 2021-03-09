@@ -8,17 +8,15 @@ from snr.std_mods.comms import (CommsLoop, SocketsListenerFactory,
                                 SocketsLoopFactory, SocketsWrapper)
 
 from .comms.pipe.pipe_loop_factory import PipeLoopFactory
-from .filters.moving_average.moving_avg_endpoint_factory import \
-    MovingAvgEndpointFactory
+from .filters import KalmanFilterFactory, MovingAvgEndpointFactory
+from .io.console import LocalConsole, RemoteConsole
 from .io.console.command_processor_factory import CommandProcessorFactory
 from .io.console.command_receiver_factory import CommandReceiverFactory
-from .io.console.console import LocalConsole, RemoteConsole
 from .io.recorder.recorder_factory import RecorderFactory
 from .io.replayer.page_reader import PageReader
 from .io.replayer.replayer_factory import ReplayerFactory
 from .io.replayer.text_reader import TextReader
 from .io.replayer.text_replayer_factory import TextReplayerFactory
-from .kalman.kalman_filter_factory import KalmanFilterFactory
 from .utils.stopwatch_endpoint_factory import StopwatchEndpointFactory
 from .utils.timeout_loop_factory import TimeoutLoopFactory
 

@@ -6,8 +6,9 @@ import threading
 from typing import List, Optional, Tuple
 
 from snr.core import *
-from snr.core.context.root_context import RootContext
-from snr.std_mods.comms import SocketsWrapper
+from snr.type_defs import *
+
+from ...comms import SocketsWrapper
 
 DEFAULT_PORT: int = 54321
 
@@ -43,7 +44,7 @@ class RemoteConsole(RootContext):
 
     def run(self) -> None:
         try:
-            with self.connection as _:
+            with self.connection:
                 while not self.is_terminated():
                     input = self.get_input()
                     if input:
@@ -103,15 +104,3 @@ class RemoteConsole(RootContext):
 
     def set_terminate_flag(self):
         self.__terminate_flag.set()
-
-
-class LocalConsole(RemoteConsole):
-    def __init__(self,
-                 server_port: int,
-                 commands: Optional[List[str]] = None,
-                 retry_wait_s: float = 0.5
-                 ) -> None:
-        super().__init__(("localhost", server_port),
-                         commands,
-                         retry_wait_s=retry_wait_s,
-                         name="local_console")

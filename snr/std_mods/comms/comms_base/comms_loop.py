@@ -1,7 +1,10 @@
 import logging
+from typing import List
 
 from snr.core import *
-from snr.core.endpoint.node_core_endpoint import REMOVE_ENDPOINT_TASK_NAME
+from snr.core.endpoints.node_core_endpoint import REMOVE_ENDPOINT_TASK_NAME
+from snr.protocol import *
+from snr.type_defs import *
 
 POLL_TIMEOUT = 0.000001
 

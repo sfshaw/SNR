@@ -6,11 +6,13 @@ module, the wrapper moduel is reloaded instead of
 '''
 
 import socket
-from typing import Any, Tuple, Union
+from typing import Any, List, Tuple, Union
 
 from snr.core import *
+from snr.protocol import *
 from snr.std_mods.comms.comms_base import comms_loop
 from snr.std_mods.comms.sockets_base import sockets_wrapper
+from snr.type_defs import *
 
 
 class SocketsLoopFactory(LoopFactory):

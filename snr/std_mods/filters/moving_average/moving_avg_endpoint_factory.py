@@ -2,7 +2,9 @@ import collections
 from typing import Deque
 
 from snr.core import *
-from snr.core.utils import moving_avg_filter
+from snr.core.core_utils import moving_avg_filter
+from snr.protocol import *
+from snr.type_defs import *
 
 from . import moving_avg_endpoint
 

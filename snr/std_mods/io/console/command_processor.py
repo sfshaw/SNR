@@ -1,10 +1,11 @@
 import logging
-from typing import Callable, Dict, Tuple
+from typing import Callable, Dict, List, Tuple
 
 from snr.core import *
+from snr.protocol import *
 from snr.type_defs import *
 
-from . import console
+from . import remote_console
 
 Command = str
 HelpText = str
@@ -24,7 +25,7 @@ class CommandProcessor(Endpoint):
                          "command_processor")
         self.log.setLevel(logging.INFO)
         self.task_handlers = {
-            (TaskType.store_page, console.COMMAND_DATA_NAME):
+            (TaskType.store_page, remote_console.COMMAND_DATA_NAME):
             self.process_command}
         self.commands: CommandDict = {
             "exit": ("Terminate the node and console",
@@ -58,7 +59,7 @@ class CommandProcessor(Endpoint):
                 response = f"Invalid command {args[0]}"
 
         return task_store_page(self.parent.page(
-            console.COMMAND_ACK_DATA_NAME, response))
+            remote_console.COMMAND_ACK_DATA_NAME, response))
 
     def cmd_schedule_task(self, args: List[str]) -> str:
         type = TaskType(args[0])

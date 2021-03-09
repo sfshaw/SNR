@@ -2,9 +2,11 @@ import logging
 import queue
 import select
 import socket
-from typing import Any, Tuple
+from typing import Any, List, Optional, Tuple
 
 from snr.core import *
+from snr.protocol import *
+from snr.type_defs import *
 
 from .sockets_loop_factory import SocketsLoopFactory
 

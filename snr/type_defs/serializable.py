@@ -15,9 +15,3 @@ class Serializable(Protocol):
                     json: Optional[JsonData],
                     ) -> Optional["Serializable"]:
         ...
-
-
-__all__ = [
-    "JsonData",
-    "Serializable",
-]

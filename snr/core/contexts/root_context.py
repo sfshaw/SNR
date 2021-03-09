@@ -20,7 +20,6 @@ class RootContext(Context):
         self.profiler = profiler
         logging.basicConfig(format=LOG_FORMAT)
         self.log = logging.getLogger()
-        level: int
         if isinstance(mode, Mode):
             level = settings.log_level[mode]
         else:
@@ -30,8 +29,5 @@ class RootContext(Context):
 
     def terminate_context(self) -> None:
         if self.profiler:
-            self.dbg("Preparing to terminate profiler")
             self.profiler.join_from("terminate_root_context")
             self.info(self.profiler.dump())
-            if self.profiler.is_alive():
-                self.warn("Profiler thread refuses to die")

@@ -3,11 +3,11 @@
 import sys
 
 from snr import *
-from snr.std_mods.io.console import console
+from snr.std_mods.io.console import remote_console
 
 
 if __name__ == "__main__":
-    port: int = console.DEFAULT_PORT
+    port: int = remote_console.DEFAULT_PORT
     host: str = "localhost"
     if len(sys.argv) > 1:
         host = sys.argv[1]

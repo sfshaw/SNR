@@ -1,8 +1,11 @@
 from multiprocessing.connection import Connection as MPConnection
+from typing import List
 
 from snr.core import *
-from snr.std_mods.comms.comms_base import comms_loop
+from snr.protocol import *
+from snr.type_defs import *
 
+from ..comms_base import comms_loop
 from . import pipe_wrapper
 
 
