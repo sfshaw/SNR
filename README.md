@@ -66,8 +66,9 @@ To run the node on the UROV itself:
 ### Submodules (shown in order of dependance)
 
     ./snr/type_defs # Type definitions used throughout the project 
-    ./snr/protocol  # Protocol (interface) definitions implemented by core, std, and user code
-    ./snr/core      # Concrete implementations of core classes including runners, Node, and other base classes 
+    ./snr/protocol  # Protocol (interface) definitions implemented by core, standard, and user code
+    ./snr/core      # Concrete implementations of core classes including runners, Node, Endpoint, ThreadLoop, and other base classes 
+    ./snr/utils     # Testing utilities
     ./snr/std_mods  # Standard ready made components that can be used by user code
 
 ### Top level project files
@@ -75,17 +76,17 @@ To run the node on the UROV itself:
     CHANGES.txt     # Project changelog
     LICENSE.txt     # Project license
     MANIFEST.in     # Python package manifest file
-    Makefile        # "A Bash Notebook"
+    Makefile        # "A Bash Notebook" for usefule shell commands
     README.md       # This README file
-    bin             # Binary scripts
+    bin/            # Executable scripts
     mypy.ini        # MyPy configuration
     noxfile.py      # Cross version testing framework configuration
     pyproject.toml  # PEP 518 project configuration 
     python_version  # Lowest supported Python Version
     setup.cfg       # Coverage and Flake8 configuration
     setup.py        # Python package confirugation
-    snr             # Root module source directory
-    tests           # Automated tests
+    snr/            # Root module source directory
+    tests/          # Automated tests
 
 ## Development
 
@@ -97,9 +98,14 @@ To run the node on the UROV itself:
 
 ### Nox
 
-Nox is a tool that makes testing a against multiple interpretters very easy. Running Nox will create virtual environments for all available and supported Python interpreters. MyPy and Flake8 are also run in the nox suite.
+Nox is a tool that makes testing against multiple interpretters very easy. Running Nox will create virtual environments for all available and supported Python interpreters. MyPy and Flake8 are also run in the Nox suite. Github Actions call `nox` when running workflows. The configuration for nox is found in `noxfile.py`.
 
-    nox
+    nox                  # Run all sessions
+    nox -s test          # Run tests with the default python3 interpreter
+    nox -s test_all      # Run tests against all available and supported interpreters
+    nox -s test_all-3.9  # Run tests against a specific interpreter
+    nox -s mypy          # Run MyPy from nox
+    nox -s lint          # Run Flake8 from nox
 
 ## Style and Environment
 
