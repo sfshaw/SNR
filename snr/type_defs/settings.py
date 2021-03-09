@@ -188,8 +188,8 @@ class Settings:
     # Log Levels
     log_level: Dict[Mode, int] = {
         Mode.TEST: logging.WARNING,
-        Mode.DEBUG: logging.INFO,
-        Mode.DEPLOYED: logging.WARNING,
+        Mode.DEBUG: logging.DEBUG,
+        Mode.DEPLOYED: logging.INFO,
     }
 
     # Robot Control

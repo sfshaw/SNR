@@ -22,6 +22,9 @@ class ProfilerProtocol(Protocol):
     def dump(self) -> str:
         ...
 
+    def is_alive(self) -> bool:
+        ...
+
     def join_from(self, joiner: str) -> None:
         ...
 

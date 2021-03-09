@@ -6,11 +6,13 @@ from snr.protocol import *
 from snr.type_defs import *
 
 from .consumer import Consumer
+from .moving_avg_filter import MovingAvgFilter
 from .timer import Timer
 
 SLEEP_TIME_S = 0.00005
 
 ProfilingResult = Tuple[str, float]
+ProfileingData = Tuple[int, MovingAvgFilter]
 
 T = TypeVar("T")
 
@@ -21,7 +23,7 @@ class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
             # TODO: Correclty short circuit constructor
             return None
         self.settings = settings
-        self.time_dict: Dict[str, Deque[float]] = {}
+        self.time_dict: Dict[str, ProfileingData] = {}
         self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
         super().__init__("profiler",
                          self.store_task,
@@ -39,28 +41,40 @@ class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
         self.store_event(name, timer.current_s())
         return result
 
-    def store_event(self, task_type: str, runtime: float):
+    def store_event(self,
+                    task_type: str,
+                    runtime: float,
+                    ) -> None:
         self.put((task_type, runtime))
 
-    def store_task(self, type_and_runtime: Tuple[str, float]):
-        (task_type, runtime) = type_and_runtime
+    def store_task(self,
+                   type_and_runtime: Tuple[str, float],
+                   ) -> None:
+        (task_id, runtime) = type_and_runtime
         self.log.debug("Ran %s task in %s",
-                       task_type, self.format_time(runtime))
-        if self.time_dict.get(task_type) is None:
-            self.init_task_type(task_type)
-        self.time_dict[task_type].append(runtime)
-        self.log.debug("Task %s has average runtime %s",
-                       task_type,
-                       self.avg_time(task_type, self.time_dict[task_type]))
+                       task_id, self.format_time(runtime))
+        data = self.time_dict.get(task_id)
+        if not data:
+            data = self.init_task_type(task_id)
+        data[1].update(runtime)
+        self.time_dict[task_id] = (data[0] + 1, data[1])
 
-    def init_task_type(self, task_type: str):
-        self.time_dict[task_type] = collections.deque(
-            maxlen=self.moving_avg_len)
+        self.log.debug("Task %s has average runtime %s",
+                       task_id, data[1].avg())
+
+    def init_task_type(self, task_type: str) -> ProfileingData:
+        return (0,
+                MovingAvgFilter(collections.deque(maxlen=self.moving_avg_len)))
 
     def dump(self) -> str:
-        lines = ["Task/Loop type:\t\tAvg runtime: "]
-        for k, deq in self.time_dict.items():
-            lines.append(f"\t{k}:\t\t{self.avg_time(k, deq)}")
+        lines = ["Task/Loop type,\t\tTimes called,\t\tAvg runtime,"]
+        items = [(data[0], data[1].avg(), k)
+                 for k, data in self.time_dict.items()]
+        for n, avg_time, key in sorted(items):
+            lines.append("{:>12d}\tx\t{}:\t{}".format(
+                n,
+                self.format_time(avg_time),
+                key))
         return "\n".join(lines)
 
     def avg_time(self, key: str, deque: Deque[float]) -> str:
