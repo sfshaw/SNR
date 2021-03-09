@@ -116,9 +116,7 @@ class Node(RootContext, NodeProtocol):
         Conversely, join may be called from an external context such as
         another thread or process.
         """
-        if not self.__terminate_flag.is_set():
-            self.warn("Temrinated prior to setting of terminate flag")
-            self.set_terminate_flag("terminate")
+        self.set_terminate_flag("terminate")
         if self.is_terminated():
             self.err("Already terminated")
 
