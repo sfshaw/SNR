@@ -2,6 +2,7 @@ import time
 import unittest
 
 from snr import *
+from snr.core.contexts.profiler import Profiler
 
 SLEEP_TIME_S: float = 0.00005
 
