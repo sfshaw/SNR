@@ -6,7 +6,7 @@ from snr.core.endpoints.node_core_endpoint import REMOVE_ENDPOINT_TASK_NAME
 from snr.protocol import *
 from snr.type_defs import *
 
-POLL_TIMEOUT = 0.000001
+POLL_TIMEOUT_MS: float = 0
 
 
 class CommsLoop(ThreadLoop):
@@ -47,7 +47,7 @@ class CommsLoop(ThreadLoop):
             # Pipe is open, good
             pass
         try:
-            if self.connection.poll(POLL_TIMEOUT):
+            if self.connection.poll(POLL_TIMEOUT_MS):
                 data = self.connection.recv()
                 if data:
                     page = Page.deserialize(data)

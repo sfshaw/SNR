@@ -1,5 +1,4 @@
 import logging
-import queue
 import select
 import socket
 from typing import Any, List, Optional, Tuple
@@ -10,9 +9,8 @@ from snr.type_defs import *
 
 from .sockets_loop_factory import SocketsLoopFactory
 
-TIMEOUT_S: float = 0.001
-
-HANDLE_CONNECTION_TASK_NAME: str = "handle_socket_connection"
+SOCK_TIMEOUT_S: float = 0.000010
+POLL_TIMEOUT_MS: float = 0
 
 
 class SocketsListenerLoop(ThreadLoop):
@@ -25,17 +23,11 @@ class SocketsListenerLoop(ThreadLoop):
                  existing_socket: Optional[socket.socket] = None,
                  ) -> None:
         super().__init__(factory, parent, name)
+        self.log.setLevel(logging.WARNING)
         self.port = port
         self.data_keys = data_keys
         self.socket = existing_socket
         self.select = select.poll()
-        self.handler_que: queue.Queue[Tuple[socket.socket, Any]] = queue.Queue(
-        )
-        self.task_handlers = {
-            (TaskType.event, HANDLE_CONNECTION_TASK_NAME):
-                self.handle_connection
-        }
-        self.log.setLevel(logging.WARNING)
 
     def setup(self):
         if self.socket:
@@ -43,7 +35,7 @@ class SocketsListenerLoop(ThreadLoop):
         else:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.socket.settimeout(TIMEOUT_S)
+            self.socket.settimeout(SOCK_TIMEOUT_S)
             self.socket.bind(('', self.port))
             self.socket.listen(10)
         self.select.register(self.socket.fileno(), select.POLLIN)
@@ -53,19 +45,17 @@ class SocketsListenerLoop(ThreadLoop):
     def loop_handler(self) -> None:
         assert self.socket
         try:
-            poll_result = self.select.poll(TIMEOUT_S)
+            poll_result = self.select.poll(POLL_TIMEOUT_MS)
             if ((len(poll_result) > 0) and
                     (poll_result[0] == (self.socket.fileno(), select.POLLIN))):
                 self.dbg("Socket %s polled, blocking on accept",
                          self.socket.fileno())
                 connection = self.socket.accept()
-                self.handler_que.put(connection)
-                self.parent.schedule(task_event(HANDLE_CONNECTION_TASK_NAME))
+                self.handle_connection(connection)
         except socket.timeout:
             pass
 
-    def handle_connection(self, t: Task, k: TaskId) -> None:
-        connection = self.handler_que.get_nowait()
+    def handle_connection(self, connection: Tuple[socket.socket, Any]) -> None:
         name = self.parent.add_component(SocketsLoopFactory(connection,
                                                             self.data_keys))
         if name:

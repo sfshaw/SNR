@@ -1,7 +1,7 @@
 '''Factory class for injecting a sockets wrapper into a CommsLoop
 
-Since this factory uses `snr.core.utils.sockets.sockets_wrapper` as its child
-module, the wrapper moduel is reloaded instead of
+Since this factory uses `snr.core.core_utils.sockets.sockets_wrapper` as its
+child module, the wrapper moduel is reloaded instead of
 `snr.std_mods.comms.comms_loop.CommsLoop`.
 '''
 
