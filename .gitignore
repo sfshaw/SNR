@@ -9,3 +9,9 @@ html
 .coverage*
 coverage.xml
 .mypy_cache
+
+# pyreverse diagrams
+packages.png
+packages.dot
+classes.png
+classes.dot
