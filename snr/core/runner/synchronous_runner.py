@@ -15,20 +15,14 @@ class SynchronousRunner(RunnerProtocol):
         self.config = config
 
     def run(self) -> None:
-        node: NodeProtocol = Node(self.role,
-                                  self.config)
         try:
+            node: NodeProtocol = Node(self.role,
+                                      self.config)
             node.loop()  # Blocking loop
         except KeyboardInterrupt:
-            if node:
-                print("Interrupted by user, exiting")
-                node.set_terminate_flag("Interrupted by user")
-            else:
-                print("Exiting before node was done being constructed")
+            print("Interrupted by user, exiting")
         finally:
-            if node:
-                if not node.is_terminated():
-                    node.set_terminate_flag("Runner clean up")
             for thread in threading.enumerate():
-                if not thread.is_alive():
-                    print("Zombie thread %s culled", thread.name)
+                if thread.is_alive() and thread != threading.main_thread():
+                    print("Culling zombie thread %s", thread.name)
+                    thread.join()
