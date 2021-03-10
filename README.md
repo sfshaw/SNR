@@ -3,18 +3,18 @@
 [![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)](https://github.com/sfshaw-calpoly/SNR/actions?query=workflow%3A%22Python+unit+tests%22)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-SNR is a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime), but in a simpler stack to avoid compounding learning curves.
+SNR is a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime), but in a simpler stack to avoid compounding learning curves. ROS aims at providing the kitchen sink through an ecosystem. F´ aims to provide cleanly packaged binaries for critical applications. Both utilize complicated build systems. SNR avoids build systems by executing system definitions in pure Python.
 
-# Features
+## Features
 
 - Task handling event loop in main thread
 - Additional loops in child threads
 - Thread-safe message passing via task events and data storage
-- Ability to reload \[Python] modules within the main event loop 
+- Ability to reload \[Python] modules within the main event loop
 
-# Get Started
+## Get Started
 
-## Install
+### Install
 
 Install SNR from source and dependancies from PyPi
 
@@ -22,7 +22,7 @@ Install SNR from source and dependancies from PyPi
     cd SNR
     python3 -m pip install . --user --upgrade
 
-## Typical usage
+### Typical usage
 
 Typical usage for the CPRC UROV project might have a `main.py` like this:
 
@@ -63,9 +63,9 @@ To run the node on the UROV itself:
 
 More examples can be found in [Examples](#Examples) and in the `tests` module
 
-# Architecture and Repo Structure
+## Architecture and Repo Structure
 
-## Paradigms
+### Paradigms
 
 - User code resides in Endpoints and Loops, encouraging discrete modules of functionality
 - Endpoints: provide synchronous task handlers to the Node's event loop
@@ -77,7 +77,7 @@ More examples can be found in [Examples](#Examples) and in the `tests` module
 - Configs contain a map of roles to component Factories
 - Factories construct Endpoints and Loops, enabling hot-reloading
 
-## Submodules (shown in order of dependance)
+### Submodules (shown in order of dependance)
 
     ./snr/type_defs     # Type definitions used throughout the project 
     ./snr/protocol      # Protocol (interface) definitions implemented by core, standard, and user code
@@ -88,7 +88,7 @@ More examples can be found in [Examples](#Examples) and in the `tests` module
 
 ## Examples
 
-The `std_mods` module cantains numerous examples of Endpoint, Loop, and Factory implementations. Introductory usage of basic components will be detailed here. Note that these examples might not be kept up to date or correct. This exemplifies the difference between documentation and code. Code is executable and can be check for correctness automatically. The `tests` module is executed by Github Actions on every push. Passing tests are more likely to show working code than documentation is. 
+The `std_mods` module cantains numerous examples of Endpoint, Loop, and Factory implementations. Introductory usage of basic components will be detailed here. Note that these examples might not be kept up to date or correct. This exemplifies the difference between documentation and code. Code is executable and can be check for correctness automatically. The `tests` module is executed by Github Actions on every push. Passing tests are more likely to show working code than documentation is.
 
 These component modules provide an interface from SNR's event loops and user code (in this case, the made up class `MyPersistentState`). `my_endpoint.py` defines an Endpoint that stores a new piece of data whenever it handles a task.
 
@@ -114,7 +114,7 @@ These component modules provide an interface from SNR's event loops and user cod
             return self.parent.task_store_data("output_data_key",
                                             result_data)
 
-`my_loop.py` defines a Loop that runs in its own thread. Synchronous task handlers can also be defined here, but they are run in the main event loop thread. 
+`my_loop.py` defines a Loop that runs in its own thread. Synchronous task handlers can also be defined here, but they are run in the main event loop thread.
 
     from snr.core import *
     from . import MyPersistentState
@@ -152,7 +152,7 @@ These component modules provide an interface from SNR's event loops and user cod
 
         def terminate(self) -> None:
             self.state.close()
-    
+
 Factory classes are used to load and reload Endpoints and Loops
 
     from typing import Optional
