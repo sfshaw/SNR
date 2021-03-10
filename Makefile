@@ -89,9 +89,14 @@ mypy:
 	nox -s mypy
 
 .PHONY: diagram
-diagram: classes.png
-classes.png: lint mypy
-	pyreverse -o png snr.protocol
+diagram: protocols.png
+protocols.png: protocols.dot
+	dot -Tpng $< -o $@
+
+.PHONY: dot
+dot: snr.protocol.loop_protocol.LoopProtocol.dot
+snr.protocol.loop_protocol.LoopProtocol.dot:
+	pyreverse -o dot -s 0 -c snr.protocol.loop_protocol.LoopProtocol -mn snr 
 
 .PHONY: coverage
 cov: coverage
