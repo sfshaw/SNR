@@ -10,7 +10,6 @@ from snr.type_defs import *
 from .contexts import RootContext
 from .endpoints import NodeCoreFactory
 from .task_queue import TaskQueue
-from .core_utils.timer import Timer
 
 SLEEP_TIME_S = 0.000001
 
