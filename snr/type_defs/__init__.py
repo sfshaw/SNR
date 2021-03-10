@@ -8,7 +8,10 @@ from .page import DataKey, Page  # Data pages
 from .role import Role  # Node roles
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .settings import Settings  # Settings dictionary (legacy)
-from .task import *
+from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
+                   TaskScheduler, TaskSource, TaskType, task_event,
+                   task_process_data, task_reload, task_store_page,
+                   task_terminate)
 
 __all__ = [
     "DataDict",
