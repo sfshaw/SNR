@@ -26,20 +26,20 @@ class Node(RootContext, NodeProtocol):
         self.profiler_getter: ProfilerGetter = config.get_profiler
         self.__task_queue = TaskQueue(self, self.__get_new_tasks)
         self.__datastore: Dict[DataKey, Page] = {}
-        self.endpoints: Dict[str, EndpointProtocol] = {}
+        self.components: Dict[str, ComponentProtocol] = {}
         self.add_component(NodeCoreFactory())
         for factory in config.get(role):
             self.add_component(factory)
         self.__terminate_flag = mp.Event()
         self.__is_terminated = mp.Event()
         self.info("Initialized with %s endpoints",
-                  len(self.endpoints))
+                  len(self.components))
 
     def loop(self) -> None:
         try:
             self.profiler = self.profiler_getter()
-            for endpoint in self.endpoints.values():
-                endpoint.start()
+            for endpoint in self.components.values():
+                endpoint.begin()
 
             while not self.__terminate_flag.is_set():
                 t: Optional[Task] = self.__task_queue.get_next()
@@ -56,7 +56,7 @@ class Node(RootContext, NodeProtocol):
         """Retrieve tasks from endpoints and queue them.
         """
         new_tasks: List[Task] = []
-        for endpoint in self.endpoints.values():
+        for endpoint in self.components.values():
             t: SomeTasks = endpoint.task_source()
             if t:
                 if isinstance(t, Task):
@@ -99,13 +99,13 @@ class Node(RootContext, NodeProtocol):
                           t: Task,
                           ) -> List[Tuple[TaskHandler, TaskId]]:
         return list(filter(None, map(lambda e: e.get_task_handler(t),
-                                     self.endpoints.values())))
+                                     self.components.values())))
 
     def set_terminate_flag(self, reason: str) -> None:
         self.info("Setting terminate flag for: %s", reason)
         self.store_data("exit_reason", reason, False)
         self.__terminate_flag.set()
-        for endpoint in self.endpoints.values():
+        for endpoint in self.components.values():
             endpoint.set_terminate_flag()
 
     def terminate(self) -> None:
@@ -118,11 +118,11 @@ class Node(RootContext, NodeProtocol):
         if self.is_terminated():
             self.err("Already terminated")
 
-        for e in self.endpoints.values():
+        for e in self.components.values():
             e.join()
             e.terminate()
         self.info("Terminated all %s endpoints",
-                  len(self.endpoints))
+                  len(self.components))
 
         self.dbg(self.dump_data())
 
@@ -136,13 +136,9 @@ class Node(RootContext, NodeProtocol):
 
     def add_component(self, factory: FactoryProtocol) -> Optional[str]:
         component = factory.get(self)
-        if isinstance(component, EndpointProtocol):
-            self.endpoints[component.name] = component
-            self.info("%s added %s", factory, component)
-            return component.name
-        else:
-            self.err("Unknown component type: %s", component)
-            return None
+        self.components[component.name] = component
+        self.info("%s added %s", factory, component)
+        return component.name
 
     def schedule(self, t: SomeTasks) -> None:
         self.__task_queue.schedule(t)

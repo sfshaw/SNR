@@ -71,7 +71,7 @@ class NodeCoreEndpoint(Endpoint):
             target.join()
             new_name = self.parent.add_component(target.reload())
             if new_name:
-                self.parent.endpoints[new_name].start()
+                pass
             else:
                 self.warn("Failed to restart reloaded endpoint %s",
                           endpoint_name)

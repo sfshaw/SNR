@@ -1,3 +1,4 @@
+from build.lib.snr.protocol.component_protocol import ComponentProtocol
 from snr.type_defs import *
 from typing_extensions import Protocol, runtime_checkable
 
@@ -7,12 +8,15 @@ from .reloadable import Reloadable
 
 
 @runtime_checkable
-class EndpointProtocol(ContextProtocol, HandlesTasks, Reloadable, Protocol):
+class EndpointProtocol(ComponentProtocol, Reloadable, HandlesTasks, Protocol):
 
     def task_source(self) -> SomeTasks:
         ...
 
-    def set_terminate_flag(self) -> None:
+    def begin(self) -> None:
+        ...
+
+    def halt(self) -> None:
         ...
 
     def terminate(self) -> None:

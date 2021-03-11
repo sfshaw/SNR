@@ -37,6 +37,9 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
         ...
 
     def add_component(self, factory: FactoryProtocol) -> Optional[str]:
+        '''Get the component from the factory and store it. Does not call
+        begin() on components.
+        '''
         ...
 
     def schedule(self, t: SomeTasks) -> None:

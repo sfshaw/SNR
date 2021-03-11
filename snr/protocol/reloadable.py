@@ -10,7 +10,7 @@ from .factory_protocol import FactoryProtocol
 
 
 @runtime_checkable
-class Reloadable(ComponentProtocol, Protocol):
+class Reloadable(Protocol):
     '''Protocol implemented by `Endpoint`s and Loops so their factories may
      reload the Python module that define them and then create new instances.
     '''
@@ -19,8 +19,8 @@ class Reloadable(ComponentProtocol, Protocol):
     '''
 
     def halt(self) -> None:
-        '''Variant on join() with the expectation that the component will be
-        reloaded.
+        '''Clean up method for endpoints and loops. Should leave the factory
+        in a state to restart the component after reloading.
         '''
         ...
 

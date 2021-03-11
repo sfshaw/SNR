@@ -49,7 +49,7 @@ class ThreadLoop(Context, LoopProtocol):
         else:
             self.delay_s = 1.0 / tick_rate_hz
 
-    def start(self):
+    def begin(self):
         self.dbg("Starting %s loop thread", self.name)
         self.__thread.start()
 

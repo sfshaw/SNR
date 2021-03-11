@@ -16,18 +16,18 @@ class TextReplayer(ThreadLoop):
                  factory: LoopFactory,
                  parent: NodeProtocol,
                  filename: str,
-                 data_name: str,
+                 data_key: DataKey,
                  exit_when_done: bool
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         NAME_PREFIX + data_name,
+                         NAME_PREFIX + data_key,
                          tick_rate_hz=100)
         self.log.setLevel(logging.WARNING)
         self.task_handlers = {
-            (TaskType.process_data, data_name): self.retire_data
+            (TaskType.process_data, data_key): self.retire_data
         }
-        self.data_name = data_name
+        self.data_key = data_key
         self.reader = TextReader(self, "text_replayer", filename)
         self.data_in_flight = threading.Event()
         self.done: bool = False
@@ -40,7 +40,7 @@ class TextReplayer(ThreadLoop):
                 line = self.reader.read()
                 self.dbg("Read line %s", line)
                 if line:
-                    self.parent.store_data(self.data_name, line)
+                    self.parent.store_data(self.data_key, line)
                 elif not self.done:
                     self.dbg("Reader Done")
                     self.done = True
