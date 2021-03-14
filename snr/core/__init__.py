@@ -7,21 +7,22 @@ event loop, base `snr.core.endpoint.Endpoint`, and
 module can be imported using `from snr import *`, a few are not included that
 way and need to be imported separately.
 '''
+from . import tasks
 from .config import Config
 from .contexts import Context, RootContext
-from .endpoints import Endpoint, EndpointFactory, NodeCoreFactory
+from .core_utils import Consumer, MovingAvgFilter, TempFile, Timer
+from .endpoints import Endpoint, EndpointFactory
 from .loop import LoopFactory, ThreadLoop
 from .node import Node
 from .runners import CliRunner, MultiProcRunner, SynchronousRunner, TestRunner
-from .core_utils import Consumer, MovingAvgFilter, TempFile, Timer
 
 __all__ = [
+    "tasks",
     "Config",
     "Context",
     "RootContext",
     "Endpoint",
     "EndpointFactory",
-    "NodeCoreFactory",
     "LoopFactory",
     "ThreadLoop",
     "Node",

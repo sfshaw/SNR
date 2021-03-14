@@ -8,7 +8,7 @@ from snr.protocol import *
 from snr.type_defs import *
 
 from .contexts import RootContext
-from .endpoints import NodeCoreFactory
+from .node_core.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
 
 SLEEP_TIME_S = 0.000001

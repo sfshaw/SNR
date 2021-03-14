@@ -1,8 +1,8 @@
 from snr.protocol import *
 from snr.type_defs import *
 
+from ..endpoints import EndpointFactory
 from . import node_core_endpoint
-from .endpoint_factory import EndpointFactory
 
 
 class NodeCoreFactory(EndpointFactory):

@@ -9,7 +9,7 @@ class Endpoint(Context, EndpointProtocol):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: NodeProtocol,
-                 name: str,
+                 name: ComponentName,
                  ) -> None:
         super().__init__(name,
                          parent.settings,
