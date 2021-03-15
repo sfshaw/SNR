@@ -82,17 +82,18 @@ class NodeCoreEndpoint(Endpoint):
         return None
 
     def task_handler_add_component(self, task: Task, key: TaskId) -> SomeTasks:
-        assert isinstance(task.val_list[0], AbstractFactory)
+        assert (isinstance(task.val_list[0], AbstractFactory) and
+                isinstance(task.val_list[1], bool))
         factory: AbstractFactory = task.val_list[0]
-
+        start_component: bool = task.val_list[1]
         new_component = factory.get(self.parent)
-        self.parent.components[new_component.name] = new_component
         if new_component:
-            new_component.begin()
+            self.parent.components[new_component.name] = new_component
+            if start_component:
+                new_component.begin()
             self.info("Added component %s", new_component.name)
         else:
-            self.warn("Failed to restart reloaded component from %s",
-                      factory)
+            self.warn("Failed to get component from %s", factory)
         return None
 
     def task_handler_remove_endpoint(self,

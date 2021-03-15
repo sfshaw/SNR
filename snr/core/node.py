@@ -35,8 +35,9 @@ class Node(RootContext, AbstractNode):
             core_endpoint.name: core_endpoint,
         }
         for factory in config.get(role):
-            component = factory.get(self)
-            self.components[component.name] = component
+            core_endpoint.task_handler_add_component(
+                tasks.add_component(factory, start_component=False),
+                (TaskType.event, tasks.ADD_COMPONENT_TASK_NAME))
         self.__terminate_flag = mp.Event()
         self.__is_terminated = mp.Event()
         self.info("Initialized with %s endpoints",
