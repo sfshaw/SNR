@@ -1,6 +1,6 @@
 import os
-from typing import Any, IO
 import unittest
+from typing import IO, Any
 
 from snr.type_defs import *
 
@@ -24,14 +24,20 @@ class TempFile:
     def open(self) -> IO[Any]:
         return open(self.path, 'w')
 
+    def does_exist(self) -> bool:
+        return os.path.exists(self.path)
+
     def assertExists(self):
-        self.testcase.assertTrue(os.path.exists(self.path),
+        self.testcase.assertTrue(self.does_exist(),
                                  f"File {self.path} does not exist")
+
+    def assertDoesNotExist(self):
+        self.testcase.assertFalse(self.does_exist(),
+                                  f"File {self.path} already exists")
 
     def __enter__(self) -> "TempFile":
         if not self.overwrite:
-            self.testcase.assertFalse(os.path.exists(self.path),
-                                      f"File {self.path} already exists")
+            self.assertDoesNotExist()
         return self
 
     def __exit__(self, *_: Any) -> None:
