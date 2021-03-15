@@ -4,14 +4,12 @@
 from .data_dict import DataDict
 from .mode import LogLevel, Mode
 from .modules import ReloadTargets
+from .names import ComponentName, Role
 from .page import DataKey, Page  # Data pages
-from .role import Role  # Node roles
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .settings import Settings  # Settings dictionary (legacy)
 from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
-                   TaskScheduler, TaskSource, TaskType, task_event,
-                   task_process_data, task_reload, task_store_page,
-                   task_terminate)
+                   TaskName, TaskScheduler, TaskSource, TaskType)
 
 __all__ = [
     "DataDict",
@@ -20,21 +18,18 @@ __all__ = [
     "ReloadTargets",
     "DataKey",
     "Page",
+    "ComponentName",
     "Role",
     "JsonData",
     "Serializable",
     "Settings",
     "TaskType",
     "TaskId",
+    "TaskName",
     "Task",
     "SomeTasks",
     "TaskHandler",
     "TaskHandlerMap",
     "TaskSource",
     "TaskScheduler",
-    "task_event",
-    "task_store_page",
-    "task_process_data",
-    "task_reload",
-    "task_terminate",
 ]

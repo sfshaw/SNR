@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 import dataclasses_json
 
-from .role import Role
+from .names import Role
 from .serializable import *
 
 MAX_PRINTABLE_DATA_LEN = 60
