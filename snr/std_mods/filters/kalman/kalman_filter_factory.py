@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 
 from . import kalman_endpoint
 
@@ -13,7 +13,7 @@ class KalmanFilterFactory(EndpointFactory):
         self.input_data_name = input_data_name
         self.output_data_name = output_data_name
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return kalman_endpoint.KalmanEndpoint(self,
                                               parent,
                                               "kalman_filter_endpoint",
