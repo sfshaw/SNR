@@ -1,12 +1,13 @@
+from abc import ABC, abstractmethod
+
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
 
-from .component_protocol import ComponentProtocol
-from .reloadable import Reloadable
+from .abstract_component import AbstractComponent
+from .abstract_node import AbstractNode
 
 
-@runtime_checkable
-class LoopProtocol(ComponentProtocol, Reloadable, Protocol):
+# @runtime_checkable
+class AbstractLoop(AbstractComponent, ABC):
     """A Node component that runs outside the main thread event loop.
 
     Base loop implementation may use any concurrency style, ThreadLoop is
@@ -34,26 +35,27 @@ class LoopProtocol(ComponentProtocol, Reloadable, Protocol):
     tick_rate (Hz).
     """
 
+    parent: AbstractNode
+
+    @abstractmethod
     def setup(self) -> None:
         '''User implemented method run at the beginning of the Loop's loop
         '''
         ...
 
-    def loop_handler(self) -> None:
+    @abstractmethod
+    def loop(self) -> None:
         '''User implemented method run per loop iteration
         '''
         ...
 
-    def halt(self) -> None:
-        '''User implemented function run to clean up loop, prepare for reload
-        '''
-        ...
-
+    @abstractmethod
     def set_terminate_flag(self) -> None:
         '''Base loop function to signal termination, used by join()
         '''
         ...
 
+    @abstractmethod
     def is_terminated(self) -> bool:
         '''Base loop function to indicate whether loop execution has finished
         '''

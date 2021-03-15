@@ -5,14 +5,12 @@ from typing import Any, Dict, List
 from snr.type_defs import *
 from typing_extensions import Protocol, runtime_checkable
 
-from .component_protocol import ComponentProtocol
-
 
 @runtime_checkable
-class FactoryProtocol(Protocol):
+class AbstractFactory(Protocol):
     reload_targets: List[ModuleType]
 
-    def get(self, parent: Any) -> ComponentProtocol:
+    def get(self, parent: Any) -> Any:
         ...
 
     def reload(self) -> None:
@@ -23,4 +21,4 @@ class FactoryProtocol(Protocol):
         return self.__class__.__name__
 
 
-ComponentsByRole = Dict[Role, List[FactoryProtocol]]
+ComponentsByRole = Dict[Role, List[AbstractFactory]]

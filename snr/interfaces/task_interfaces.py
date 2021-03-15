@@ -1,13 +1,10 @@
+from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
-
-from .component_protocol import ComponentProtocol
 
 
-@runtime_checkable
-class HandlesTasks(ComponentProtocol, Protocol):
+class ProvidesTaskHandlers(ABC):
 
     task_handlers: TaskHandlerMap
 
@@ -24,3 +21,17 @@ class HandlesTasks(ComponentProtocol, Protocol):
         if not handler:
             return None
         return (handler, key)
+
+
+class ProvidesTasks(ABC):
+
+    @abstractmethod
+    def task_source(self) -> SomeTasks:
+        ...
+
+
+class SchedulesTasks(ABC):
+
+    @abstractmethod
+    def schedule(self, t: SomeTasks) -> None:
+        ...

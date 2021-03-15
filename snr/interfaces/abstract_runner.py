@@ -6,18 +6,18 @@ application of `Runner`s is to provide a CLI interface for running a `Node`.
 These features are implemented in the concrete implementations of `Runner`s.
 '''
 
+from abc import ABC
+
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
 
-from .config_protocol import ConfigProtocol
+from .abstract_config import AbstractConfig
 
 
-@runtime_checkable
-class RunnerProtocol(Protocol):
+class AbstractRunner(ABC):
     '''Protocol for wrapping execution of a `Node`
     '''
 
-    config: ConfigProtocol
+    config: AbstractConfig
     '''The `Config` describing the Mode and component factories for a `Node`'''
     role: Role
     '''The role identifier of the Node executed by the `Runner`'''

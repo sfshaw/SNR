@@ -1,31 +1,35 @@
 from typing import Any, Optional
 
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
+from abc import ABC, abstractmethod
 
 
-@runtime_checkable
-class ConnectionProtocol(Protocol):
-
+class AbstractConnection(ABC):
+    @abstractmethod
     def open(self) -> None:
         ...
 
+    @abstractmethod
     def is_closed(self) -> bool:
         ...
 
+    @abstractmethod
     def send(self, data: bytes) -> None:
         ...
 
+    @abstractmethod
     def poll(self, timeout_s: float) -> bool:
         ...
 
+    @abstractmethod
     def recv(self) -> Optional[JsonData]:
         ...
 
+    @abstractmethod
     def close(self) -> None:
         ...
 
-    def __enter__(self) -> 'ConnectionProtocol':
+    def __enter__(self) -> 'AbstractConnection':
         self.open()
         return self
 
