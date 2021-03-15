@@ -13,5 +13,5 @@ class TestNodeStartup(SNRTestCase):
 
         node.terminate()
 
-        self.assertLess(t_s, 0.010, "Node construct time")
-        print(f"Node construct time: {t_s * 1000:7.3f} ms")
+        self.assertLess(t_s, 0.030, "Node construct time")
+        print(f"\nNode construct time: {t_s * 1000:7.3f} ms")
