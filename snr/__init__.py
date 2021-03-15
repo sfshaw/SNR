@@ -17,6 +17,7 @@ __all__ = [
 
     "Page",
     "TaskType",
+    "TaskName",
     "TaskId",
     "Task",
     "SomeTasks",
