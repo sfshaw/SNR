@@ -4,7 +4,7 @@ from snr import *
 class EndpointUnderTest(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  expector: ExpectorProtocol,
                  ) -> None:
         super().__init__(factory, parent, "endpoint_under_test_b")
@@ -14,5 +14,11 @@ class EndpointUnderTest(Endpoint):
     def call(self) -> None:
         self.expector.call("mod_b")
 
-    def join(self):
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
+        pass
+
+    def terminate(self) -> None:
         pass
