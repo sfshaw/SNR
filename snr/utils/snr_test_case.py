@@ -21,6 +21,7 @@ class SNRTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.startTime = time.time()
         self.test_name = self.id().split(".")[-1]
+        self.temp_files_used = 0
 
     def tearDown(self) -> None:
         if PRINT_INDIVIDUAL_RUNTIME:
@@ -63,7 +64,8 @@ class SNRTestCase(unittest.TestCase):
                   cleanup: bool = True,
                   ) -> TempFile:
         if not filename:
-            filename = self.test_name + ".tmp"
+            filename = f"{self.test_name}_{self.temp_files_used}.tmp"
+            self.temp_files_used += 1
         return TempFile(self, filename, overwrite, cleanup)
 
     def assertPage(self, page: Optional[Page],
