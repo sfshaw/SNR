@@ -4,7 +4,7 @@ import socket
 from typing import Any, List, Optional, Tuple
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from .sockets_loop_factory import SocketsLoopFactory
@@ -16,7 +16,7 @@ POLL_TIMEOUT_MS: float = 0
 class SocketsListenerLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
                  port: int,
                  data_keys: List[DataKey],
@@ -42,7 +42,7 @@ class SocketsListenerLoop(ThreadLoop):
         self.factory.existing_socket = self.socket  # type: ignore
         self.dbg("Socket server on fd(%s) ready", self.socket.fileno())
 
-    def loop_handler(self) -> None:
+    def loop(self) -> None:
         assert self.socket
         try:
             poll_result = self.select.poll(POLL_TIMEOUT_MS)
