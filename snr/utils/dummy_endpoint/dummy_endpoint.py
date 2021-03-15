@@ -1,12 +1,12 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class DummyEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
                  task_handlers: TaskHandlerMap = {},
                  ) -> None:
@@ -18,7 +18,10 @@ class DummyEndpoint(Endpoint):
     def task_source(self) -> None:
         return None
 
-    def start(self) -> None:
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
         pass
 
     def terminate(self) -> None:

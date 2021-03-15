@@ -2,7 +2,7 @@ import logging
 from typing import Any, List
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 NAME_PREFIX: str = "list_replayer_loop_"
@@ -11,7 +11,7 @@ NAME_PREFIX: str = "list_replayer_loop_"
 class ListReplayerEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  data: List[Any],
                  data_name: DataKey,
                  exit_when_done: bool
@@ -30,7 +30,7 @@ class ListReplayerEndpoint(Endpoint):
         self.done: bool = False
         self.exit_when_done = exit_when_done
 
-    def start(self):
+    def begin(self):
         self.parent.schedule(task_event(self.bootstrap_task_name))
 
     def read_item(self, task: Task, key: TaskId) -> SomeTasks:
@@ -46,6 +46,9 @@ class ListReplayerEndpoint(Endpoint):
                     self.dbg("Replayer scheduling terminate task")
                     return task_terminate("list_replayer_done")
         return None
+
+    def halt(self) -> None:
+        pass
 
     def terminate(self) -> None:
         pass

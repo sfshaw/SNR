@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..expector_protocol import ExpectorProtocol
@@ -15,7 +15,7 @@ class ExpectorEndpointFactory(EndpointFactory):
         self.expector = expector
         self.exit_when_satisfied = exit_when_satisfied
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return expector_endpoint.ExpectorEndpoint(self,
                                                   parent,
                                                   self.expector,
