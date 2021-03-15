@@ -1,8 +1,13 @@
 from snr import *
-from snr.std_mods.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
+import pytest
 
 
 class TestTimeoutLoop(SNRTestCase):
 
-    def test_timeout_loop(self) -> None:
-        self.run_test_node([TimeoutLoopFactory(ms=FAST_TEST_TIMEOUT_MS)])
+    @pytest.mark.timeout(0.010)
+    def test_timeout_loop_ms(self) -> None:
+        self.run_test_node([TimeoutLoopFactory(ms=1)])
+
+    @pytest.mark.timeout(0.010)
+    def test_timeout_loop_s(self) -> None:
+        self.run_test_node([TimeoutLoopFactory(seconds=0.001)])
