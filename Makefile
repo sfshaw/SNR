@@ -80,13 +80,18 @@ test_all:
 
 .PHONY: lint
 l: lint
-lint: mypy 
-	nox -s lint
+lint: 
+	nox -s mypy lint
 
 .PHONY: mypy
 my: mypy
 mypy:
 	nox -s mypy
+
+.PHONY: flake
+f: flake
+flake:
+	nox -s lint
 
 .PHONY: diagram
 diagram: protocols.png
