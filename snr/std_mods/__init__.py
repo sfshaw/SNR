@@ -12,7 +12,7 @@ from .filters import KalmanFilterFactory, MovingAvgEndpointFactory
 from .io.console import LocalConsole, RemoteConsole
 from .io.console.command_processor_factory import CommandProcessorFactory
 from .io.console.command_receiver_factory import CommandReceiverFactory
-from .io.recorder.recorder_factory import RecorderFactory
+from .io.recorder.recorder_endpoint_factory import RecorderEndpointFactory
 from .io.replayer.page_reader import PageReader
 from .io.replayer.replayer_factory import ReplayerFactory
 from .io.replayer.text_reader import TextReader
@@ -31,7 +31,7 @@ __all__ = [
     "CommandReceiverFactory",
     "LocalConsole",
     "RemoteConsole",
-    "RecorderFactory",
+    "RecorderEndpointFactory",
     "PageReader",
     "ReplayerFactory",
     "TextReader",
