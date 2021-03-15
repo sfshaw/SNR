@@ -73,13 +73,12 @@ class TestStress(SNRTestCase):
         node.log.setLevel(logging.WARNING)
         node.loop()
         t_s = timer.current_s()
-        print("\n".join([
-            "Stressed with:",
-            f"\t{stressor_fac.num_children} stressor endpoints",
-            f"\t{stressor_fac.calls} stressor factory calls",
-            f"\tTerminate/cut-off expected at {time_target_s * 1000:.3f} ms",
-            f"\t{times[0] * 1000:.3f} ms terminate triggered",
-            f"\t{t_s * 1000:.3f} ms total time",
-        ]))
+        print("\nStressed with:\n",
+              f"\t{stressor_fac.num_children} stressor endpoints\n",
+              f"\t{stressor_fac.calls} stressor factory calls\n",
+              f"\tTerminate expected at {time_target_s * 1000:.0f} ms\n",
+              f"\t{times[0] * 1000:.3f} ms terminate handled\n",
+              f"\t{t_s * 1000:.3f} ms total time\n",
+              )
         if node.profiler:
             print(node.profiler.dump())
