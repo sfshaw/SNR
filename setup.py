@@ -41,4 +41,29 @@ setup(
         ],
     },
     python_requires='>=3.6'
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Environment :: Console',
+
+        'Intended Audience :: Developers',
+        'Intended Audience :: Education',
+
+        'Topic :: Education',
+        'Topic :: Robotics',
+
+        'License :: OSI Approved :: MIT License',
+
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
+
+        'Operating System :: POSIX :: Linux',
+
+        'Typing :: Typed',
+    ],
 )

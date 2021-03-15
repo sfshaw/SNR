@@ -6,7 +6,7 @@ from snr import *
 from snr.std_mods.io.console import remote_console
 
 
-if __name__ == "__main__":
+def main():
     port: int = remote_console.DEFAULT_PORT
     host: str = "localhost"
     if len(sys.argv) > 1:
@@ -14,3 +14,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         port = int(sys.argv[2])
     RemoteConsole((host, port)).run()
+
+
+if __name__ == "__main__":
+    main()

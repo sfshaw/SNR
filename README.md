@@ -3,7 +3,7 @@
 [![Python unit Tests](https://github.com/sfshaw-calpoly/SNR/workflows/Python%20unit%20tests/badge.svg)](https://github.com/sfshaw-calpoly/SNR/actions?query=workflow%3A%22Python+unit+tests%22)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-SNR is a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime), but in a simpler stack to avoid compounding learning curves. SNR uses type annotations and type checking to improve the user's awareness of data types in Python.
+SNR is a python-based robotics framework for education. It was originally developed for the [Cal Poly Robotics Club](https://www.calpolyrobotics.com/) (CPRC) Underwater Remote Operated Vehicle (UROV). SNR aims to provide a platform for teaching robotics, systems design, and embedded programming. SNR provides paradigms similar to [ROS](https://www.ros.org/) and NASA's [F´](https://github.com/nasa/fprime), but in a simpler stack to avoid compounding learning curves. ROS aims at providing the kitchen sink through an ecosystem. F´ aims to provide cleanly packaged binaries for critical applications. Both utilize complicated build systems. SNR avoids build systems by executing system definitions in pure Python. SNR uses type annotations and type checking to improve the user's awareness of data types in Python.
 
 ## Features
 

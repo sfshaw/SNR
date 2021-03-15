@@ -1,6 +1,3 @@
 recursive-include snr *.py
 
 recursive-exclude tests *
-
-exclude Makefile
-exclude .vscode/*
