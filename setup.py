@@ -12,7 +12,7 @@ setup(
     author='Spencer Shaw',
     author_email='calpolyroboticsclub@gmail.com',
     packages=find_packages(where='.',
-                           exclude=['tests']),
+                           exclude=['tests']),  # type: ignore
     url='http://github.com/sfshaw-calpoly/SNR',
     license='LICENSE.txt',
     description='Soft-realtime robotics framework for education',
