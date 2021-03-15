@@ -1,7 +1,7 @@
 import logging
 from typing import Optional, Union
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..core_utils import Timer
@@ -14,7 +14,7 @@ class RootContext(Context):
     def __init__(self,
                  name: str,
                  mode: Union[Mode, LogLevel],
-                 profiler: Optional[ProfilerProtocol] = None,
+                 profiler: Optional[AbstractProfiler] = None,
                  settings: Settings = Settings(),
 
                  ) -> None:

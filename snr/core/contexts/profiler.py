@@ -2,7 +2,7 @@ import collections
 import logging
 from typing import Any, Callable, Deque, Dict, Tuple, TypeVar
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..core_utils import Consumer, MovingAvgFilter, Timer
@@ -15,16 +15,17 @@ ProfileingData = Tuple[int, MovingAvgFilter]
 T = TypeVar("T")
 
 
-class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
+class Profiler(Consumer[ProfilingResult], AbstractProfiler):
     def __init__(self, settings: Settings) -> None:
-        self.settings = settings
-        self.time_dict: Dict[str, ProfileingData] = {}
-        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
         super().__init__("profiler",
                          self.store_task,
                          SLEEP_TIME_S,
                          )
         self.log.setLevel(logging.WARNING)
+        self.settings = settings
+        self.time_dict: Dict[str, ProfileingData] = {}
+        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
+        self.timer = Timer()
 
     def time(self,
              name: str,
@@ -65,8 +66,8 @@ class Profiler(Consumer[ProfilingResult], ProfilerProtocol):
 
         items = [(data[0], data[1].avg(), k)
                  for k, data in self.time_dict.items()]
-        total_time = sum([n * avg for n, avg, _ in items])
-        items_with_stats = [(n, avg, (100 * n*avg/total_time), k)
+        total_time = self.timer.current_s()
+        items_with_stats = [(n, avg, (100 * n * avg / total_time), k)
                             for n, avg, k in items]
 
         lines = ["Times called,\tAvg runtime,\t\tTask/Loop type,"]
