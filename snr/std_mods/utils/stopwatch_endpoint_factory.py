@@ -1,7 +1,7 @@
 from typing import List
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 
 from . import stopwatch_endpoint
 
@@ -13,7 +13,7 @@ class StopwatchEndpointFactory(EndpointFactory):
         super().__init__(stopwatch_endpoint)
         self.times = times
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return stopwatch_endpoint.StopwatchEndpoint(self,
                                                     parent,
                                                     self.times)
