@@ -1,7 +1,7 @@
 import logging
 import select
 import socket
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional
 
 from snr.core import *
 from snr.interfaces import *
@@ -51,18 +51,12 @@ class SocketsListenerLoop(ThreadLoop):
                 self.dbg("Socket %s polled, blocking on accept",
                          self.socket.fileno())
                 connection = self.socket.accept()
-                self.handle_connection(connection)
+                self.dbg("Scheduling add_component to handle connection")
+                self.schedule(tasks.add_component(
+                    SocketsLoopFactory(connection,
+                                       self.data_keys)))
         except socket.timeout:
             pass
-
-    def handle_connection(self, connection: Tuple[socket.socket, Any]) -> None:
-        name = self.parent.add_component(SocketsLoopFactory(connection,
-                                                            self.data_keys))
-        if name:
-            self.parent.endpoints[name].start()
-            self.dbg("Added sockets loop to handle connection")
-        else:
-            self.err("Failed to add sockets_loop to parent node")
 
     def halt(self) -> None:
         pass
