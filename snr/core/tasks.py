@@ -27,5 +27,7 @@ def terminate(reason: str) -> Task:
     return Task(TaskType.terminate, reason)
 
 
-def add_component(factory: AbstractFactory) -> Task:
-    return event("add_component", val_list=[factory])
+def add_component(factory: AbstractFactory,
+                  start_component: bool = True,
+                  ) -> Task:
+    return event("add_component", val_list=[factory, start_component])
