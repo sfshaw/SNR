@@ -1,7 +1,7 @@
 import sys
 from typing import List
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..config import Config

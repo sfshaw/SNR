@@ -1,21 +1,21 @@
 import threading
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..node import Node
 
 
-class SynchronousRunner(RunnerProtocol):
+class SynchronousRunner(AbstractRunner):
 
     def __init__(self,
                  role: Role,
-                 config: ConfigProtocol):
+                 config: AbstractConfig):
         self.role = role
         self.config = config
 
     def run(self) -> None:
-        node: NodeProtocol = Node(self.role,
+        node: AbstractNode = Node(self.role,
                                   self.config)
         try:
             node.loop()  # Blocking loop

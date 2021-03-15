@@ -1,16 +1,16 @@
 import multiprocessing as mp
 from typing import List
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..node import Node
 
 
-class MultiProcRunner(MultiRunnerProtocol):
+class MultiProcRunner(AbstractMultiRunner):
 
     def __init__(self,
-                 config: ConfigProtocol,
+                 config: AbstractConfig,
                  roles: List[str],
                  ) -> None:
         self.roles = roles
@@ -18,11 +18,11 @@ class MultiProcRunner(MultiRunnerProtocol):
         self.config = config
 
     def run(self):
-        nodes: List[NodeProtocol] = [Node(role,
+        nodes: List[AbstractNode] = [Node(role,
                                           self.config)
                                      for role in self.roles]
 
-        def run_node(node: NodeProtocol) -> None:
+        def run_node(node: AbstractNode) -> None:
             node.loop()
 
         processes = [mp.Process(target=run_node,
