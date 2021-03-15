@@ -1,4 +1,4 @@
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..endpoints import EndpointFactory
@@ -9,5 +9,5 @@ class NodeCoreFactory(EndpointFactory):
     def __init__(self) -> None:
         super().__init__(node_core_endpoint)
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return node_core_endpoint.NodeCoreEndpoint(self, parent)

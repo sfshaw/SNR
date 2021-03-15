@@ -1,6 +1,7 @@
 
 import logging
-from snr.protocol import *
+
+from snr.interfaces import *
 from snr.type_defs import *
 
 from .. import tasks
@@ -19,7 +20,7 @@ class NodeCoreEndpoint(Endpoint):
 
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  ) -> None:
         super().__init__(factory,
                          parent,
@@ -36,6 +37,9 @@ class NodeCoreEndpoint(Endpoint):
         }
 
     def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
         pass
 
     def terminate(self) -> None:
@@ -78,8 +82,8 @@ class NodeCoreEndpoint(Endpoint):
         return None
 
     def task_handler_add_component(self, task: Task, key: TaskId) -> SomeTasks:
-        assert isinstance(task.val_list[0], FactoryProtocol)
-        factory: FactoryProtocol = task.val_list[0]
+        assert isinstance(task.val_list[0], AbstractFactory)
+        factory: AbstractFactory = task.val_list[0]
 
         new_component = factory.get(self.parent)
         self.parent.components[new_component.name] = new_component

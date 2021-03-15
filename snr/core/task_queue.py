@@ -2,7 +2,7 @@ import logging
 import queue
 from typing import Union
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from .contexts import Context
@@ -10,7 +10,7 @@ from .contexts import Context
 
 class TaskQueue(Context):
     def __init__(self,
-                 parent: ContextProtocol,
+                 parent: AbstractContext,
                  task_source: TaskSource
                  ) -> None:
         super().__init__("task_queue",
