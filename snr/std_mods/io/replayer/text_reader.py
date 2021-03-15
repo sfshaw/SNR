@@ -1,4 +1,4 @@
-from typing import Optional, TextIO
+from typing import Any, Optional, TextIO
 
 from snr.core import *
 from snr.interfaces import *
@@ -44,3 +44,10 @@ class TextReader(Context):
         if self.file:
             self.info("Closing file %s", self.filename)
             self.file.close()
+
+    def __enter__(self) -> 'TextReader':
+        self.open()
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        self.close()
