@@ -14,7 +14,7 @@ from .io.console.command_processor_factory import CommandProcessorFactory
 from .io.console.command_receiver_factory import CommandReceiverFactory
 from .io.recorder.recorder_endpoint_factory import RecorderEndpointFactory
 from .io.replayer.page_reader import PageReader
-from .io.replayer.replayer_factory import ReplayerFactory
+from .io.replayer.replayer_loop_factory import ReplayerLoopFactory
 from .io.replayer.text_reader import TextReader
 from .io.replayer.text_replayer_factory import TextReplayerFactory
 from .utils.stopwatch_endpoint_factory import StopwatchEndpointFactory
@@ -33,7 +33,7 @@ __all__ = [
     "RemoteConsole",
     "RecorderEndpointFactory",
     "PageReader",
-    "ReplayerFactory",
+    "ReplayerLoopFactory",
     "TextReader",
     "TextReplayerFactory",
     "KalmanFilterFactory",
