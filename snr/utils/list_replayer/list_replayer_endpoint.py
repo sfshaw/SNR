@@ -31,7 +31,7 @@ class ListReplayerEndpoint(Endpoint):
         self.exit_when_done = exit_when_done
 
     def begin(self):
-        self.parent.schedule(task_event(self.bootstrap_task_name))
+        self.parent.schedule(tasks.event(self.bootstrap_task_name))
 
     def read_item(self, task: Task, key: TaskId) -> SomeTasks:
         if not self.done:
@@ -44,7 +44,7 @@ class ListReplayerEndpoint(Endpoint):
                 self.done = True
                 if self.exit_when_done:
                     self.dbg("Replayer scheduling terminate task")
-                    return task_terminate("list_replayer_done")
+                    return tasks.terminate("list_replayer_done")
         return None
 
     def halt(self) -> None:
