@@ -1,5 +1,4 @@
 import socket
-import threading
 import time
 import unittest
 from typing import Any, List, Optional, Tuple
@@ -24,12 +23,9 @@ class SNRTestCase(unittest.TestCase):
         self.test_name = self.id().split(".")[-1]
 
     def tearDown(self) -> None:
-        t = time.time() - self.startTime
         if PRINT_INDIVIDUAL_RUNTIME:
-            print(f"{self.id()}: \t{t:32.3f}s")
-        for thread in threading.enumerate():
-            if not thread.is_alive():
-                print("Zombie thread %s culled", thread.name)
+            end_time = time.time() - self.startTime
+            print(f"{end_time* 1000:6.2f} ms: {self.id()}")
 
     def expector(self,
                  expectations: Expectations,
