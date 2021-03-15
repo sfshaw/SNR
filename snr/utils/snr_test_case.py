@@ -39,7 +39,7 @@ class SNRTestCase(unittest.TestCase):
         return OrderedExpector(expectations, self)
 
     def get_config(self,
-                   factories: List[AbstractFactory],
+                   factories: List[AbstractFactory] = [],
                    mode: Mode = Mode.TEST
                    ) -> Config:
         return Config(mode, {"test": factories})
