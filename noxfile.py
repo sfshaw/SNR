@@ -28,8 +28,7 @@ def test(session: nox.Session):
              reuse_venv=True)
 def mypy(session: nox.Session):
     session.install('mypy')
-    session.run('mypy', '-p', 'snr')
-    session.run('mypy', '-p', 'tests')
+    session.run('mypy', '-p', 'snr', '-p', 'tests')
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION,
