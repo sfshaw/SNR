@@ -32,20 +32,22 @@ class StressorEndpoint(Endpoint):
 
 class StressorEndpointFactory(EndpointFactory):
     def __init__(self,
-                 max_endpoints: int = 10000,
-                 time_limit_s: float = 0,
+                 max_endpoints: int = 1000,
+                 time_limit_s: float = 1,
                  ) -> None:
         super().__init__()
         self.max_endpoints = max_endpoints
         self.time_limit_s = time_limit_s
+        self.calls = 0
         self.num_children = 0
 
     def get(self, parent: AbstractNode) -> Optional[Endpoint]:
-        self.num_children += 1
-        if (self.num_children > self.max_endpoints and
-                (self.time_limit_s == 0.0 or
-                 parent.get_time_s() < self.time_limit_s)):
+        self.calls += 1
+        if (self.num_children > self.max_endpoints or
+                (self.time_limit_s > 0 and
+                 parent.get_time_s() >= self.time_limit_s)):
             return None
+        self.num_children += 1
         return StressorEndpoint(self,
                                 parent,
                                 f"stressor_endpoint_{self.num_children}")
@@ -55,8 +57,8 @@ class TestStress(SNRTestCase):
 
     def test_stress_endpoint(self):
         time_target_s: float = 0.100
-        stressor_fac = StressorEndpointFactory(max_endpoints=100,
-                                               time_limit_s=0.100)
+        stressor_fac = StressorEndpointFactory(max_endpoints=1000,
+                                               time_limit_s=time_target_s)
         times: List[float] = []
         timer = Timer()
         node: AbstractNode = Node(
@@ -74,6 +76,8 @@ class TestStress(SNRTestCase):
         print("\n".join([
             "Stressed with:",
             f"\t{stressor_fac.num_children} stressor endpoints",
+            f"\t{stressor_fac.calls} stressor factory calls",
+            f"\tTerminate/cut-off expected at {time_target_s * 1000:.3f} ms",
             f"\t{times[0] * 1000:.3f} ms terminate triggered",
             f"\t{t_s * 1000:.3f} ms total time",
         ]))
