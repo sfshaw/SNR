@@ -1,15 +1,15 @@
 import importlib
+from abc import ABC, abstractmethod
 from types import ModuleType
 from typing import Any, Dict, List
 
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
 
 
-@runtime_checkable
-class AbstractFactory(Protocol):
+class AbstractFactory(ABC):
     reload_targets: List[ModuleType]
 
+    @abstractmethod
     def get(self, parent: Any) -> Any:
         ...
 
