@@ -71,7 +71,7 @@ test:
 .PHONY: unittest
 ut: unittest
 unittest: 
-	$(PYTHON) -m unittest
+	$(PYTHON) -m unittest -q
 
 .PHONY: test_all
 ta: test_all
