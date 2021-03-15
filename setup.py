@@ -40,7 +40,7 @@ setup(
             'flake8>=3.8',      # Linter
         ],
     },
-    python_requires='>=3.6'
+    python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
