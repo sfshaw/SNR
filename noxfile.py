@@ -17,7 +17,8 @@ SUPPORTED_PYTHON_VERSIONS: List[str] = [
 def test(session: nox.Session):
     session.install('-r', 'requirements.txt')
     session.install('-r', 'requirements-test.txt')
-    session.run('pytest', external=False)
+    session.run('pytest', './tests/',
+                external=False)
 
 
 @nox.session(python=SUPPORTED_PYTHON_VERSIONS,

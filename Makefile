@@ -66,7 +66,7 @@ nox:
 .PHONY: test
 t: test
 test: 
-	$(PYTHON) -m pytest
+	$(PYTHON) -m pytest ./tests/ --new-first
 
 .PHONY: unittest
 ut: unittest
