@@ -7,13 +7,13 @@ from snr import *
 class TestPipeLoop(SNRTestCase):
 
     @pytest.mark.timeout(0.200)
-    def test_pipe_noop(self) -> None:
+    def test_pipe_loop_noop(self) -> None:
 
         pipe = mp.Pipe(duplex=True)
 
         self.run_test_node([
             PipeLoopFactory(pipe[0]),
-            TimeoutLoopFactory(ms=1),
+            TimeoutLoopFactory(),
         ])
         self.assertTrue(pipe[1].poll(0.005))
         self.assertRaises(EOFError, lambda: pipe[1].recv())
