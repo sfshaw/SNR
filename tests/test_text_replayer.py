@@ -1,8 +1,10 @@
 from snr import *
+import pytest
 
 
 class TestTextReplayer(SNRTestCase):
 
+    @pytest.mark.timeout(0.200)
     def test_raw_reader(self):
         with self.temp_file() as file:
 
@@ -12,6 +14,7 @@ class TestTextReplayer(SNRTestCase):
 
             context = self.get_context()
             reader = TextReader(context, "test_reader", file.path)
+            reader.open()
             try:
                 self.assertEqual("line1", reader.read())
                 self.assertEqual("line2", reader.read())
@@ -19,9 +22,10 @@ class TestTextReplayer(SNRTestCase):
             finally:
                 reader.close()
 
+    @pytest.mark.timeout(0.200)
     def test_raw_data_replayer_none(self):
         with self.expector({
-            TaskType.terminate: 1,
+            (TaskType.process_data, "raw_data"): 0,
         }) as expector:
             with self.temp_file() as temp_file:
                 with temp_file.open() as f:
@@ -33,6 +37,7 @@ class TestTextReplayer(SNRTestCase):
                     ExpectorEndpointFactory(expector)
                 ])
 
+    @pytest.mark.timeout(0.200)
     def test_raw_data_replayer_one(self):
         with self.expector({
             (TaskType.process_data, "raw_data"): 1,
@@ -50,6 +55,7 @@ class TestTextReplayer(SNRTestCase):
                                             exit_when_satisfied=True)
                 ])
 
+    @pytest.mark.timeout(0.200)
     def test_raw_data_replayer_two(self):
         with self.expector({
             (TaskType.process_data, "raw_data"): 2,
