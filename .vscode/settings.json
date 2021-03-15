@@ -1,10 +1,10 @@
 {
     "files.watcherExclude": {
         "**/__pycache__/**": true,
-        "**/.mypy_cache/**": true,
-        "**/.nox/**": true,
-        "**/.pytest_cache/**": true,
-        "**/temp/**": true
+        "./.mypy_cache": true,
+        "./.nox": true,
+        "./.pytest_cache": true,
+        "./temp/**": true
     },
     "python.testing.unittestArgs": [
         "-v",
