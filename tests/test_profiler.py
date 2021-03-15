@@ -5,6 +5,7 @@ from snr import *
 from snr.core.contexts.profiler import Profiler
 
 SLEEP_TIME_S: float = 0.00005
+CATCH_UP_TIME_S = SLEEP_TIME_S * 4
 
 
 class TestProfiler(unittest.TestCase):
@@ -34,9 +35,9 @@ class TestProfiler(unittest.TestCase):
 
         def flush() -> None:
             if profiler.is_alive():
-                time.sleep(SLEEP_TIME_S * 10)
+                time.sleep(CATCH_UP_TIME_S)
                 profiler.flush()
-                time.sleep(SLEEP_TIME_S * 10)
+                time.sleep(CATCH_UP_TIME_S)
                 profiler.flush()
 
         try:
