@@ -9,6 +9,7 @@ html
 .coverage*
 coverage.xml
 .mypy_cache
+.pytest_cache
 
 # pyreverse diagrams
 packages.png

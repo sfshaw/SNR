@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import dummy_endpoint
@@ -16,7 +16,7 @@ class DummyEndpointFactory(EndpointFactory):
         self.endpoint_name = name
         self.task_handlers = task_handlers
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> Endpoint:
         return dummy_endpoint.DummyEndpoint(self,
                                             parent,
                                             self.endpoint_name,

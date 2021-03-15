@@ -1,17 +1,17 @@
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
 
 ProfilingResult = Tuple[str, float]
 
 T = TypeVar("T")
 
 
-@runtime_checkable
-class ProfilerProtocol(Protocol):
+class AbstractProfiler(ABC):
     settings: Settings
 
+    @abstractmethod
     def time(self,
              name: str,
              handler: Callable[..., T],
@@ -19,15 +19,18 @@ class ProfilerProtocol(Protocol):
              ) -> T:
         ...
 
+    @abstractmethod
     def dump(self) -> str:
         ...
 
+    @abstractmethod
     def is_alive(self) -> bool:
         ...
 
+    @abstractmethod
     def join_from(self, joiner: str) -> None:
         ...
 
 
 ProfilerGetter = Callable[[],
-                          Optional[ProfilerProtocol]]
+                          Optional[AbstractProfiler]]

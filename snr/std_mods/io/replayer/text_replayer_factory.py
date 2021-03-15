@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 
 from . import text_replayer
 
@@ -15,7 +15,7 @@ class TextReplayerFactory(LoopFactory):
         self.output_data_name = output_data_name
         self.exit = exit
 
-    def get(self, parent: NodeProtocol) -> ThreadLoop:
+    def get(self, parent: AbstractNode) -> ThreadLoop:
         return text_replayer.TextReplayer(self,
                                           parent,
                                           self.input_filename,

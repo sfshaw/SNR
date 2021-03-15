@@ -1,3 +1,18 @@
 [build-system]
 requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[pytest]
+norecursedirs = [
+    "bin",
+    "snr",
+
+    "build",
+    "dist",
+    ".git",
+    ".github",
+    ".mypy_cache", 
+    ".nox",
+    "typings",
+    ".vscode",
+    ]

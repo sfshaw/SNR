@@ -6,7 +6,7 @@ class ThreadLoopUnderTest(ThreadLoop):
 
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  expector: ExpectorProtocol,
                  ) -> None:
         super().__init__(factory, parent, "thread_loop_under_test")
@@ -15,8 +15,8 @@ class ThreadLoopUnderTest(ThreadLoop):
     def setup(self) -> None:
         self.expector.call("setup")
 
-    def loop_handler(self) -> None:
-        self.expector.call("loop")
+    def loop(self) -> None:
+        pass
 
     def halt(self) -> None:
         self.expector.call("halt")
@@ -31,7 +31,7 @@ class TestThreadLooopFactory(LoopFactory):
     def __init__(self, expector: ExpectorProtocol) -> None:
         self.expector = expector
 
-    def get(self, parent: NodeProtocol) -> ThreadLoop:
+    def get(self, parent: AbstractNode) -> ThreadLoop:
         return ThreadLoopUnderTest(self, parent, self.expector)
 
 
@@ -41,9 +41,10 @@ class TestThreadLoop(SNRTestCase):
 
         with self.expector({
             "setup": 1,
+            "halt": 1,
             "terminate": 1
         }) as expector:
             self.run_test_node([
                 TestThreadLooopFactory(expector),
-                TimeoutLoopFactory(ms=50),
+                TimeoutLoopFactory(ms=10),
             ])

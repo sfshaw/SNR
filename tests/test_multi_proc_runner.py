@@ -9,6 +9,6 @@ class TestMultiProcRunner(SNRTestCase):
         config = Config(
             Mode.TEST, {"test1": [fac],
                         "test2": [fac]})
-        runner: MultiRunnerProtocol = MultiProcRunner(config,
+        runner: AbstractMultiRunner = MultiProcRunner(config,
                                                       ["test1", "test2"])
         runner.run()

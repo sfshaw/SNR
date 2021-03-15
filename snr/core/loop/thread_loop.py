@@ -1,8 +1,9 @@
+from abc import ABC
 import logging
 import threading
 import time
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..contexts import Context
@@ -11,7 +12,7 @@ from .loop_factory import LoopFactory
 DEFAULT_TICK_RATE = 1000
 
 
-class ThreadLoop(Context, LoopProtocol):
+class ThreadLoop(Context, AbstractLoop, ABC):
     """An Asynchronous endpoint of data for a node
 
     An AsyncEndpoint is part of a node, and runs in its own thread. An
@@ -19,37 +20,40 @@ class ThreadLoop(Context, LoopProtocol):
     the Node. The endpoint has its loop handler function run according to its
     tick_rate (Hz).
 
-    Concrete subclasses should implement the remaining LoopProtocol methods:
+    Concrete subclasses should implement the remaining AbstractLoop methods:
     setup(), loop_handler(), and terminate()
     """
 
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
-                 tick_rate_hz: float = DEFAULT_TICK_RATE,
+                 max_tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
         super().__init__(name,
                          parent.settings,
                          parent.profiler,
                          parent.timer)
+        self.log.setLevel(logging.WARNING)
         self.factory = factory
         self.task_handlers: TaskHandlerMap = {}
         self.parent = parent
         self.delay_s: float = 0.0
-        self.set_delay(tick_rate_hz)
+        self.set_delay(max_tick_rate_hz)
         self.__terminate_flag = threading.Event()
         self.__thread = threading.Thread(target=self.threaded_method,
                                          name=self.name + "_thread")
-        self.log.setLevel(logging.WARNING)
 
-    def set_delay(self, tick_rate_hz: float):
-        if tick_rate_hz == 0:
+    def task_source(self) -> SomeTasks:
+        return None
+
+    def set_delay(self, max_tick_rate_hz: float):
+        if max_tick_rate_hz == 0:
             self.delay_s = 0.0
         else:
-            self.delay_s = 1.0 / tick_rate_hz
+            self.delay_s = 1.0 / max_tick_rate_hz
 
-    def start(self):
+    def begin(self):
         self.dbg("Starting %s loop thread", self.name)
         self.__thread.start()
 
@@ -63,13 +67,13 @@ class ThreadLoop(Context, LoopProtocol):
             self.warn("Thread was not alive on join")
 
     def threaded_method(self):
+        '''Concrete implementation of ThreadLoop's loop.
+        Calls user defined Loop Protocol methods setup(), loop(), and halt()
+        '''
         self.setup()
         try:
             while not self.__terminate_flag.is_set():
-                if self.profiler:
-                    self.profile(self.name, self.loop_handler)
-                else:
-                    self.loop_handler()
+                self.profile(self.name, self.loop)
                 self.tick()
         except KeyboardInterrupt:
             pass
@@ -89,3 +93,6 @@ class ThreadLoop(Context, LoopProtocol):
 
     def set_terminate_flag(self) -> None:
         self.__terminate_flag.set()
+
+    def schedule(self, t: SomeTasks) -> None:
+        self.parent.schedule(t)

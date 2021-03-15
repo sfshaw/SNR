@@ -3,7 +3,7 @@ from typing import Deque
 
 from snr.core import *
 from snr.core.core_utils import moving_avg_filter
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import moving_avg_endpoint
@@ -25,7 +25,7 @@ class MovingAvgEndpointFactory(EndpointFactory):
         self.endpoint_name = endpoint_name
 
     def get(self,
-            parent: NodeProtocol,
+            parent: AbstractNode,
             ) -> moving_avg_endpoint.MovingAvgEndpoint:
         filter = moving_avg_filter.MovingAvgFilter(self.backing_deque)
         return moving_avg_endpoint.MovingAvgEndpoint(self,

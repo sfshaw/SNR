@@ -1,7 +1,7 @@
 import logging
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from ..expector_protocol import ExpectorProtocol
@@ -10,7 +10,7 @@ from ..expector_protocol import ExpectorProtocol
 class ExpectorEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  expector: ExpectorProtocol,
                  exit_when_satisfied: bool,
                  ) -> None:
@@ -28,7 +28,10 @@ class ExpectorEndpoint(Endpoint):
     def task_source(self) -> None:
         return None
 
-    def start(self) -> None:
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
         pass
 
     def terminate(self) -> None:
@@ -38,5 +41,5 @@ class ExpectorEndpoint(Endpoint):
         self.dbg(f"Expector called for: {key}")
         self.expector.call(key)
         if self.exit_when_satisfied and self.expector.check():
-            return task_terminate("expector_satisfied")
+            return tasks.terminate("expector_satisfied")
         return None

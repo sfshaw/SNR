@@ -52,7 +52,7 @@
 #             self.err("Could not open serial port after {} tries: {}",
 #                      [self.settings.SERIAL_MAX_ATTEMPTS, e])
 #             self.parent.schedule(
-#                 task_terminate("serial_error"))
+#                 tasks.terminate("serial_error"))
 
 #         attempts = 0
 #         self.serial_connection = self.try_open_serial()

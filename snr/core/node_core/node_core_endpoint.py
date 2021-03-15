@@ -1,11 +1,11 @@
-from snr.protocol import *
+
+import logging
+
+from snr.interfaces import *
 from snr.type_defs import *
 
-from .endpoint import Endpoint
-from .endpoint_factory import EndpointFactory
-
-TASK_TYPE_LIST_ENDPOINTS = "list_endpoints"
-REMOVE_ENDPOINT_TASK_NAME = "remove_endpoint"
+from .. import tasks
+from ..endpoints import Endpoint, EndpointFactory
 
 
 class NodeCoreEndpoint(Endpoint):
@@ -20,20 +20,26 @@ class NodeCoreEndpoint(Endpoint):
 
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  ) -> None:
         super().__init__(factory,
                          parent,
                          "node_core")
+        self.log.setLevel(logging.WARNING)
         self.task_handlers = {
             TaskType.terminate: self.task_handler_terminate,
             TaskType.store_page: self.task_handler_store_page,
             TaskType.reload: self.task_handler_reload,
-            (TaskType.event, REMOVE_ENDPOINT_TASK_NAME):
-            self.task_handler_remove_endpoint,
+            (TaskType.event, tasks.ADD_COMPONENT_TASK_NAME):
+            self.task_handler_add_component,
+            (TaskType.event, tasks.REMOVE_ENDPOINT_TASK_NAME):
+                self.task_handler_remove_endpoint,
         }
 
-    def start(self) -> None:
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
         pass
 
     def terminate(self) -> None:
@@ -50,7 +56,7 @@ class NodeCoreEndpoint(Endpoint):
         if isinstance(page, Page):
             self.parent.synchronous_store(page)
             if page.process:
-                return task_process_data(page.key)
+                return tasks.process_data(page.key)
         else:
             self.err("Store page task value was not a page: %s", page)
         return None
@@ -62,22 +68,31 @@ class NodeCoreEndpoint(Endpoint):
         self.parent.set_terminate_flag(f"terminate_task:{t.name}")
         return None
 
-    def task_handler_reload(self, t: Task, key: TaskId) -> SomeTasks:
-        endpoint_name = t.name
-        endpoint = self.parent.endpoints.get(endpoint_name)
-        if endpoint:
-            self.info("Reloading endoint: %s", endpoint_name)
-            target = self.parent.endpoints.pop(endpoint_name)
+    def task_handler_reload(self, task: Task, key: TaskId) -> SomeTasks:
+        target_name = task.name
+        if target_name in self.parent.components.keys():
+            self.info("Reloading component: %s", target_name)
+            target = self.parent.components.pop(target_name)
             target.join()
-            new_name = self.parent.add_component(target.reload())
-            if new_name:
-                self.parent.endpoints[new_name].start()
-            else:
-                self.warn("Failed to restart reloaded endpoint %s",
-                          endpoint_name)
+            target.factory.reload()
+            return tasks.add_component(target.factory)
         else:
-            self.warn("Endpoint %s not found", endpoint_name)
+            self.warn("Components %s not found", target_name)
 
+        return None
+
+    def task_handler_add_component(self, task: Task, key: TaskId) -> SomeTasks:
+        assert isinstance(task.val_list[0], AbstractFactory)
+        factory: AbstractFactory = task.val_list[0]
+
+        new_component = factory.get(self.parent)
+        self.parent.components[new_component.name] = new_component
+        if new_component:
+            new_component.begin()
+            self.info("Added component %s", new_component.name)
+        else:
+            self.warn("Failed to restart reloaded component from %s",
+                      factory)
         return None
 
     def task_handler_remove_endpoint(self,
@@ -85,6 +100,8 @@ class NodeCoreEndpoint(Endpoint):
                                      key: TaskId,
                                      ) -> SomeTasks:
         target_name = task.val_list[0]
-        self.info("Removing endpoint %s", target_name)
-        self.parent.endpoints.pop(target_name)
+        self.info("Removing component %s", target_name)
+        target = self.parent.components.pop(target_name)
+        target.join()
+        target.terminate()
         return None

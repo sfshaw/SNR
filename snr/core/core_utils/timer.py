@@ -1,6 +1,6 @@
 import time
 
-from snr.protocol import *
+from snr.interfaces import *
 
 
 class Timer(TimerProtocol):

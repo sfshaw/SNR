@@ -1,4 +1,3 @@
-import logging
 import multiprocessing as mp
 
 import pytest
@@ -40,13 +39,13 @@ class TestPipeLoop(SNRTestCase):
 
     @pytest.mark.timeout(0.500)
     def test_two_pipe_loops(self) -> None:
-        logging.getLogger().setLevel(logging.WARNING)
 
         data_key = "my_data"
         expectations: Expectations = {
             (TaskType.process_data, data_key): 1
         }
 
+        (pipe1, pipe2) = mp.Pipe(duplex=True)
         with MPExpector(expectations, self) as expector1, \
             MPExpector(expectations, self) as expector2, \
                 self.temp_file() as temp_file:
@@ -56,7 +55,6 @@ class TestPipeLoop(SNRTestCase):
 
             temp_file.assertExists()
 
-            (pipe1, pipe2) = mp.Pipe(duplex=True)
             config = Config(
                 Mode.TEST, {
                     "test1": [
@@ -70,6 +68,8 @@ class TestPipeLoop(SNRTestCase):
                         ExpectorEndpointFactory(expector2,
                                                 exit_when_satisfied=True),
                     ]})
-            runner: MultiRunnerProtocol = MultiProcRunner(config,
+            runner: AbstractMultiRunner = MultiProcRunner(config,
                                                           ["test1", "test2"])
             runner.run()
+            pipe1.close()
+            pipe2.close()

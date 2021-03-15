@@ -2,8 +2,7 @@ import logging
 from typing import List
 
 from snr.core import *
-from snr.core.endpoints.node_core_endpoint import REMOVE_ENDPOINT_TASK_NAME
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 POLL_TIMEOUT_MS: float = 0
@@ -12,13 +11,13 @@ POLL_TIMEOUT_MS: float = 0
 class CommsLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
-                 conn: ConnectionProtocol,
+                 conn: AbstractConnection,
                  data_keys: List[DataKey],
                  ) -> None:
         super().__init__(factory, parent, name)
-        self.connection: ConnectionProtocol = conn
+        self.connection: AbstractConnection = conn
         for key in data_keys:
             self.task_handlers[(TaskType.process_data, key)
                                ] = self.process_data
@@ -40,7 +39,7 @@ class CommsLoop(ThreadLoop):
         if self.connection.is_closed():
             self.err("Connection not open: %s", self.connection)
 
-    def loop_handler(self) -> None:
+    def loop(self) -> None:
         if self.connection.is_closed():
             self.err("Connection %s is closed", self.connection)
         else:
@@ -58,8 +57,8 @@ class CommsLoop(ThreadLoop):
                         raise Exception("Failed to deserialize Page")
                 else:
                     self.warn("Recieved zero bytes, shutting down")
-                    self.parent.schedule(task_event(
-                        REMOVE_ENDPOINT_TASK_NAME, [self.name]))
+                    self.parent.schedule(tasks.event(
+                        tasks.REMOVE_ENDPOINT_TASK_NAME, [self.name]))
                     self.set_terminate_flag()
             else:
                 # self.dbg("Did not recv anything")

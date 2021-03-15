@@ -1,12 +1,12 @@
 from typing import Optional
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import timeout_loop
 
-FAST_TEST_TIMEOUT_MS: float = 10.0
+FAST_TEST_TIMEOUT_MS: float = 5.0
 
 
 class TimeoutLoopFactory(LoopFactory):
@@ -18,10 +18,10 @@ class TimeoutLoopFactory(LoopFactory):
         super().__init__(timeout_loop)
         self.timeout_s = seconds + (ms / 1000)
         if not task:
-            task = task_terminate("Timeout")
+            task = tasks.terminate("Timeout")
         self.task: Task = task
 
-    def get(self, parent: NodeProtocol) -> LoopProtocol:
+    def get(self, parent: AbstractNode) -> AbstractLoop:
         return timeout_loop.TimeoutLoop(self,
                                         parent,
                                         self.timeout_s,

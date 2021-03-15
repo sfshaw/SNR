@@ -2,16 +2,16 @@ import logging
 import threading
 from typing import Any, Callable, Optional, TypeVar
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
-class Context(ContextProtocol):
+class Context(AbstractContext):
 
     def __init__(self,
                  name: str,
                  settings: Settings,
-                 profiler: Optional[ProfilerProtocol],
+                 profiler: Optional[AbstractProfiler],
                  timer: TimerProtocol,
                  ) -> None:
         self.name = name

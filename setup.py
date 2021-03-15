@@ -12,13 +12,14 @@ setup(
     author='Spencer Shaw',
     author_email='calpolyroboticsclub@gmail.com',
     packages=find_packages(where='.',
-                           exclude=['tests']),
+                           exclude=['tests']),  # type: ignore
     url='http://github.com/sfshaw-calpoly/SNR',
     license='LICENSE.txt',
     description='Soft-realtime robotics framework for education',
     long_description=long_description,
     long_description_content_type='text/markdown',
     install_requires=[
+        'typing_extensions;python_version<"3.8"',   # Protocol backport
         'dataclasses;python_version<"3.7"',         # Dataclasses backport
         'dataclasses_json>=0.5.2',                  # Serialization
         # 'numpy>=1.20.0',                            # Kalman filter, CV
@@ -39,7 +40,7 @@ setup(
             'flake8>=3.8',      # Linter
         ],
     },
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
@@ -52,6 +53,7 @@ setup(
 
         'License :: OSI Approved :: MIT License',
 
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

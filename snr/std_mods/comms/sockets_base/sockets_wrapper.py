@@ -4,17 +4,17 @@ import socket
 from typing import Any, List, Optional, Tuple
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import sockets_header
 
 
-class SocketsWrapper(Context, ConnectionProtocol):
+class SocketsWrapper(Context, AbstractConnection):
 
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
-                 parent: ContextProtocol,
+                 parent: AbstractContext,
                  ) -> None:
         super().__init__("sockets_wrapper",
                          parent.settings,

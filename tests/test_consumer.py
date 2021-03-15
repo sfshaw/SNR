@@ -3,7 +3,8 @@ import time
 
 from snr import *
 
-SLEEP_TIME_S = 0.00005
+SLEEP_TIME_S = 0.000050
+CATCH_UP_TIME_S = SLEEP_TIME_S * 4
 
 
 class TestConsumer(SNRTestCase):
@@ -23,7 +24,6 @@ class TestConsumer(SNRTestCase):
         self.assertEqual(3, self.num)
 
     def test_consumer_start_join(self):
-        CATCH_UP_TIME_S = SLEEP_TIME_S * 10
         consumer = Consumer[int]("test_start_join",
                                  lambda _: None,
                                  SLEEP_TIME_S)
@@ -57,9 +57,9 @@ class TestConsumer(SNRTestCase):
 
         def flush() -> None:
             if consumer.is_alive():
-                time.sleep(SLEEP_TIME_S * 10)
+                time.sleep(CATCH_UP_TIME_S)
                 consumer.flush()
-                time.sleep(SLEEP_TIME_S * 10)
+                time.sleep(CATCH_UP_TIME_S)
                 consumer.flush()
 
         try:

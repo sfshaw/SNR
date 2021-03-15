@@ -1,30 +1,51 @@
 from typing import Any, Dict, List, Optional, Tuple
 
+from snr.interfaces.abstract_component import AbstractComponent
 from snr.type_defs import *
 from snr.type_defs.task import *
-from typing_extensions import Protocol, runtime_checkable
 
-from .component_protocol import ComponentProtocol
-from .context_protocol import ContextProtocol
-from .endpoint_protocol import EndpointProtocol
-from .factory_protocol import FactoryProtocol
+from .abstract_context import AbstractContext
+from abc import ABC, abstractmethod
 
 
-@runtime_checkable
-class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
+class AbstractNode(AbstractContext, ABC):
     role: Role
     mode: Mode
-    endpoints: Dict[str, EndpointProtocol]
+    components: Dict[ComponentName, AbstractComponent]
 
+    @abstractmethod
     def loop(self) -> None:
         ...
 
-    def get_task_handlers(self, t: Task) -> List[Tuple[TaskHandler, TaskId]]:
+    @abstractmethod
+    def get_new_tasks(self) -> SomeTasks:
+        """Retrieve tasks from endpoints and queue them.
+        """
         ...
 
+    @abstractmethod
+    def get_task_handlers(self,
+                          task: Task,
+                          ) -> List[Tuple[TaskHandler, TaskId]]:
+        ...
+
+    @abstractmethod
+    def handle_task(self,
+                    handler: TaskHandler,
+                    task: Task,
+                    key: TaskId,
+                    ) -> Optional[List[Task]]:
+        ...
+
+    @abstractmethod
+    def execute_task(self, t: Task) -> None:
+        ...
+
+    @abstractmethod
     def set_terminate_flag(self, reason: str) -> None:
         ...
 
+    @abstractmethod
     def terminate(self) -> None:
         """Execute actions needed to deconstruct a Node.
         Terminate is executed the main thread or process of an object.
@@ -33,15 +54,15 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
         """
         ...
 
+    @abstractmethod
     def is_terminated(self) -> bool:
         ...
 
-    def add_component(self, factory: FactoryProtocol) -> Optional[str]:
-        ...
-
+    @abstractmethod
     def schedule(self, t: SomeTasks) -> None:
         ...
 
+    @abstractmethod
     def page(self,
              key: DataKey,
              data: Any,
@@ -59,8 +80,10 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
                         data: Any,
                         process: bool = True,
                         ) -> Task:
-        return task_store_page(self.page(key, data, process))
+        return Task(TaskType.store_page, key,
+                    val_list=[self.page(key, data, process)])
 
+    @abstractmethod
     def store_page(self, page: Page) -> None:
         '''Thread-safe method for scheduling a task to store a page.
         '''
@@ -76,15 +99,7 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
         '''
         self.store_page(self.page(key, data, process))
 
-    def synchronous_store(self, page: Page) -> None:
-        '''Only for synchronous task handlers:
-         Writes directely to the Node's datastore.
-        For use by [synchronous] node core endpoints to write pages to the
-        datastore from the main thread event loop. Not for use by Loops
-        running outside the main thread, such as ThreadLoops.
-        '''
-        ...
-
+    @abstractmethod
     def get_page(self, key: DataKey) -> Optional[Page]:
         '''Thread-safe accesor for pages.
         '''
@@ -98,8 +113,20 @@ class NodeProtocol(ContextProtocol, ComponentProtocol, Protocol):
             return page.data
         return None
 
+    @abstractmethod
+    def synchronous_store(self, page: Page) -> None:
+        '''Only for synchronous task handlers:
+         Writes directely to the Node's datastore.
+        For use by [synchronous] node core endpoints to write pages to the
+        datastore from the main thread event loop. Not for use by Loops
+        running outside the main thread, such as ThreadLoops.
+        '''
+        ...
+
+    @abstractmethod
     def get_time_s(self) -> float:
         ...
 
+    @abstractmethod
     def dump_data(self) -> str:
         ...

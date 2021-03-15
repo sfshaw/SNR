@@ -1,10 +1,10 @@
 import logging
 import select
 import socket
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from .sockets_loop_factory import SocketsLoopFactory
@@ -16,7 +16,7 @@ POLL_TIMEOUT_MS: float = 0
 class SocketsListenerLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
                  port: int,
                  data_keys: List[DataKey],
@@ -42,7 +42,7 @@ class SocketsListenerLoop(ThreadLoop):
         self.factory.existing_socket = self.socket  # type: ignore
         self.dbg("Socket server on fd(%s) ready", self.socket.fileno())
 
-    def loop_handler(self) -> None:
+    def loop(self) -> None:
         assert self.socket
         try:
             poll_result = self.select.poll(POLL_TIMEOUT_MS)
@@ -51,18 +51,12 @@ class SocketsListenerLoop(ThreadLoop):
                 self.dbg("Socket %s polled, blocking on accept",
                          self.socket.fileno())
                 connection = self.socket.accept()
-                self.handle_connection(connection)
+                self.dbg("Scheduling add_component to handle connection")
+                self.schedule(tasks.add_component(
+                    SocketsLoopFactory(connection,
+                                       self.data_keys)))
         except socket.timeout:
             pass
-
-    def handle_connection(self, connection: Tuple[socket.socket, Any]) -> None:
-        name = self.parent.add_component(SocketsLoopFactory(connection,
-                                                            self.data_keys))
-        if name:
-            self.parent.endpoints[name].start()
-            self.dbg("Added sockets loop to handle connection")
-        else:
-            self.err("Failed to add sockets_loop to parent node")
 
     def halt(self) -> None:
         pass

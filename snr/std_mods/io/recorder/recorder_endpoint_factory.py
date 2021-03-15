@@ -1,19 +1,19 @@
 from typing import List
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import recorder_endpoint
 
 
-class RecorderFactory(EndpointFactory):
+class RecorderEndpointFactory(EndpointFactory):
     def __init__(self, filename: str, data_keys: List[DataKey]):
         super().__init__(recorder_endpoint)
         self.filename = filename
         self.data_keys = data_keys
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return recorder_endpoint.RecorderEndpoint(self,
                                                   parent,
                                                   "recorder",

@@ -2,6 +2,8 @@ from enum import Enum
 from typing import Any, Dict, Optional, Tuple, Union
 
 from snr import *
+from snr.utils.dummy_endpoint.dummy_endpoint_factory import \
+    DummyEndpointFactory
 
 
 class Type(Enum):
@@ -56,21 +58,19 @@ class TestNode(SNRTestCase):
                         ])
                         )
 
-            handlers = node.get_task_handlers(task_terminate("test"))
+            handlers = node.get_task_handlers(tasks.terminate("test"))
             self.assertEqual(1, len(handlers))
 
-            handlers = node.get_task_handlers(task_event("none"))
+            handlers = node.get_task_handlers(tasks.event("none"))
             self.assertEqual(0, len(handlers))
 
             handlers = node.get_task_handlers(
-                task_process_data("by_type"))
+                tasks.process_data("by_type"))
             self.assertEqual(2, len(handlers))
 
             node.set_terminate_flag("test done")
             node.terminate()
 
-        except KeyboardInterrupt:
-            pass
         finally:
             if node and not node.is_terminated():
                 node.set_terminate_flag("test done")

@@ -1,9 +1,9 @@
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 from types import ModuleType
 
 
-class LoopFactory(FactoryProtocol):
+class LoopFactory(AbstractFactory):
     def __init__(self,
                  reload_targets: ReloadTargets = [],
                  ) -> None:

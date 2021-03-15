@@ -1,14 +1,14 @@
 import time
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class TimeoutLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent_node: NodeProtocol,
+                 parent_node: AbstractNode,
                  timeout_s: float,
                  task: Task,
                  ) -> None:
@@ -22,3 +22,12 @@ class TimeoutLoop(ThreadLoop):
         if self.timeout_s > 0:
             time.sleep(self.timeout_s)
         self.parent.schedule(self.task)
+
+    def loop(self) -> None:
+        pass
+
+    def halt(self) -> None:
+        pass
+
+    def terminate(self) -> None:
+        pass

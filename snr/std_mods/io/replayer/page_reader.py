@@ -1,14 +1,14 @@
 from typing import Any, Optional, TextIO
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class PageReader(Context):
 
     def __init__(self,
-                 parent: ContextProtocol,
+                 parent: AbstractContext,
                  name: str,
                  filename: str,
                  ) -> None:

@@ -1,50 +1,57 @@
 import functools
+import logging
 import multiprocessing as mp
 import operator
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
+from . import tasks
 from .contexts import RootContext
-from .endpoints import NodeCoreFactory
+from .node_core.node_core_factory import NodeCoreFactory
 from .task_queue import TaskQueue
 
-SLEEP_TIME_S = 0.000001
+# SLEEP_TIME_S: float = 0.000001
+SLEEP_TIME_S: float = 0
 
 
-class Node(RootContext, NodeProtocol):
+class Node(RootContext, AbstractNode):
     def __init__(self,
                  role: Role,
-                 config: ConfigProtocol,
+                 config: AbstractConfig,
                  ) -> None:
         super().__init__(role + "_node", config.mode)
+        self.log.setLevel(logging.WARNING)
         self.info("Initializing in mode %s", config.mode)
         self.role = role
         self.mode = config.mode
         self.profiler_getter: ProfilerGetter = config.get_profiler
-        self.__task_queue = TaskQueue(self, self.__get_new_tasks)
+        self.__task_queue = TaskQueue(self, self.get_new_tasks)
         self.__datastore: Dict[DataKey, Page] = {}
-        self.endpoints: Dict[str, EndpointProtocol] = {}
-        self.add_component(NodeCoreFactory())
+        core_endpoint = NodeCoreFactory().get(self)
+        self.components: Dict[ComponentName, AbstractComponent] = {
+            core_endpoint.name: core_endpoint,
+        }
         for factory in config.get(role):
-            self.add_component(factory)
+            component = factory.get(self)
+            self.components[component.name] = component
         self.__terminate_flag = mp.Event()
         self.__is_terminated = mp.Event()
         self.info("Initialized with %s endpoints",
-                  len(self.endpoints))
+                  len(self.components))
 
     def loop(self) -> None:
         try:
             self.profiler = self.profiler_getter()
-            for endpoint in self.endpoints.values():
-                endpoint.start()
+            for endpoint in self.components.values():
+                endpoint.begin()
 
             while not self.__terminate_flag.is_set():
                 t: Optional[Task] = self.__task_queue.get_next()
                 if t:
-                    self.__execute_task(t)
+                    self.execute_task(t)
                 else:
                     if SLEEP_TIME_S > 0:
                         time.sleep(SLEEP_TIME_S)
@@ -52,61 +59,59 @@ class Node(RootContext, NodeProtocol):
             self.dbg("Node exiting main loop")
             self.terminate()
 
-    def __get_new_tasks(self) -> SomeTasks:
-        """Retrieve tasks from endpoints and queue them.
-        """
+    def get_new_tasks(self) -> SomeTasks:
         new_tasks: List[Task] = []
-        for endpoint in self.endpoints.values():
-            t: SomeTasks = endpoint.task_source()
+        for component in self.components.values():
+            t: SomeTasks = component.task_source()
             if t:
                 if isinstance(t, Task):
                     new_tasks.append(t)
                 else:
                     new_tasks.extend(t)
                 self.dbg("Produced task: %s from %s",
-                         t, endpoint)
+                         t, component)
         return new_tasks
 
-    def __handle_task(self,
-                      handler: TaskHandler,
-                      t: Task,
-                      k: TaskId
-                      ) -> Optional[List[Task]]:
+    def handle_task(self,
+                    handler: TaskHandler,
+                    task: Task,
+                    key: TaskId,
+                    ) -> Optional[List[Task]]:
         self.dbg("Executing %s task with %s",
-                 t.name, handler)
-        result = self.profile(f"{t.type}({t.name})", handler, t, k)
+                 task.name, handler)
+        result = self.profile(f"{task.type}({task.name})", handler, task, key)
         if isinstance(result, Task):
             return [result]
         else:
             return result
 
-    def __execute_task(self, t: Task) -> None:
+    def execute_task(self, t: Task) -> None:
         handlers = self.get_task_handlers(t)
         self.dbg("Got %s handlers for %s task",
                  len(handlers), t.id())
-        results: List[List[Task]] = list(filter(None,
-                                                [self.__handle_task(h, t, k)
-                                                 for (h, k) in handlers]))
-        new_tasks: List[Task] = functools.reduce(operator.iconcat,
-                                                 results,
-                                                 [])
+        new_tasks: List[Task] = functools.reduce(
+            operator.iconcat,
+            filter(None,
+                   [self.handle_task(h, t, k)
+                    for (h, k) in handlers]),
+            list())
         self.dbg("Task execution resulted in %s new tasks",
                  len(new_tasks))
         if new_tasks:
             self.__task_queue.schedule(new_tasks)
 
     def get_task_handlers(self,
-                          t: Task,
+                          task: Task,
                           ) -> List[Tuple[TaskHandler, TaskId]]:
-        return list(filter(None, map(lambda e: e.get_task_handler(t),
-                                     self.endpoints.values())))
+        return list(filter(None, map(lambda e: e.get_task_handler(task),
+                                     self.components.values())))
 
     def set_terminate_flag(self, reason: str) -> None:
         self.info("Setting terminate flag for: %s", reason)
         self.store_data("exit_reason", reason, False)
         self.__terminate_flag.set()
-        for endpoint in self.endpoints.values():
-            endpoint.set_terminate_flag()
+        # for endpoint in self.components.values():
+        #     endpoint.set_terminate_flag()
 
     def terminate(self) -> None:
         """Execute actions needed to deconstruct a Node.
@@ -118,11 +123,11 @@ class Node(RootContext, NodeProtocol):
         if self.is_terminated():
             self.err("Already terminated")
 
-        for e in self.endpoints.values():
-            e.join()
-            e.terminate()
+        for component in self.components.values():
+            component.join()
+            component.terminate()
         self.info("Terminated all %s endpoints",
-                  len(self.endpoints))
+                  len(self.components))
 
         self.dbg(self.dump_data())
 
@@ -134,18 +139,16 @@ class Node(RootContext, NodeProtocol):
     def is_terminated(self) -> bool:
         return self.__is_terminated.is_set()
 
-    def add_component(self, factory: FactoryProtocol) -> Optional[str]:
-        component = factory.get(self)
-        if isinstance(component, EndpointProtocol):
-            self.endpoints[component.name] = component
-            self.info("%s added %s", factory, component)
-            return component.name
-        else:
-            self.err("Unknown component type: %s", component)
-            return None
-
     def schedule(self, t: SomeTasks) -> None:
         self.__task_queue.schedule(t)
+
+    def page(self,
+             key: DataKey,
+             data: Any,
+             process: bool = True,
+             ) -> Page:
+        created_at = self.timer.current_s()
+        return Page(key, data, self.name, created_at, process)
 
     def synchronous_store(self, page: Page) -> None:
         self.check_main_thread(
@@ -153,14 +156,10 @@ class Node(RootContext, NodeProtocol):
         self.__datastore[page.key] = page
         self.dbg("Page stored: (%s)", page.key)
 
-    def page(self, key: DataKey, data: Any, process: bool = True) -> Page:
-        created_at = self.timer.current_s()
-        return Page(key, data, self.name, created_at, process)
-
     def store_page(self, page: Page) -> None:
-        self.schedule(task_store_page(page))
+        self.schedule(tasks.store_page(page))
 
-    def get_page(self, key: str) -> Optional[Page]:
+    def get_page(self, key: DataKey) -> Optional[Page]:
         return self.__datastore.get(key)
 
     def get_time_s(self) -> float:

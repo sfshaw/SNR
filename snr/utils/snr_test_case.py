@@ -1,11 +1,10 @@
 import socket
-import threading
 import time
 import unittest
 from typing import Any, List, Optional, Tuple
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.std_mods import *
 from snr.type_defs import *
 
@@ -22,14 +21,12 @@ class SNRTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.startTime = time.time()
         self.test_name = self.id().split(".")[-1]
+        self.temp_files_used = 0
 
     def tearDown(self) -> None:
-        t = time.time() - self.startTime
         if PRINT_INDIVIDUAL_RUNTIME:
-            print(f"{self.id()}: \t{t:32.3f}s")
-        for thread in threading.enumerate():
-            if not thread.is_alive():
-                print("Zombie thread %s culled", thread.name)
+            end_time = time.time() - self.startTime
+            print(f"{end_time* 1000:6.2f} ms: {self.id()}")
 
     def expector(self,
                  expectations: Expectations,
@@ -42,23 +39,23 @@ class SNRTestCase(unittest.TestCase):
         return OrderedExpector(expectations, self)
 
     def get_config(self,
-                   factories: List[FactoryProtocol],
+                   factories: List[AbstractFactory],
                    mode: Mode = Mode.TEST
                    ) -> Config:
         return Config(mode, {"test": factories})
 
-    def get_context(self) -> ContextProtocol:
+    def get_context(self) -> AbstractContext:
         return RootContext("test_context", Mode.TEST)
 
     def run_test_node(self,
-                      factories: List[FactoryProtocol],
+                      factories: List[AbstractFactory],
                       mode: Mode = Mode.TEST,
                       ) -> None:
         config = self.get_config(factories, mode)
         runner = TestRunner(config)
         runner.run()
 
-    def mock_node(self) -> NodeProtocol:
+    def mock_node(self) -> AbstractNode:
         return MockNode()
 
     def temp_file(self,
@@ -67,7 +64,8 @@ class SNRTestCase(unittest.TestCase):
                   cleanup: bool = True,
                   ) -> TempFile:
         if not filename:
-            filename = self.test_name + ".tmp"
+            filename = f"{self.test_name}_{self.temp_files_used}.tmp"
+            self.temp_files_used += 1
         return TempFile(self, filename, overwrite, cleanup)
 
     def assertPage(self, page: Optional[Page],

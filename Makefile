@@ -1,5 +1,6 @@
 CPYTHON=python3
 
+CPYTHON36=python3.6
 CPYTHON37=python3.7
 CPYTHON38=python3.8
 CPYTHON39=python3.9
@@ -66,27 +67,32 @@ nox:
 .PHONY: test
 t: test
 test: 
-	$(PYTHON) -m pytest
+	$(PYTHON) -m pytest ./tests/ --new-first
 
 .PHONY: unittest
 ut: unittest
 unittest: 
-	$(PYTHON) -m unittest
+	$(PYTHON) -m unittest -q
 
 .PHONY: test_all
 ta: test_all
 test_all:
-	nox -s test_all
+	nox -s test
 
 .PHONY: lint
 l: lint
-lint: mypy 
-	nox -s lint
+lint: 
+	nox -s mypy lint
 
 .PHONY: mypy
 my: mypy
 mypy:
 	nox -s mypy
+
+.PHONY: flake
+f: flake
+flake:
+	nox -s lint
 
 .PHONY: diagram
 diagram: protocols.png

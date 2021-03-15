@@ -11,16 +11,9 @@ class TestConsole(SNRTestCase):
         ]
 
         def try_console():
-            console = LocalConsole(DEFAULT_PORT,
-                                   commands,
-                                   retry_wait_s=0.001)
+            LocalConsole(DEFAULT_PORT,
+                         commands,
+                         retry_wait_s=0.001)
             # Console constructor should block and raise
-            console.join()
 
         self.assertRaises(ConnectionRefusedError, try_console)
-        # config = self.get_config([
-        #     CommandReceiverFactory(CONSOLE_PORT),
-        #     CommandProcessorFactory()])
-        # runner = SynchronusTestRunner(config)
-        # runner.run()
-    pass

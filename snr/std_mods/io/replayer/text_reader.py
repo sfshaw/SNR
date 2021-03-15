@@ -1,13 +1,13 @@
-from typing import Optional, TextIO
+from typing import Any, Optional, TextIO
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class TextReader(Context):
     def __init__(self,
-                 parent: ContextProtocol,
+                 parent: AbstractContext,
                  name: str,
                  filename: str,
                  ) -> None:
@@ -18,6 +18,8 @@ class TextReader(Context):
 
         self.filename = filename
         self.file: Optional[TextIO] = None
+
+    def open(self) -> None:
         try:
             self.file = open(self.filename)
             self.dbg(f"File {self.filename} opened")
@@ -42,3 +44,10 @@ class TextReader(Context):
         if self.file:
             self.info("Closing file %s", self.filename)
             self.file.close()
+
+    def __enter__(self) -> 'TextReader':
+        self.open()
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        self.close()

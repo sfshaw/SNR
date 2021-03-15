@@ -14,7 +14,7 @@
 #         # TODO: Support updating Arduino firmware on startup
 #         self.firmware_path = firmware_path
 
-#     def get(self, parent: NodeProtocol) -> EndpointProtocol:
+#     def get(self, parent: NodeProtocol) -> AbstractEndpoint:
 #         return serial_connection.SerialConnection(self,
 #                                                   parent,
 #                                                   "Serial Connection",

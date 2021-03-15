@@ -2,40 +2,42 @@ import logging
 from typing import List
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class RecorderEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
                  filename: str,
                  data_keys: List[str]):
         super().__init__(factory, parent, name)
+        self.log.setLevel(logging.WARNING)
         self.task_handlers = self.map_handlers(data_keys)
+        self.data_keys = data_keys
         self.filename = filename
         self.file = open(filename, "w")
-        self.log.setLevel(logging.WARNING)
 
     def task_source(self) -> None:
         return None
 
     def task_handler(self, t: Task, k: TaskId) -> SomeTasks:
         self.dbg("Recording task: %s", [t])
-        if t.type is TaskType.process_data:
-            page = self.parent.get_page(t.name)
-            if page:
+        if ((t.type is TaskType.store_page) and
+                (t.name in self.data_keys)):
+            page = t.val_list[0]
+            if isinstance(page, Page):
                 json_data = page.serialize().decode()
                 self.file.write(json_data)
                 self.file.write("\n")
                 self.file.flush()
                 self.dbg("Wrote '%s' to %s", json_data, self.filename)
             else:
-                self.err("Tried to read non-existant page: %s", t.name)
+                self.warn("Task did not contain valid page: %s", t.name)
         else:
-            self.err("Tried non-data processing task: %s", t.name)
+            self.warn("Tried non-data processing task: %s", t.name)
         return None
 
     def map_handlers(self,
@@ -43,11 +45,15 @@ class RecorderEndpoint(Endpoint):
                      ) -> TaskHandlerMap:
         handlers: TaskHandlerMap = {}
         for data_name in data_names:
-            handlers[(TaskType.process_data, data_name)] = self.task_handler
-            handlers[(TaskType.event, data_name)] = self.task_handler
+            handlers[(TaskType.store_page, data_name)] = self.task_handler
         return handlers
 
-    def join(self) -> None:
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
         self.file.flush()
+
+    def terminate(self) -> None:
         self.file.close()
         self.info("Closing file %s", self.filename)
