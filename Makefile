@@ -76,7 +76,7 @@ unittest:
 .PHONY: test_all
 ta: test_all
 test_all:
-	nox -s test_all
+	nox -s test
 
 .PHONY: lint
 l: lint

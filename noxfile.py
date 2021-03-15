@@ -12,21 +12,13 @@ SUPPORTED_PYTHON_VERSIONS: List[str] = [
 ]
 
 
-@nox.session(python=DEFAULT_PYTHON_VERSION,
+@nox.session(python=SUPPORTED_PYTHON_VERSIONS,
              reuse_venv=True)
 def test(session: nox.Session):
     session.install('-r', 'requirements.txt')
     session.install('-r', 'requirements-test.txt')
     session.run('pytest', './tests/',
                 external=False)
-
-
-@nox.session(python=SUPPORTED_PYTHON_VERSIONS,
-             reuse_venv=True)
-def test_all(session: nox.Session):
-    session.install('-r', 'requirements.txt')
-    session.install('-r', 'requirements-test.txt')
-    session.run('pytest', external=False)
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION,
