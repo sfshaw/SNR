@@ -53,7 +53,6 @@ class TestReplayerChronological(SNRTestCase):
                       for i in range(len(times) - 1)]
         avg = sum(time_diffs) / len(time_diffs)
         msg = f"\nTimes: {times}\nTime diffs: {time_diffs}"
-        print(msg)
         self.assertAlmostEqual(avg, time_step_s,
                                delta=time_step_s / num_data_points,
                                msg=msg)
