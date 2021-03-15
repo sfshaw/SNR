@@ -19,6 +19,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     install_requires=[
+        'typing_extensions;python_version<"3.8"',   # Protocol backport
         'dataclasses;python_version<"3.7"',         # Dataclasses backport
         'dataclasses_json>=0.5.2',                  # Serialization
         # 'numpy>=1.20.0',                            # Kalman filter, CV
@@ -39,5 +40,5 @@ setup(
             'flake8>=3.8',      # Linter
         ],
     },
-    python_requires='>=3.7'
+    python_requires='>=3.6'
 )

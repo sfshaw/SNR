@@ -1,5 +1,6 @@
 CPYTHON=python3
 
+CPYTHON36=python3.6
 CPYTHON37=python3.7
 CPYTHON38=python3.8
 CPYTHON39=python3.9
