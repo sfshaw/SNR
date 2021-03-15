@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 
 from ...comms.sockets_comms import sockets_listener_factory
 from . import command_processor_factory, remote_console
@@ -12,9 +12,9 @@ class CommandReceiverFactory(LoopFactory):
                           sockets_listener_factory])
         self.port = port
 
-    def get(self, parent: NodeProtocol) -> LoopProtocol:
-        parent.add_component(
-            command_processor_factory.CommandProcessorFactory())
+    def get(self, parent: AbstractNode) -> AbstractLoop:
+        parent.schedule(tasks.add_component(
+            command_processor_factory.CommandProcessorFactory()))
         return sockets_listener_factory.SocketsListenerFactory(
             self.port,
             data_keys=[remote_console.COMMAND_ACK_DATA_NAME],

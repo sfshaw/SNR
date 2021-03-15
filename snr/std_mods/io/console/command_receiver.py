@@ -3,27 +3,27 @@ import socket
 import sys
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 
 class CommandReceiver(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  name: str,
                  port: int
                  ) -> None:
         super().__init__(factory,
                          parent,
                          name,
-                         tick_rate_hz=0)
+                         max_tick_rate_hz=0)
         self.port = port
 
     def send(self, data: Page) -> None:
         return None
 
-    def loop_handler(self) -> None:
+    def loop(self) -> None:
         with socket.socket(socket.AF_INET,
                            socket.SOCK_STREAM) as sock:
             sock.bind(("localhost", self.port))

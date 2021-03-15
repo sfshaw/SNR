@@ -2,7 +2,7 @@ import logging
 from typing import Callable, Dict, List, Tuple
 
 from snr.core import *
-from snr.protocol import *
+from snr.interfaces import *
 from snr.type_defs import *
 
 from . import remote_console
@@ -18,7 +18,7 @@ CommandDict = Dict[Command,
 class CommandProcessor(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent: NodeProtocol,
+                 parent: AbstractNode,
                  ) -> None:
         super().__init__(factory,
                          parent,
@@ -58,8 +58,9 @@ class CommandProcessor(Endpoint):
             else:
                 response = f"Invalid command {args[0]}"
 
-        return task_store_page(self.parent.page(
-            remote_console.COMMAND_ACK_DATA_NAME, response))
+        return tasks.store_page(self.parent.page(
+            remote_console.COMMAND_ACK_DATA_NAME,
+            response))
 
     def cmd_schedule_task(self, args: List[str]) -> str:
         type = TaskType(args[0])
@@ -69,7 +70,7 @@ class CommandProcessor(Endpoint):
 
     def cmd_exit(self, args: List[str]) -> str:
         self.dbg("Executing exit command")
-        self.parent.schedule(task_terminate("terminate_cmd"))
+        self.parent.schedule(tasks.terminate("terminate_cmd"))
         return "Terminating"
 
     def cmd_reload(self, args: List[str]) -> str:
@@ -77,10 +78,10 @@ class CommandProcessor(Endpoint):
         if len(args) == 1:
             target = args[0]
             if target == "all":
-                for endpoint_name in self.parent.endpoints.keys():
-                    self.parent.schedule(task_reload(endpoint_name))
+                for component_name in self.parent.components.keys():
+                    self.schedule(tasks.reload_component(component_name))
             else:
-                self.parent.schedule(task_reload(target))
+                self.parent.schedule(tasks.reload_component(target))
             return f"Reloading {target}"
         else:
             self.warn(message)
@@ -98,7 +99,7 @@ class CommandProcessor(Endpoint):
     def cmd_list(self, args: List[str]) -> str:
         if len(args) > 0 and args[0] == "endpoints":
             message = "Listing endpoints:\n\t" + \
-                "\n\t".join(self.parent.endpoints.keys())
+                "\n\t".join(self.parent.components.keys())
         else:
             lines = [f"{key}:\t{help}"
                      for (key, (help, _)) in self.commands.items()]
@@ -121,3 +122,12 @@ class CommandProcessor(Endpoint):
             return self.cmd_help(["dump"])
         self.dbg(message)
         return message
+
+    def begin(self) -> None:
+        pass
+
+    def halt(self) -> None:
+        pass
+
+    def terminate(self) -> None:
+        pass
