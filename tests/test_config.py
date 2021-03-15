@@ -1,6 +1,8 @@
 from typing import List
 
 from snr import *
+from snr.utils.dummy_endpoint.dummy_endpoint_factory import \
+    DummyEndpointFactory
 
 
 class TestConfig(SNRTestCase):
@@ -10,12 +12,12 @@ class TestConfig(SNRTestCase):
             Config(Mode.TEST, {})
 
     def test_one_fac(self):
-        factories: List[FactoryProtocol] = [DummyEndpointFactory()]
+        factories: List[AbstractFactory] = [DummyEndpointFactory()]
         config = Config(Mode.TEST, {"test": factories})
         self.assertEqual(config.get("test"), factories)
 
     def test_two_facs(self):
-        factories: List[FactoryProtocol] = [
+        factories: List[AbstractFactory] = [
             DummyEndpointFactory("dummy1"),
             DummyEndpointFactory("dummy2")
         ]

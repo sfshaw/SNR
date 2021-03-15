@@ -16,7 +16,7 @@ class FactoryUnderTest(EndpointFactory):
         self.target = mod_a.EndpointUnderTest
         self.expector = expector
 
-    def get(self, parent: NodeProtocol) -> Union[mod_a.EndpointUnderTest,
+    def get(self, parent: AbstractNode) -> Union[mod_a.EndpointUnderTest,
                                                  mod_b.EndpointUnderTest]:
         return self.target(self, parent, self.expector)
 

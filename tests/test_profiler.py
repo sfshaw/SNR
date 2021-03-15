@@ -10,13 +10,12 @@ SLEEP_TIME_S: float = 0.00005
 class TestProfiler(unittest.TestCase):
 
     def test_no_operations(self):
-        profiler: ProfilerProtocol = Profiler(Settings())
+        profiler: AbstractProfiler = Profiler(Settings())
         profiler.join_from("test_complete")
         profiler.dump()
 
     def test_profiler_start_join(self):
-        CATCH_UP_TIME_S = SLEEP_TIME_S * 10
-        prof: ProfilerProtocol = Profiler(Settings())
+        prof: AbstractProfiler = Profiler(Settings())
 
         time.sleep(CATCH_UP_TIME_S)
         self.assertTrue(prof.is_alive())

@@ -1,7 +1,5 @@
 import logging
 import time
-from types import ModuleType
-from typing import List
 
 from snr import *
 
@@ -9,13 +7,13 @@ from snr import *
 class PingTestEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
-                 parent_node: NodeProtocol,
+                 parent_node: AbstractNode,
                  name: str):
         super().__init__(factory,
                          parent_node,
                          name)
         self.log.setLevel(logging.WARNING)
-        self.                    task_handlers = {
+        self.task_handlers: TaskHandlerMap = {
             (TaskType.event, "ping_request"):
             self.store_ping,
             (TaskType.process_data, "ping"):
@@ -23,8 +21,8 @@ class PingTestEndpoint(Endpoint):
         }
         self.produced_task: bool = False
 
-    def start(self) -> None:
-        self.parent.schedule(task_event("ping_request"))
+    def begin(self) -> None:
+        self.parent.schedule(tasks.event("ping_request"))
 
     def store_ping(self, t: Task, key: TaskId) -> SomeTasks:
         self.parent.store_data("ping", time.time())
@@ -39,15 +37,20 @@ class PingTestEndpoint(Endpoint):
         start: float = data
         self.info("Datastore ping latency: %s ms",
                   (time.time() - float(start)) * 1000)
-        return task_terminate("test_endpoint_done")
+        return tasks.terminate("test_endpoint_done")
+
+    def halt(self) -> None:
+        pass
+
+    def terminate(self) -> None:
+        pass
 
 
 class PingTestFactory(EndpointFactory):
     def __init__(self):
-        reload_targets: List[ModuleType] = []
-        super().__init__(reload_targets)
+        super().__init__()
 
-    def get(self, parent: NodeProtocol) -> EndpointProtocol:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         return PingTestEndpoint(self,
                                 parent,
                                 "ping_test_endpoint")

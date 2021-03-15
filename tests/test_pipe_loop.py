@@ -70,6 +70,6 @@ class TestPipeLoop(SNRTestCase):
                         ExpectorEndpointFactory(expector2,
                                                 exit_when_satisfied=True),
                     ]})
-            runner: MultiRunnerProtocol = MultiProcRunner(config,
+            runner: AbstractMultiRunner = MultiProcRunner(config,
                                                           ["test1", "test2"])
             runner.run()
