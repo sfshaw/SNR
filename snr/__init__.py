@@ -8,7 +8,6 @@ from snr.std_mods import *
 from snr.type_defs import *
 from snr.utils import *
 
-
 __all__ = [
 
     "tasks",
@@ -22,6 +21,7 @@ __all__ = [
     "SomeTasks",
     "TaskHandlerMap",
 
+    "AbstractComponent",
     "AbstractFactory",
 
     "AbstractEndpoint",
@@ -77,6 +77,7 @@ __all__ = [
     "ExpectorProtocol",
     "Expector",
     "MPExpector",
+    "OrderedExpectations",
     "OrderedExpector",
     "ExpectorEndpointFactory",
 
