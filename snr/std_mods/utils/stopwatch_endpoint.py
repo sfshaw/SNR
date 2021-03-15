@@ -9,10 +9,11 @@ class StopwatchEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 times: List[float]
+                 times: List[float],
+                 task_keys: List[TaskId],
                  ) -> None:
         super().__init__(factory, parent, "stopwatch_endpoint")
-        self.task_handlers = {TaskType.process_data: self.task_handler}
+        self.task_handlers = {key: self.task_handler for key in task_keys}
         self.times = times
 
     def task_handler(self, task: Task, key: TaskId) -> SomeTasks:

@@ -32,7 +32,7 @@ class TestReplayerChronological(SNRTestCase):
             self.run_test_node([
                 ReplayerLoopFactory(input.path),
                 RecorderEndpointFactory(output.path, data_keys),
-                StopwatchEndpointFactory(times),
+                StopwatchEndpointFactory(times, [TaskType.store_page]),
                 ExpectorEndpointFactory(ordered_expector,
                                         exit_when_satisfied=True),
             ])
