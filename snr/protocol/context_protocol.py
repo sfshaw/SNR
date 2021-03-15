@@ -10,7 +10,7 @@ from .timer_protocol import TimerProtocol
 
 @runtime_checkable
 class ContextProtocol(Protocol):
-    name: str
+    name: ComponentName
     log: logging.Logger
     settings: Settings
     profiler: Optional[ProfilerProtocol]
