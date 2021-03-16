@@ -101,7 +101,7 @@ These component modules provide an interface from SNR's event loops and user cod
         def __init__(self,
                     factory: EndpointFactory,
                     parent: NodeProtocol,
-                    name: str,
+                    name: ComponentName,
                     some_persistent_state: MyPersistentState
                     ...,
                     ) -> None:
@@ -126,7 +126,7 @@ These component modules provide an interface from SNR's event loops and user cod
         def __init__(self,
                     factory: LoopFactory,
                     parent: NodeProtocol,
-                    name: str,
+                    name: ComponentName,
                     data_keys: List[DataKey],
                     some_persistent_state: MyPersistentState
                     ) -> None:
