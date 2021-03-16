@@ -67,12 +67,25 @@ nox:
 .PHONY: test
 t: test
 test: 
-	$(PYTHON) -m pytest ./tests/ --new-first
+	$(PYTHON) -m pytest ./tests/ --new-first --no-header -k 'not _bench'
 
 .PHONY: unittest
 ut: unittest
 unittest: 
 	$(PYTHON) -m unittest -q
+
+BENCHMARK_TEST_MODULES = tests.bench.bench_node_startup tests.bench.bench_stress
+
+.PHONY: bench
+b: bench
+bench:
+	$(PYTHON) -m unittest -q $(BENCHMARK_TEST_MODULES)
+
+	
+.PHONY: bench_all
+ba: bench_all
+bench_all:
+	nox -s bench
 
 .PHONY: test_all
 ta: test_all

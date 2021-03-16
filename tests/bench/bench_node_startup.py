@@ -1,3 +1,4 @@
+import unittest
 from snr import *
 
 
@@ -15,3 +16,7 @@ class TestNodeStartup(SNRTestCase):
 
         self.assertLess(t_s, 0.030, "Node construct time")
         print(f"\nNode construct time: {t_s * 1000:7.3f} ms")
+
+
+if __name__ == '__main__':
+    unittest.main()

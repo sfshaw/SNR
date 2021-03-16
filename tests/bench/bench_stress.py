@@ -1,4 +1,5 @@
 import logging
+import unittest
 from typing import List, Optional
 
 from snr import *
@@ -56,7 +57,7 @@ class StressorEndpointFactory(EndpointFactory):
 class TestStress(SNRTestCase):
 
     def test_stress_endpoint(self):
-        time_target_s: float = 0.100
+        time_target_s: float = 0.500
         stressor_fac = StressorEndpointFactory(max_endpoints=1000,
                                                time_limit_s=time_target_s)
         times: List[float] = []
@@ -82,3 +83,7 @@ class TestStress(SNRTestCase):
               )
         if node.profiler:
             print(node.profiler.dump())
+
+
+if __name__ == '__main__':
+    unittest.main()
