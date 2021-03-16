@@ -10,8 +10,8 @@ from snr.type_defs import *
 
 from . import tasks
 from .contexts import RootContext
+from .deque_task_queue import DequeTaskQueue as TaskQueImpl
 from .node_core.node_core_factory import NodeCoreFactory
-from .task_queue import TaskQueue
 
 # SLEEP_TIME_S: float = 0.000001
 SLEEP_TIME_S: float = 0
@@ -28,7 +28,8 @@ class Node(RootContext, AbstractNode):
         self.role = role
         self.mode = config.mode
         self.profiler_getter: ProfilerGetter = config.get_profiler
-        self.__task_queue = TaskQueue(self, self.get_new_tasks)
+        self.__task_que: AbstractTaskQueue = TaskQueImpl(self,
+                                                         self.get_new_tasks)
         self.__datastore: Dict[DataKey, Page] = {}
         core_endpoint = NodeCoreFactory().get(self)
         self.components: Dict[ComponentName, AbstractComponent] = {
@@ -50,7 +51,7 @@ class Node(RootContext, AbstractNode):
                 endpoint.begin()
 
             while not self.__terminate_flag.is_set():
-                t: Optional[Task] = self.__task_queue.get_next()
+                t: Optional[Task] = self.__task_que.get_next()
                 if t:
                     self.execute_task(t)
                 else:
@@ -99,7 +100,7 @@ class Node(RootContext, AbstractNode):
         self.dbg("Task execution resulted in %s new tasks",
                  len(new_tasks))
         if new_tasks:
-            self.__task_queue.schedule(new_tasks)
+            self.__task_que.schedule(new_tasks)
 
     def get_task_handlers(self,
                           task: Task,
@@ -141,7 +142,7 @@ class Node(RootContext, AbstractNode):
         return self.__is_terminated.is_set()
 
     def schedule(self, t: SomeTasks) -> None:
-        self.__task_queue.schedule(t)
+        self.__task_que.schedule(t)
 
     def page(self,
              key: DataKey,
