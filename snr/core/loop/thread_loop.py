@@ -55,7 +55,10 @@ class ThreadLoop(Context, AbstractLoop, ABC):
 
     def begin(self):
         self.dbg("Starting %s loop thread", self.name)
-        self.__thread.start()
+        if not self.__thread.is_alive():
+            self.__thread.start()
+        else:
+            self.err("Thread already running when starting Threadloop")
 
     def join(self):
         """Externaly wait to shutdown a thread loop
