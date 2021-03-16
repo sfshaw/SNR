@@ -20,6 +20,7 @@ from .abstract_multi_runner import AbstractMultiRunner
 from .abstract_node import AbstractNode
 from .abstract_profiler import AbstractProfiler, ProfilerGetter
 from .abstract_runner import AbstractRunner
+from .abstract_task_queue import AbstractTaskQueue
 from .timer_protocol import TimerProtocol
 
 __all__ = [
@@ -36,5 +37,6 @@ __all__ = [
     "AbstractProfiler",
     "ProfilerGetter",
     "AbstractRunner",
+    "AbstractTaskQueue",
     "TimerProtocol",
 ]
