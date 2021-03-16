@@ -99,3 +99,6 @@ class ThreadLoop(Context, AbstractLoop, ABC):
 
     def schedule(self, t: SomeTasks) -> None:
         self.parent.schedule(t)
+
+    def store_page(self, page: Page) -> None:
+        self.parent.store_page(page)

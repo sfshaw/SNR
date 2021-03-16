@@ -33,6 +33,9 @@ class AbstractEndpoint(AbstractComponent, ABC):
     def schedule(self, t: SomeTasks) -> None:
         self.parent.schedule(t)
 
+    def store_page(self, page: Page) -> None:
+        self.parent.store_page(page)
+
     def page(self,
              key: DataKey,
              data: Any,

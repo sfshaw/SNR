@@ -31,3 +31,7 @@ class AbstractComponent(AbstractContext,
     @abstractmethod
     def terminate(self) -> None:
         ...
+
+    @abstractmethod
+    def store_page(self, page: Page) -> None:
+        ...
