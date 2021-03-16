@@ -21,11 +21,11 @@ class TestSocketsLoop(SNRTestCase):
         data_key = "my_data"
 
         page = Page(data_key, "data", "origin", 0.75)
-        expectations: Expectations = {
+        expectations: TaskExpectations = {
             (TaskType.process_data, data_key): 1
         }
 
-        with MPExpector(expectations, self) as expector, \
+        with MPExpector[TaskId](expectations, self) as expector, \
                 self.create_server(('', 0)) as server_socket:
             addr = server_socket.getsockname()
             with socket.create_connection(addr) \

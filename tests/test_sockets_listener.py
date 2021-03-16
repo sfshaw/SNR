@@ -13,11 +13,11 @@ class TestSocketsLsitener(SNRTestCase):
 
         data_key = "my_data"
         page = Page(data_key, "data", "origin", 0.75)
-        expectations: Expectations = {
+        expectations: TaskExpectations = {
             (TaskType.process_data, data_key): 1
         }
 
-        with MPExpector(expectations, self) as expector, \
+        with MPExpector[TaskId](expectations, self) as expector, \
                 self.create_server(("localhost", 0)) as server_socket:
             port: int = server_socket.getsockname()[1]
             factories = [
@@ -46,11 +46,11 @@ class TestSocketsLsitener(SNRTestCase):
 
         data_key = "my_data"
         page = Page(data_key, "data", "origin", 0.75)
-        expectations: Expectations = {
+        expectations: TaskExpectations = {
             (TaskType.process_data, data_key): 1
         }
 
-        with MPExpector(expectations, self) as expector, \
+        with MPExpector[TaskId](expectations, self) as expector, \
                 self.create_server(("", 0)) as server_socket:
             port = server_socket.getsockname()[1]
             factories = [

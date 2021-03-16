@@ -6,14 +6,14 @@ from snr.utils.dummy_endpoint.dummy_endpoint_factory import \
     DummyEndpointFactory
 
 
-class Type(Enum):
+class MyEnum(Enum):
     a = "a"
     b = "b"
     c = "c"
 
 
-Id = Tuple[Type, str]
-Key = Union[Type, Id]
+Id = Tuple[MyEnum, str]
+Key = Union[MyEnum, Id]
 
 
 class TestNode(SNRTestCase):
@@ -21,10 +21,10 @@ class TestNode(SNRTestCase):
     def test_lookup_proof_of_concept(self):
 
         d: Dict[Key, int] = {
-            Type.a: 1,
-            (Type.a, "2"): 2,
-            (Type.b, "3"): 3,
-            Type.b: 4
+            MyEnum.a: 1,
+            (MyEnum.a, "2"): 2,
+            (MyEnum.b, "3"): 3,
+            MyEnum.b: 4
         }
 
         def get(id: Id) -> Optional[int]:
@@ -33,11 +33,11 @@ class TestNode(SNRTestCase):
                 val = d.get(id[0])
             return val
 
-        self.assertEqual(1, get((Type.a, "1")))
-        self.assertEqual(2, get((Type.a, "2")))
-        self.assertEqual(3, get((Type.b, "3")))
-        self.assertEqual(4, get((Type.b, "4")))
-        self.assertIsNone(get((Type.c, "1")))
+        self.assertEqual(1, get((MyEnum.a, "1")))
+        self.assertEqual(2, get((MyEnum.a, "2")))
+        self.assertEqual(3, get((MyEnum.b, "3")))
+        self.assertEqual(4, get((MyEnum.b, "4")))
+        self.assertIsNone(get((MyEnum.c, "1")))
 
     def test_get_task_handlers(self):
 

@@ -7,13 +7,16 @@ from snr import *
 
 class TestReplayerChronological(SNRTestCase):
 
-    @pytest.mark.timeout(0.200)
+    @pytest.mark.timeout(1.000)
     def test_replayer_chronological(self):
 
-        time_step_s: float = 0.015
+        time_step_s: float = 0.020
         num_data_points = 5
-        data_keys = ["raw_data" + str(i) for i in range(num_data_points)]
-        expectations = [(TaskType.store_page, key) for key in data_keys]
+        data_keys = [f"raw_data{i}" for i in range(1, num_data_points + 1)]
+        expectations: List[TaskId] = []
+        for key in data_keys:
+            expectations.append((TaskType.store_page, key))
+
         expected_pages = [Page(key, key, "test_node", time_step_s * (i + 1))
                           for i, key in enumerate(data_keys)]
 
@@ -34,7 +37,12 @@ class TestReplayerChronological(SNRTestCase):
                 RecorderEndpointFactory(output.path, data_keys),
                 StopwatchEndpointFactory(times, [TaskType.store_page]),
                 ExpectorEndpointFactory(ordered_expector,
-                                        exit_when_satisfied=True),
+                                        name="data_expector"),
+                ExpectorEndpointFactory(self.expector({(TaskType.process_data,
+                                                        data_keys[-1]): 1
+                                                       }),
+                                        name="completion_expector",
+                                        exit_when_satisfied=True)
             ])
 
             # Check output file

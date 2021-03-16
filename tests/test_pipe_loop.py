@@ -22,7 +22,7 @@ class TestPipeLoop(SNRTestCase):
     def test_one_pipe(self) -> None:
 
         data_key = "my_data"
-        expectations: Expectations = {
+        expectations: TaskExpectations = {
             (TaskType.process_data, data_key): 1
         }
 
@@ -41,13 +41,13 @@ class TestPipeLoop(SNRTestCase):
     def test_two_pipe_loops(self) -> None:
 
         data_key = "my_data"
-        expectations: Expectations = {
+        expectations: TaskExpectations = {
             (TaskType.process_data, data_key): 1
         }
 
         (pipe1, pipe2) = mp.Pipe(duplex=True)
-        with MPExpector(expectations, self) as expector1, \
-            MPExpector(expectations, self) as expector2, \
+        with MPExpector[TaskId](expectations, self) as expector1, \
+            MPExpector[TaskId](expectations, self) as expector2, \
                 self.temp_file() as temp_file:
 
             with temp_file.open() as f:
