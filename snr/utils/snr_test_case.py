@@ -1,17 +1,17 @@
 import socket
 import time
 import unittest
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Mapping, Optional, Tuple, TypeVar
 
 from snr.core import *
 from snr.interfaces import *
 from snr.std_mods import *
 from snr.type_defs import *
 
-from .expector import Expectations, Expector
+from .expector import Expector
 from .expector_protocol import ExpectorProtocol
 from .mock_node import MockNode
-from .ordered_expector import OrderedExpectations, OrderedExpector
+from .ordered_expector import OrderedExpector
 
 PRINT_INDIVIDUAL_RUNTIME: bool = True
 
@@ -28,14 +28,18 @@ class SNRTestCase(unittest.TestCase):
             end_time = time.time() - self.startTime
             print(f"{end_time* 1000:6.2f} ms: {self.id()}")
 
+    T = TypeVar('T')
+
     def expector(self,
-                 expectations: Expectations,
-                 ) -> ExpectorProtocol:
+                 expectations: Mapping[T, int],
+                 ) -> ExpectorProtocol[T]:
         return Expector(expectations, self)
 
+    U = TypeVar('U')
+
     def ordered_expector(self,
-                         expectations: OrderedExpectations,
-                         ) -> ExpectorProtocol:
+                         expectations: List[U],
+                         ) -> ExpectorProtocol[U]:
         return OrderedExpector(expectations, self)
 
     def get_config(self,

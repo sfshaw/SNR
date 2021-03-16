@@ -1,4 +1,5 @@
 import logging
+from typing import Dict, List, Mapping
 
 from snr.core import *
 from snr.interfaces import *
@@ -6,22 +7,24 @@ from snr.type_defs import *
 
 from ..expector_protocol import ExpectorProtocol
 
+TaskExpectations = Mapping[TaskId, int]
+TaskExpector = ExpectorProtocol[TaskId]
+
 
 class ExpectorEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 expector: ExpectorProtocol,
+                 name: ComponentName,
+                 expector: TaskExpector,
                  exit_when_satisfied: bool,
                  ) -> None:
         super().__init__(factory,
                          parent,
-                         "expector")
+                         name)
         self.log.setLevel(logging.WARNING)
-        self.task_handlers: TaskHandlerMap = {}
-        for key in expector.get_expectations():
-            self.dbg("Expecting: %s", key)
-            self.task_handlers[key] = self.call
+        self.task_handlers: TaskHandlerMap = self.map_handlers(
+            expector.get_expectations())
         self.expector = expector
         self.exit_when_satisfied = exit_when_satisfied
 
@@ -43,3 +46,12 @@ class ExpectorEndpoint(Endpoint):
         if self.exit_when_satisfied and self.expector.check():
             return tasks.terminate("expector_satisfied")
         return None
+
+    def map_handlers(self,
+                     data_keys: List[TaskId]
+                     ) -> TaskHandlerMap:
+        handlers: Dict[TaskId, TaskHandler] = {}
+        for key in data_keys:
+            handlers[key] = self.call
+            self.dbg("Expecting: %s", key)
+        return handlers

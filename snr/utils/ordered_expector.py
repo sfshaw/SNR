@@ -1,27 +1,28 @@
 import logging
 import unittest
-from typing import Any, Iterable, List
+from typing import Any, List, TypeVar
 
 from snr.type_defs import *
 
 from .expector_protocol import ExpectorProtocol
 
-OrderedExpectations = List[Any]
+
+T = TypeVar('T')
 
 
-class OrderedExpector(ExpectorProtocol):
+class OrderedExpector(ExpectorProtocol[T]):
 
     def __init__(self,
-                 expectations: OrderedExpectations,
+                 expectations: List[T],
                  testcase: unittest.TestCase
                  ) -> None:
         self.log = logging.getLogger()
         self.log.setLevel(logging.WARNING)
         self.expectations = expectations
         self.testcase = testcase
-        self.met_expectations: OrderedExpectations = []
+        self.met_expectations: List[str] = []
 
-    def get_expectations(self) -> Iterable[Any]:
+    def get_expectations(self) -> List[T]:
         return self.expectations
 
     def call(self, key: Any) -> None:
@@ -46,5 +47,5 @@ class OrderedExpector(ExpectorProtocol):
                          self.expectations,
                          self.met_expectations)
 
-    def __enter__(self) -> "OrderedExpector":
+    def __enter__(self) -> "OrderedExpector[T]":
         return self

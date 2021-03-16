@@ -1,27 +1,29 @@
 import logging
 import unittest
-from typing import Any, Iterable
+from typing import Any, Dict, List, Mapping, TypeVar
 
 from snr.type_defs import *
 
-from .expector_protocol import Expectations, ExpectorProtocol
+from .expector_protocol import ExpectorProtocol
+
+T = TypeVar('T')
 
 
-class Expector(ExpectorProtocol):
+class Expector(ExpectorProtocol[T]):
 
     def __init__(self,
-                 expectations: Expectations,
+                 expectations: Mapping[T, int],
                  testcase: unittest.TestCase
                  ) -> None:
         self.expectations = expectations
         self.testcase = testcase
         self.log = logging.getLogger()
-        self.times_called: Expectations = {}
+        self.times_called: Dict[str, int] = {}
         for key in expectations:
             self.times_called[str(key)] = 0
 
-    def get_expectations(self) -> Iterable[Any]:
-        return self.expectations.keys()
+    def get_expectations(self) -> List[Any]:
+        return list(self.expectations.keys())
 
     def call(self, key: Any) -> None:
         val = self.times_called.get(str(key))
@@ -51,5 +53,5 @@ class Expector(ExpectorProtocol):
     def dump(self) -> None:
         self.log.debug(self.times_called)
 
-    def __enter__(self) -> "Expector":
+    def __enter__(self) -> "Expector[T]":
         return self

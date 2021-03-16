@@ -1,17 +1,17 @@
 import unittest
-from typing import Any, Dict, Iterable
+from typing import Any, List, TypeVar
 
 from snr.type_defs import *
 from typing_extensions import Protocol, runtime_checkable
 
-Expectations = Dict[Any, int]
+T = TypeVar('T')
 
 
 @runtime_checkable
-class ExpectorProtocol(Protocol):
+class ExpectorProtocol(Protocol[T]):
     testcase: unittest.TestCase
 
-    def get_expectations(self) -> Iterable[Any]:
+    def get_expectations(self) -> List[T]:
         '''View the expector's expectations so they can be used
         to match tasks for task handlers
         '''
@@ -34,7 +34,7 @@ class ExpectorProtocol(Protocol):
         """
         ...
 
-    def __enter__(self) -> "ExpectorProtocol":
+    def __enter__(self) -> "ExpectorProtocol[T]":
         ...
 
     def __exit__(self, *args: Any) -> None:

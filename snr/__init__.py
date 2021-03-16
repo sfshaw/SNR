@@ -75,12 +75,12 @@ __all__ = [
 
     "SNRTestCase",
 
-    "Expectations",
     "ExpectorProtocol",
     "Expector",
     "MPExpector",
-    "OrderedExpectations",
     "OrderedExpector",
+    "TaskExpectations",
+    "TaskExpector",
     "ExpectorEndpointFactory",
 
     "TimeoutLoopFactory",
