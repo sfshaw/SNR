@@ -19,12 +19,12 @@ def store_page(page: Page) -> Task:
                 val_list=[page])
 
 
-def process_data(name: str) -> Task:
-    return Task(TaskType.process_data, name)
+def process_data(key: DataKey) -> Task:
+    return Task(TaskType.process_data, key)
 
 
-def reload_component(endpoint_name: str) -> Task:
-    return Task(TaskType.reload, endpoint_name)
+def reload_component(name: ComponentName) -> Task:
+    return Task(TaskType.reload, name)
 
 
 def terminate(reason: str) -> Task:

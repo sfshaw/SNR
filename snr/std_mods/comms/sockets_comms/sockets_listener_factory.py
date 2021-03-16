@@ -13,7 +13,7 @@ class SocketsListenerFactory(LoopFactory):
     def __init__(self,
                  connection_or_port: Union[Tuple[socket.socket, int], int],
                  data_keys: List[DataKey] = [],
-                 loop_name: str = "sockets_listener_loop",
+                 loop_name: ComponentName = "sockets_listener_loop",
                  ) -> None:
         super().__init__([
             sockets_listener_loop,

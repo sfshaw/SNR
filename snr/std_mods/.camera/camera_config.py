@@ -3,7 +3,11 @@
 
 
 # class CameraConfig:
-#     def __init__(self, name: str, server_port: int, camera_num: int):
+#     def __init__(self,
+#                  name: str,
+#                  server_port: int,
+#                  camera_num: int,
+#                  ) -> None:
 #         self.name = name
 #         self.server_port = server_port
 #         self.camera_num = camera_num

@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 from snr.core import *
 from snr.interfaces import *
@@ -10,9 +10,9 @@ class RecorderEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: str,
+                 name: ComponentName,
                  filename: str,
-                 data_keys: List[str]):
+                 data_keys: List[DataKey]):
         super().__init__(factory, parent, name)
         self.log.setLevel(logging.WARNING)
         self.task_handlers = self.map_handlers(data_keys)
@@ -41,11 +41,11 @@ class RecorderEndpoint(Endpoint):
         return None
 
     def map_handlers(self,
-                     data_names: List[str]
+                     data_keys: List[DataKey],
                      ) -> TaskHandlerMap:
-        handlers: TaskHandlerMap = {}
-        for data_name in data_names:
-            handlers[(TaskType.store_page, data_name)] = self.task_handler
+        handlers: Dict[TaskId, TaskHandler] = {}
+        for key in data_keys:
+            handlers[(TaskType.store_page, key)] = self.task_handler
         return handlers
 
     def begin(self) -> None:

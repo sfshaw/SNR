@@ -27,7 +27,7 @@ class ThreadLoop(Context, AbstractLoop, ABC):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: str,
+                 name: ComponentName,
                  max_tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
         super().__init__(name,

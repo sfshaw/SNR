@@ -4,12 +4,12 @@ from snr.type_defs import *
 
 from . import dummy_endpoint
 
-DEFAULT_NAME = "dummy_endpoint"
+DEFAULT_NAME: ComponentName = "dummy_endpoint"
 
 
 class DummyEndpointFactory(EndpointFactory):
     def __init__(self,
-                 name: str = DEFAULT_NAME,
+                 name: ComponentName = DEFAULT_NAME,
                  task_handlers: TaskHandlerMap = {}
                  ) -> None:
         super().__init__(dummy_endpoint)

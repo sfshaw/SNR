@@ -9,7 +9,7 @@ class MovingAvgEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: str,
+                 name: ComponentName,
                  input: DataKey,
                  output: DataKey,
                  filter: MovingAvgFilter,
