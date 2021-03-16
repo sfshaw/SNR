@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 from snr.core import *
 from snr.interfaces import *
@@ -18,9 +18,7 @@ class CommsLoop(ThreadLoop):
                  ) -> None:
         super().__init__(factory, parent, name)
         self.connection: AbstractConnection = conn
-        for key in data_keys:
-            self.task_handlers[(TaskType.process_data, key)
-                               ] = self.process_data
+        self.task_handlers = self.map_handlers(data_keys)
         self.log.setLevel(logging.WARNING)
 
     def process_data(self, task: Task, key: TaskId):
@@ -72,3 +70,11 @@ class CommsLoop(ThreadLoop):
 
     def terminate(self) -> None:
         self.connection.close()
+
+    def map_handlers(self,
+                     data_keys: List[DataKey]
+                     ) -> TaskHandlerMap:
+        handlers: Dict[TaskId, TaskHandler] = {}
+        for key in data_keys:
+            handlers[(TaskType.process_data, key)] = self.process_data
+        return handlers
