@@ -8,7 +8,7 @@ class PingTestEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent_node: AbstractNode,
-                 name: str):
+                 name: ComponentName):
         super().__init__(factory,
                          parent_node,
                          name)
