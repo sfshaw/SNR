@@ -1,16 +1,16 @@
+from abc import ABC, abstractmethod
 from typing import List
 
 from snr.type_defs import *
-from typing_extensions import Protocol, runtime_checkable
 
 from .abstract_config import AbstractConfig
 
 
-@runtime_checkable
-class AbstractMultiRunner(Protocol):
+class AbstractMultiRunner(ABC):
 
     config: AbstractConfig
     roles: List[Role]
 
+    @abstractmethod
     def run(self) -> None:
         ...

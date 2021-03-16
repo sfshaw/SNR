@@ -8,7 +8,6 @@ from .task_interfaces import (ProvidesTaskHandlers, ProvidesTasks,
                               SchedulesTasks)
 
 
-# @runtime_checkable
 class AbstractComponent(AbstractContext,
                         ProvidesTaskHandlers,
                         ProvidesTasks,

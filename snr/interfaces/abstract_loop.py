@@ -6,7 +6,6 @@ from .abstract_component import AbstractComponent
 from .abstract_node import AbstractNode
 
 
-# @runtime_checkable
 class AbstractLoop(AbstractComponent, ABC):
     """A Node component that runs outside the main thread event loop.
 

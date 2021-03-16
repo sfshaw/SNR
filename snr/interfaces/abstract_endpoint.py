@@ -7,7 +7,6 @@ from .abstract_component import AbstractComponent
 from .abstract_node import AbstractNode
 
 
-# @runtime_checkable
 class AbstractEndpoint(AbstractComponent, ABC):
     parent: AbstractNode
 
