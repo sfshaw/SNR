@@ -38,6 +38,7 @@ jobs:
         python -m nox -s lint
 
   test:
+    needs: check
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -64,6 +65,7 @@ jobs:
       run: |
         python -m nox -s test-${{ matrix.python-version }}
   build:
+    needs: [check, test]
     runs-on: ubuntu-latest
     strategy:
       matrix:
