@@ -63,7 +63,8 @@ jobs:
         pip install .
     - name: Run Nox Tests 
       run: |
-        python -m nox -s test-${{ matrix.python-version }}
+        python -m nox -s test-${{ matrix.python-version }} bench-${{ matrix.python-version }}
+
   build:
     needs: [check, test]
     runs-on: ubuntu-latest
