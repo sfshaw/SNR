@@ -11,7 +11,7 @@ from .contexts import Context
 class TaskQueue(Context, AbstractTaskQueue):
     def __init__(self,
                  parent: AbstractContext,
-                 task_source: TaskSource
+                 task_source: TaskSource,
                  ) -> None:
         super().__init__("task_queue",
                          parent.settings,
