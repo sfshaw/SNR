@@ -8,11 +8,15 @@ REMOVE_ENDPOINT_TASK_NAME: TaskName = "remove_endpoint"
 
 
 def event(name: str, val_list: List[Any] = []) -> Task:
-    return Task(TaskType.event, name, val_list=val_list)
+    return Task(TaskType.event,
+                name,
+                val_list=val_list)
 
 
 def store_page(page: Page) -> Task:
-    return Task(TaskType.store_page, page.key, val_list=[page])
+    return Task(TaskType.store_page,
+                page.key,
+                val_list=[page])
 
 
 def process_data(name: str) -> Task:
@@ -24,10 +28,14 @@ def reload_component(endpoint_name: str) -> Task:
 
 
 def terminate(reason: str) -> Task:
-    return Task(TaskType.terminate, reason)
+    return Task(TaskType.terminate,
+                reason,
+                priority=TaskPriority.high)
 
 
 def add_component(factory: AbstractFactory,
                   start_component: bool = True,
                   ) -> Task:
-    return event("add_component", val_list=[factory, start_component])
+    return event("add_component",
+                 val_list=[factory,
+                           start_component])
