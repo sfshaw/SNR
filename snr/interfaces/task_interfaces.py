@@ -9,18 +9,21 @@ class ProvidesTaskHandlers(ABC):
     task_handlers: TaskHandlerMap
 
     def get_task_handler(self,
-                         t: Task
+                         task: Task
                          ) -> Optional[Tuple[TaskHandler, TaskId]]:
         """Given a task to handle, get the matching handlers from an Endpoint.
         Returns a tuple of the found handler and the key that found it, if any.
         """
-        id = t.id()
-        (handler, key) = (self.task_handlers.get(id), id)
-        if not handler:
-            (handler, key) = (self.task_handlers.get(t.type), t.type)
-        if not handler:
-            return None
-        return (handler, key)
+        id: TaskId = (task.type, task.name)
+        handler = self.task_handlers.get(id)
+        if handler:
+            return (handler, id)
+
+        handler = self.task_handlers.get(task.type)
+        if handler:
+            return (handler, task.type)
+
+        return None
 
 
 class ProvidesTasks(ABC):
