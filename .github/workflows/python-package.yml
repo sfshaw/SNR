@@ -63,12 +63,6 @@ jobs:
     - name: Run Nox Tests 
       run: |
         python -m nox -s test-${{ matrix.python-version }}
-    - name: Create Package distribution
-      run: |
-        python setup.py check
-        python setup.py build
-        python setup.py sdist
-
   build:
     runs-on: ubuntu-latest
     strategy:
