@@ -59,12 +59,13 @@ class PingTestFactory(EndpointFactory):
 class TestDatastorePing(SNRTestCase):
 
     def test_dds_ping(self):
-        with self.expector({
+        expectations: TaskExpectations = {
             (TaskType.event, "ping_request"): 1,
             (TaskType.store_page, "ping"): 1,
             (TaskType.process_data, "ping"): 1,
             TaskType.terminate: 1,
-        }) as expector:
+        }
+        with self.expector(expectations) as expector:
             self.run_test_node([
                 PingTestFactory(),
                 ExpectorEndpointFactory(expector),
