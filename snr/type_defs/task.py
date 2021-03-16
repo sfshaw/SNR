@@ -3,7 +3,7 @@
 import dataclasses
 import logging
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Mapping, Optional, Tuple, Union
 
 import dataclasses_json
 
@@ -81,6 +81,6 @@ class Task(dataclasses_json.DataClassJsonMixin):
 
 SomeTasks = Union[None, Task, List[Task]]
 TaskHandler = Callable[[Task, TaskId], SomeTasks]
-TaskHandlerMap = Dict[TaskId, TaskHandler]
+TaskHandlerMap = Mapping[TaskId, TaskHandler]
 TaskSource = Callable[[], SomeTasks]
 TaskScheduler = Callable[[Task], None]
