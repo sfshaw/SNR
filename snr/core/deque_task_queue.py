@@ -1,6 +1,6 @@
 from collections import deque
 import logging
-from typing import Union
+from typing import Optional
 
 from snr.interfaces import *
 from snr.type_defs import *
@@ -30,7 +30,7 @@ class DequeTaskQueue(Context, AbstractTaskQueue):
         else:
             self.queue.appendleft(task)
 
-    def get_next(self) -> Union[Task, None]:
+    def get_next(self) -> Optional[Task]:
         """Take the next task off the queue
         """
         if self.is_empty():

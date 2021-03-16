@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Optional
 
 from snr.type_defs import *
 from .abstract_context import AbstractContext
@@ -23,7 +23,7 @@ class AbstractTaskQueue(AbstractContext, ABC):
         ...
 
     @abstractmethod
-    def get_next(self) -> Union[Task, None]:
+    def get_next(self) -> Optional[Task]:
         """Take the next task off the queue
         """
         ...

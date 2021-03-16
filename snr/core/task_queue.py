@@ -1,6 +1,6 @@
 import logging
 import queue
-from typing import Union
+from typing import Optional
 
 from snr.interfaces import *
 from snr.type_defs import *
@@ -42,7 +42,7 @@ class TaskQueue(Context, AbstractTaskQueue):
         # Ignore Priority
         self.queue.put(t)
 
-    def get_next(self) -> Union[Task, None]:
+    def get_next(self) -> Optional[Task]:
         """Take the next task off the queue
         """
         if self.queue.empty():
