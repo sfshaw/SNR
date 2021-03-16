@@ -70,6 +70,9 @@ class MockNode(RootContext, AbstractNode):
     def synchronous_store(self, page: Page) -> None:
         pass
 
+    def task_store_page(self, page: Page) -> Task:
+        return tasks.store_page(page)
+
     def page(self, key: DataKey, data: Any, process: bool = True) -> Page:
         return Page(key, data, self.name,  0, process=process)
 

@@ -33,7 +33,7 @@ class ReplayerLoop(ThreadLoop):
             while (page
                    and (self.timer.current_s() - self.delay_s >=
                         page.created_at_s)):
-                self.parent.store_page(page)
+                self.store_page(page)
                 page = self.reader.read()
             if page:
                 self.next_page = page
@@ -42,7 +42,7 @@ class ReplayerLoop(ThreadLoop):
                 self.done = True
                 if self.exit_when_done:
                     self.dbg("Reader scheduling terminate task")
-                    self.parent.schedule(tasks.terminate("replayer_done"))
+                    self.schedule(tasks.terminate("replayer_done"))
 
     def halt(self) -> None:
         pass
