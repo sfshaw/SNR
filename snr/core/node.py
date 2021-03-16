@@ -47,8 +47,8 @@ class Node(RootContext, AbstractNode):
     def loop(self) -> None:
         try:
             self.profiler = self.profiler_getter()
-            for endpoint in self.components.values():
-                endpoint.begin()
+            for component in self.components.values():
+                component.begin()
 
             while not self.__terminate_flag.is_set():
                 t: Optional[Task] = self.__task_que.get_next()
