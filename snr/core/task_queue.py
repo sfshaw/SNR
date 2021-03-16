@@ -8,7 +8,7 @@ from snr.type_defs import *
 from .contexts import Context
 
 
-class TaskQueue(Context):
+class TaskQueue(Context, AbstractTaskQueue):
     def __init__(self,
                  parent: AbstractContext,
                  task_source: TaskSource
@@ -17,7 +17,7 @@ class TaskQueue(Context):
                          parent.settings,
                          parent.profiler,
                          parent.timer)
-        self.get_new_tasks = task_source
+        self.task_source = task_source
         self.queue: queue.Queue[Task] = queue.Queue()
         self.log.setLevel(logging.WARNING)
 
@@ -25,7 +25,7 @@ class TaskQueue(Context):
         """ Adds a Task or a list of Tasks to the node's queue
         """
         if isinstance(t, Task):
-            self.__schedule_task(t)
+            self.schedule_task(t)
         elif t:
             # Recursively handle lists
             self.dbg("Recursively scheduling list of %s tasks",
@@ -36,7 +36,7 @@ class TaskQueue(Context):
         else:
             self.err("Cannot schedule %s", t)
 
-    def __schedule_task(self, t: Task) -> None:
+    def schedule_task(self, t: Task) -> None:
         # Handle normal tasks
         self.dbg("Scheduling task %s", t)
         # Ignore Priority
@@ -55,6 +55,9 @@ class TaskQueue(Context):
         self.dbg("Next task: %s", next)
         self.dbg("%s tasks left in queue", self.queue.qsize())
         return next
+
+    def get_new_tasks(self) -> SomeTasks:
+        return self.task_source()
 
     def is_empty(self) -> bool:
         return self.queue.empty()
