@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from snr.core import *
@@ -18,6 +19,7 @@ class ReplayerLoop(ThreadLoop):
                          parent,
                          "replayer",
                          max_tick_rate_hz=4000)
+        self.log.setLevel(logging.WARNING)
         self.reader = PageReader(self, "page_reader", filename)
         self.done: bool = False
         self.exit_when_done = exit_when_done

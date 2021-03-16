@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Optional, TextIO
 
 from snr.core import *
@@ -16,7 +17,7 @@ class PageReader(Context):
                          parent.settings,
                          parent.profiler,
                          parent.timer)
-
+        self.log.setLevel(logging.WARNING)
         self.filename = filename
         self.file: Optional[TextIO] = None
         try:
