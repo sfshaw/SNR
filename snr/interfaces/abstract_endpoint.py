@@ -42,22 +42,24 @@ class AbstractEndpoint(AbstractComponent, ABC):
              ) -> Page:
         '''Page constructor
         '''
-        return Page(key, data,
-                    self.name,
-                    self.timer.current_s(),
-                    process)
+        return self.parent.page(key, data, process)
 
-    # @abstractmethod
-    # def task_store_data(self,
-    #                     key: DataKey,
-    #                     data: Any,
-    #                     process: bool = True,
-    #                     ) -> Task:
-    #     ...
+    def task_store_data(self,
+                        key: DataKey,
+                        data: Any,
+                        process: bool = True,
+                        ) -> Task:
+        return self.parent.task_store_data(key, data, process)
 
-    # @abstractmethod
-    # def task_store_page(self, page: Page) -> None:
-    #     ...
+    def task_store_page(self, page: Page) -> None:
+        self.parent.task_store_page(page)
+
+    def store_data(self,
+                   key: DataKey,
+                   data: Any,
+                   process: bool = True,
+                   ) -> None:
+        return self.store_page(self.parent.page(key, data, process))
 
     def get_page(self, key: DataKey) -> Optional[Page]:
         '''Thread-safe accesor for pages.

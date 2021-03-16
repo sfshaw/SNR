@@ -59,3 +59,9 @@ class AbstractLoop(AbstractComponent, ABC):
         '''Base loop function to indicate whether loop execution has finished
         '''
         ...
+
+    def schedule(self, t: SomeTasks) -> None:
+        self.parent.schedule(t)
+
+    def store_page(self, page: Page) -> None:
+        self.parent.store_page(page)

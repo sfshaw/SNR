@@ -1,9 +1,6 @@
-from typing import Any
-
 from snr.interfaces import *
 from snr.type_defs import *
 
-from .. import tasks
 from ..contexts import Context
 from .endpoint_factory import EndpointFactory
 
@@ -26,13 +23,6 @@ class Endpoint(Context, AbstractEndpoint):
 
     def set_terminate_flag(self) -> None:
         pass
-
-    def task_store_data(self,
-                        key: DataKey,
-                        data: Any,
-                        process: bool = True,
-                        ) -> Task:
-        return tasks.store_page(self.parent.page(key, data, process))
 
     def __repr__(self) -> str:
         return self.name

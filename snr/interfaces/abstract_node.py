@@ -75,19 +75,23 @@ class AbstractNode(AbstractContext, ABC):
                     self.timer.current_s(),
                     process)
 
+    @abstractmethod
+    def task_store_page(self, page: Page) -> Task:
+        '''Thread-safe method for scheduling a task to store a page.
+        '''
+        ...
+
     def task_store_data(self,
                         key: DataKey,
                         data: Any,
                         process: bool = True,
                         ) -> Task:
-        return Task(TaskType.store_page, key,
-                    val_list=[self.page(key, data, process)])
+        return self.task_store_page(self.page(key, data, process))
 
-    @abstractmethod
     def store_page(self, page: Page) -> None:
         '''Thread-safe method for scheduling a task to store a page.
         '''
-        ...
+        self.schedule(self.task_store_page(page))
 
     def store_data(self,
                    key: DataKey,

@@ -158,8 +158,8 @@ class Node(RootContext, AbstractNode):
         self.__datastore[page.key] = page
         self.dbg("Page stored: (%s)", page.key)
 
-    def store_page(self, page: Page) -> None:
-        self.schedule(tasks.store_page(page))
+    def task_store_page(self, page: Page) -> Task:
+        return tasks.store_page(page)
 
     def get_page(self, key: DataKey) -> Optional[Page]:
         return self.__datastore.get(key)
