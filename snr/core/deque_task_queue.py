@@ -44,8 +44,8 @@ class DequeTaskQueue(Context, AbstractTaskQueue):
         self.dbg("%s tasks left in queue", len(self.queue))
         return next
 
-    def is_high_priority(self, task: Task):
-        return task.type == TaskType.terminate
+    def is_high_priority(self, task: Task) -> bool:
+        return task.priority == TaskPriority.high
 
     def get_new_tasks(self) -> SomeTasks:
         return self.task_source()
