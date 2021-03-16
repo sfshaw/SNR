@@ -9,10 +9,11 @@ import dataclasses_json
 
 from .serializable import JsonData
 
-# class TaskPriority(Enum):
-#     high = 3
-#     normal = 2
-#     low = 1
+
+class TaskPriority(Enum):
+    high = 1
+    normal = 2
+
 
 TaskName = str
 
@@ -43,16 +44,10 @@ TaskId = Union[TaskType, Tuple[TaskType, TaskName]]
 
 @dataclasses.dataclass
 class Task(dataclasses_json.DataClassJsonMixin):
-    def __init__(self,
-                 type: TaskType,
-                 name: TaskName,
-                 #  priority: TaskPriority = TaskPriority.normal,
-                 val_list: List[Any] = [],
-                 ) -> None:
-        self.type = type
-        self.name = name
-        # self.priority = priority
-        self.val_list = val_list
+    type: TaskType
+    name: TaskName
+    priority: TaskPriority = TaskPriority.normal
+    val_list: List[Any] = dataclasses.field(default_factory=list)
 
     def id(self) -> TaskId:
         return (self.type, self.name)
@@ -76,16 +71,12 @@ class Task(dataclasses_json.DataClassJsonMixin):
         return (
             (self.__class__ == other.__class__) and
             (self.name == other.task_type) and
-            # (self.priority == other.priority) and
+            (self.priority == other.priority) and
             (self.val_list == other.val_list))
 
     def __repr__(self):
-        # return "Task({}): type: {}, priority: {}, val_list: {}".format(
-        #     self.name, self.type, self.priority, self.val_list)
-        return "Task({}): type: {}, val_list: {}".format(
-            self.name, self.type,
-            #  self.priority,
-            self.val_list)
+        return "Task({}): type: {}, priority: {}, val_list: {}".format(
+            self.name, self.type, self.priority, self.val_list)
 
 
 SomeTasks = Union[None, Task, List[Task]]

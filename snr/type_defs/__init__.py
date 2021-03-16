@@ -9,7 +9,7 @@ from .page import DataKey, Page  # Data pages
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .settings import Settings  # Settings dictionary (legacy)
 from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
-                   TaskName, TaskScheduler, TaskSource, TaskType)
+                   TaskName, TaskPriority, TaskScheduler, TaskSource, TaskType)
 
 __all__ = [
     "DataDict",
@@ -26,6 +26,7 @@ __all__ = [
     "TaskType",
     "TaskId",
     "TaskName",
+    "TaskPriority",
     "Task",
     "SomeTasks",
     "TaskHandler",
