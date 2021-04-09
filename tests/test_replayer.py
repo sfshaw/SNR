@@ -5,10 +5,10 @@ import pytest
 from snr import *
 
 
-class TestReplayerChronological(SNRTestCase):
+class TestReplayer(SNRTestCase):
 
     @pytest.mark.timeout(1.000)
-    def test_replayer_chronological(self):
+    def test_replayer(self):
 
         time_step_s: float = 0.020
         num_data_points = 5
