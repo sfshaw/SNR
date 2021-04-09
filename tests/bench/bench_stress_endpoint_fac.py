@@ -34,7 +34,7 @@ class StressorEndpoint(Endpoint):
 class StressorEndpointFactory(EndpointFactory):
     def __init__(self,
                  max_endpoints: int = 1000,
-                 time_limit_s: float = 1,
+                 time_limit_s: float = 0.500,
                  ) -> None:
         super().__init__()
         self.max_endpoints = max_endpoints
@@ -44,9 +44,6 @@ class StressorEndpointFactory(EndpointFactory):
 
     def get(self, parent: AbstractNode) -> Optional[Endpoint]:
         self.calls += 1
-        if (self.num_children > self.max_endpoints or
-                (self.time_limit_s > 0 and
-                 parent.get_time_s() >= self.time_limit_s)):
             return None
         self.num_children += 1
         return StressorEndpoint(self,
@@ -57,8 +54,8 @@ class StressorEndpointFactory(EndpointFactory):
 class TestStress(SNRTestCase):
 
     def test_stress_endpoint(self):
-        time_target_s: float = 0.500
-        stressor_fac = StressorEndpointFactory(max_endpoints=1000,
+        time_target_s: float = 2.500
+        stressor_fac = StressorEndpointFactory(max_endpoints=10000,
                                                time_limit_s=time_target_s)
         times: List[float] = []
         timer = Timer()
