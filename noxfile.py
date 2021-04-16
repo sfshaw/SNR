@@ -35,6 +35,13 @@ def mypy(session: nox.Session):
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
+def pytype(session: nox.Session):
+    session.install('pytype')
+    session.install('-r', 'requirements.txt')
+    session.run('pytype', './snr', '-d', 'not-supported-yet')
+
+
+@nox.session(python=DEFAULT_PYTHON_VERSION)
 def lint(session: nox.Session):
     session.install('flake8')
     session.run('flake8', 'snr', 'tests')
