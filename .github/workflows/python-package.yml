@@ -32,6 +32,9 @@ jobs:
     - name: Run MyPy check
       run: |
         python -m nox -s mypy
+    - name: Run PyType check
+      run: |
+        python -m nox -s pytype
     - name: Run Flake8 lint 
       run: |
         python -m nox -s lint
