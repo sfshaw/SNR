@@ -10,7 +10,7 @@ from typing import List, Optional
 from snr.interfaces import *
 from snr.type_defs import *
 
-from ..core.contexts import profiler
+from ..core.contexts import threaded_profiler
 
 
 class Config(AbstractConfig):
@@ -30,5 +30,5 @@ class Config(AbstractConfig):
 
     def get_profiler(self) -> Optional[AbstractProfiler]:
         if self.mode in [Mode.DEBUG]:
-            return profiler.Profiler(self.settings)
+            return threaded_profiler.ThreadedProfiler(self.settings)
         return None

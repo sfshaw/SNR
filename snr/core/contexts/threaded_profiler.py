@@ -8,6 +8,7 @@ from snr.type_defs import *
 from ..core_utils import Consumer, MovingAvgFilter, Timer
 
 SLEEP_TIME_S = 0.00005
+PROFILING_AVG_WINDOW_LEN = 32
 
 ProfilingResult = Tuple[str, float]
 ProfileingData = Tuple[int, MovingAvgFilter]
@@ -15,7 +16,7 @@ ProfileingData = Tuple[int, MovingAvgFilter]
 T = TypeVar("T")
 
 
-class Profiler(Consumer[ProfilingResult], AbstractProfiler):
+class ThreadedProfiler(Consumer[ProfilingResult], AbstractProfiler):
     def __init__(self, settings: Settings) -> None:
         super().__init__("profiler",
                          self.store_task,
@@ -24,7 +25,7 @@ class Profiler(Consumer[ProfilingResult], AbstractProfiler):
         self.log.setLevel(logging.WARNING)
         self.settings = settings
         self.time_dict: Dict[str, ProfileingData] = {}
-        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
+        self.moving_avg_len = PROFILING_AVG_WINDOW_LEN
         self.timer = Timer()
 
     def time(self,
