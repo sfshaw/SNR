@@ -1,7 +1,7 @@
 import socket
 import time
 import unittest
-from typing import Any, List, Mapping, Optional, Tuple, TypeVar
+from typing import Any, List, Mapping, Optional, Tuple
 
 from snr.core import *
 from snr.interfaces import *
