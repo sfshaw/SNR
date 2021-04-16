@@ -5,7 +5,8 @@
         "./.mypy_cache": true,
         "./.nox": true,
         "./.pytest_cache": true,
-        "./temp": true
+        "./temp": true,
+        ".pytype": true
     },
     "python.testing.unittestArgs": [
         "-v",
