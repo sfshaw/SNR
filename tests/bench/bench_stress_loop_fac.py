@@ -7,22 +7,19 @@ from snr import *
 STRESS_TASK_NAME: TaskName = "stress"
 
 
-class StressorEndpoint(Endpoint):
+class StressorLoop(ThreadLoop):
     def __init__(self,
-                 factory: EndpointFactory,
+                 factory: LoopFactory,
                  parent: AbstractNode,
                  name: ComponentName,
                  ) -> None:
         super().__init__(factory, parent, name)
-        self.task_handlers = {
-            (TaskType.event, STRESS_TASK_NAME): self.replicate,
-        }
 
-    def replicate(self, task: Task, key: TaskId) -> SomeTasks:
-        return tasks.add_component(self.factory)
+    def setup(self) -> None:
+        pass
 
-    def begin(self) -> None:
-        self.schedule(tasks.event(STRESS_TASK_NAME))
+    def loop(self) -> None:
+        self.schedule(tasks.add_component(self.factory))
 
     def halt(self) -> None:
         pass
@@ -31,37 +28,37 @@ class StressorEndpoint(Endpoint):
         pass
 
 
-class StressorEndpointFactory(EndpointFactory):
+class StressorLoopFactory(LoopFactory):
     def __init__(self,
-                 max_endpoints: int = 1000,
+                 max_loops: int = 1000,
                  time_limit_s: float = 0.500,
                  ) -> None:
         super().__init__()
-        self.max_endpoints = max_endpoints
+        self.max_loops = max_loops
         self.time_limit_s = time_limit_s
         self.calls = 0
         self.num_children = 0
 
-    def get(self, parent: AbstractNode) -> Optional[Endpoint]:
+    def get(self, parent: AbstractNode) -> Optional[ThreadLoop]:
         self.calls += 1
         if self.is_limited(parent):
             return None
         self.num_children += 1
-        return StressorEndpoint(self,
-                                parent,
-                                f"stressor_endpoint_{self.num_children}")
+        return StressorLoop(self,
+                            parent,
+                            f"stressor_endpoint_{self.num_children}")
 
     def is_limited(self, parent: AbstractNode) -> bool:
-        return (self.num_children >= self.max_endpoints or
-                (self.time_limit_s != 0 and
+        return (self.num_children >= self.max_loops or
+                (self.time_limit_s > 0 and
                  parent.get_time_s() >= self.time_limit_s))
 
 
-class BenchStressEndpointFac(SNRTestCase):
+class BenchStressLoopFac(SNRTestCase):
 
     def test_stress_endpoint_init(self):
-        stressor_fac = StressorEndpointFactory(max_endpoints=1,
-                                               time_limit_s=0.050)
+        stressor_fac = StressorLoopFactory(max_loops=1,
+                                           time_limit_s=0.050)
         times: List[float] = []
         node: AbstractNode = Node(
             "test",
@@ -78,17 +75,16 @@ class BenchStressEndpointFac(SNRTestCase):
         self.assertEqual(len(times), 1)
 
     def test_stress_endpoint(self):
-        time_target_s: float = 2.000
-        stressor_fac = StressorEndpointFactory(max_endpoints=10000,
-                                               time_limit_s=time_target_s)
+        time_target_s: float = 2.500
+        stressor_fac = StressorLoopFactory(max_loops=100,
+                                           time_limit_s=time_target_s)
         times: List[float] = []
         timer = Timer()
         node: AbstractNode = Node(
             "test",
             self.get_config([
                 stressor_fac,
-                TimeoutLoopFactory(
-                    seconds=time_target_s),
+                TimeoutLoopFactory(seconds=time_target_s),
                 StopwatchEndpointFactory(times,
                                          [TaskType.terminate]),
             ], Mode.DEBUG))
@@ -96,7 +92,7 @@ class BenchStressEndpointFac(SNRTestCase):
         node.loop()
         t_s = timer.current_s()
         print("\nStressed with:\n",
-              f"\t{stressor_fac.num_children} stressor endpoints\n",
+              f"\t{stressor_fac.num_children} stressor loops\n",
               f"\t{stressor_fac.calls} stressor factory calls\n",
               f"\tTerminate expected at {time_target_s * 1000:.0f} ms\n",
               f"\t{times[0] * 1000:.3f} ms terminate handled\n",

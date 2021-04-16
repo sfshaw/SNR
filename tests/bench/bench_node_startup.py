@@ -2,7 +2,7 @@ import unittest
 from snr import *
 
 
-class TestNodeStartup(SNRTestCase):
+class BenchNodeStartup(SNRTestCase):
 
     def test_node_construction_time(self):
         role = "test"

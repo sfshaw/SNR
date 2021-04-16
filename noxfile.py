@@ -54,5 +54,6 @@ def bench(session: nox.Session):
     session.run('python', '-m', 'unittest',
                 '-q',
                 'tests.bench.bench_node_startup',
-                'tests.bench.bench_stress',
+                'tests.bench.bench_stress_endpoint_fac',
+                'tests.bench.bench_stress_loop_fac',
                 external=False)
