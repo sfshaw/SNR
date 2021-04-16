@@ -1,16 +1,15 @@
 import logging
 import unittest
-from typing import Any, List, TypeVar
+from typing import Any, Generic, List, TypeVar
 
 from snr.type_defs import *
 
 from .expector_protocol import ExpectorProtocol
 
-
 T = TypeVar('T')
 
 
-class OrderedExpector(ExpectorProtocol[T]):
+class OrderedExpector(ExpectorProtocol, Generic[T]):
 
     def __init__(self,
                  expectations: List[T],

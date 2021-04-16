@@ -1,7 +1,7 @@
 import logging
 import multiprocessing as mp
 import unittest
-from typing import Any, Dict, List, Mapping, TypeVar
+from typing import Any, Dict, Generic, List, Mapping, TypeVar
 
 from snr.type_defs import *
 
@@ -10,7 +10,7 @@ from .expector_protocol import ExpectorProtocol
 T = TypeVar('T')
 
 
-class MPExpector(ExpectorProtocol[T]):
+class MPExpector(ExpectorProtocol, Generic[T]):
 
     def __init__(self,
                  expectations: Mapping[T, int],

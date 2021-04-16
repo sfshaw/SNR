@@ -28,18 +28,14 @@ class SNRTestCase(unittest.TestCase):
             end_time = time.time() - self.startTime
             print(f"{end_time* 1000:6.2f} ms: {self.id()}")
 
-    T = TypeVar('T')
-
     def expector(self,
-                 expectations: Mapping[T, int],
-                 ) -> ExpectorProtocol[T]:
+                 expectations: Mapping[Any, int],
+                 ) -> ExpectorProtocol:
         return Expector(expectations, self)
 
-    U = TypeVar('U')
-
     def ordered_expector(self,
-                         expectations: List[U],
-                         ) -> ExpectorProtocol[U]:
+                         expectations: List[Any],
+                         ) -> ExpectorProtocol:
         return OrderedExpector(expectations, self)
 
     def get_config(self,

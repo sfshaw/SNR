@@ -1,6 +1,6 @@
 from .dummy_endpoint.dummy_endpoint_factory import DummyEndpointFactory
 from .expector import Expector
-from .expector_endpoint.expector_endpoint import TaskExpectations, TaskExpector
+from .expector_endpoint.expector_endpoint import TaskExpectations
 from .expector_endpoint.expector_endpoint_factory import \
     ExpectorEndpointFactory
 from .expector_protocol import ExpectorProtocol
@@ -13,7 +13,6 @@ __all__ = [
     "DummyEndpointFactory",
     "Expector",
     "TaskExpectations",
-    "TaskExpector",
     "ExpectorEndpointFactory",
     "ExpectorProtocol",
     "ListReplayerFactory",

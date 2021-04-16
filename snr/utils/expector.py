@@ -1,6 +1,6 @@
 import logging
 import unittest
-from typing import Any, Dict, List, Mapping, TypeVar
+from typing import Any, Dict, Generic, List, Mapping, TypeVar
 
 from snr.type_defs import *
 
@@ -9,7 +9,7 @@ from .expector_protocol import ExpectorProtocol
 T = TypeVar('T')
 
 
-class Expector(ExpectorProtocol[T]):
+class Expector(ExpectorProtocol, Generic[T]):
 
     def __init__(self,
                  expectations: Mapping[T, int],

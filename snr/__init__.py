@@ -80,7 +80,6 @@ __all__ = [
     "MPExpector",
     "OrderedExpector",
     "TaskExpectations",
-    "TaskExpector",
     "ExpectorEndpointFactory",
 
     "TimeoutLoopFactory",

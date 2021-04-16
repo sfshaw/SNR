@@ -8,7 +8,6 @@ from snr.type_defs import *
 from ..expector_protocol import ExpectorProtocol
 
 TaskExpectations = Mapping[TaskId, int]
-TaskExpector = ExpectorProtocol[TaskId]
 
 
 class ExpectorEndpoint(Endpoint):
@@ -16,7 +15,7 @@ class ExpectorEndpoint(Endpoint):
                  factory: EndpointFactory,
                  parent: AbstractNode,
                  name: ComponentName,
-                 expector: TaskExpector,
+                 expector: ExpectorProtocol,
                  exit_when_satisfied: bool,
                  ) -> None:
         super().__init__(factory,
