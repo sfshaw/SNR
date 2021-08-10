@@ -112,14 +112,19 @@ flake:
 	nox -s lint
 
 .PHONY: diagram
-diagram: protocols.png
-protocols.png: protocols.dot
+diagram: interfaces.png
+interfaces.png: interfaces.dot
 	dot -Tpng $< -o $@
 
 .PHONY: dot
-dot: snr.protocol.loop_protocol.LoopProtocol.dot
-snr.protocol.loop_protocol.LoopProtocol.dot:
-	pyreverse -o dot -s 0 -c snr.protocol.loop_protocol.LoopProtocol -mn snr 
+dot: $(DOT_FILE)
+$(DOT_FILE):
+	pyreverse -o dot -AS -mn -c $(DOT_TARGET) snr
+
+.PHONY: diagram_preview
+diagram_preview: diagram_preview.png
+diagram_preview.png: $(DOT_FILE)
+	dot -Tpng $(DOT_FILE) -o diagram_preview.png
 
 .PHONY: coverage
 cov: coverage

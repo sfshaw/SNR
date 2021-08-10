@@ -38,7 +38,7 @@ def mypy(session: nox.Session):
 def pytype(session: nox.Session):
     session.install('pytype')
     session.install('-r', 'requirements.txt')
-    session.run('pytype', './snr', '-d', 'not-supported-yet')
+    session.run('pytype')
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
