@@ -102,6 +102,10 @@ my: mypy
 mypy:
 	nox -s mypy
 
+.PHONY: pytype
+pytype:
+	nox -s pytype
+
 .PHONY: flake
 f: flake
 flake:
