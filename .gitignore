@@ -10,6 +10,8 @@ html
 coverage.xml
 .mypy_cache
 .pytest_cache
+.nox
+.pytype
 
 # pyreverse diagrams
 packages.png

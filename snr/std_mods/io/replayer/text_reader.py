@@ -6,18 +6,21 @@ from snr.type_defs import *
 
 
 class TextReader(Context):
+
+    filename: str
+    file: Optional[TextIO]
+
     def __init__(self,
                  parent: AbstractContext,
                  name: str,
                  filename: str,
                  ) -> None:
         super().__init__(name,
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
 
         self.filename = filename
-        self.file: Optional[TextIO] = None
+        self.file = None
 
     def open(self) -> None:
         try:

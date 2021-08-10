@@ -9,14 +9,12 @@ from snr.type_defs import *
 class Context(AbstractContext):
 
     def __init__(self,
-                 name: str,
-                 settings: Settings,
+                 name: ComponentName,
                  profiler: Optional[AbstractProfiler],
                  timer: TimerProtocol,
                  ) -> None:
         self.name = name
         self.log = logging.getLogger(self.name)
-        self.settings = settings
         self.profiler = profiler
         self.timer = timer
 

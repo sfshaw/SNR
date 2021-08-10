@@ -12,6 +12,6 @@ class TestContext(SNRTestCase):
             return input
 
         context: AbstractContext = Context(
-            "test_context", Settings(), None, Timer())
+            "test_context", None, Timer())
         result = context.profile(self.test_name, no_op, "hello")
         self.assertEqual("hello", result)

@@ -24,6 +24,9 @@ class ThreadLoop(Context, AbstractLoop, ABC):
     setup(), loop_handler(), and terminate()
     """
 
+    __terminate_flag: threading.Event
+    __thread: threading.Thread
+
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
@@ -31,14 +34,13 @@ class ThreadLoop(Context, AbstractLoop, ABC):
                  max_tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
         super().__init__(name,
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.log.setLevel(logging.WARNING)
         self.factory = factory
-        self.task_handlers: TaskHandlerMap = {}
         self.parent = parent
-        self.delay_s: float = 0.0
+        self.task_handlers = {}
+        self.delay_s = 0.0
         self.set_delay(max_tick_rate_hz)
         self.__terminate_flag = threading.Event()
         self.__thread = threading.Thread(target=self.threaded_method,

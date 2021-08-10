@@ -7,12 +7,14 @@ from snr.type_defs import *
 
 
 class PipeWrapper(Context, AbstractConnection):
+
+    pipe: mp.connection.Connection
+
     def __init__(self,
                  pipe: mp.connection.Connection,
                  parent: AbstractContext,
                  ) -> None:
         super().__init__("pipe_wrapper",
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.pipe = pipe

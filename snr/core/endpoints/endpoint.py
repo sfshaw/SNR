@@ -6,13 +6,13 @@ from .endpoint_factory import EndpointFactory
 
 
 class Endpoint(Context, AbstractEndpoint):
+
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
                  name: ComponentName,
                  ) -> None:
         super().__init__(name,
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.factory = factory

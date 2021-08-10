@@ -1,5 +1,5 @@
 import logging
-import queue
+import queue as que
 from typing import Optional
 
 from snr.interfaces import *
@@ -9,16 +9,18 @@ from .contexts import Context
 
 
 class TaskQueue(Context, AbstractTaskQueue):
+
+    queue: que.Queue[Task]
+
     def __init__(self,
                  parent: AbstractContext,
                  task_source: TaskSource,
                  ) -> None:
         super().__init__("task_queue",
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.task_source = task_source
-        self.queue: queue.Queue[Task] = queue.Queue()
+        self.queue = que.Queue()
         self.log.setLevel(logging.WARNING)
 
     def schedule(self, t: SomeTasks) -> None:

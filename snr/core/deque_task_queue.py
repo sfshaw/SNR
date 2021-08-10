@@ -9,12 +9,12 @@ from .contexts import Context
 
 
 class DequeTaskQueue(Context, AbstractTaskQueue):
+
     def __init__(self,
                  parent: AbstractContext,
                  task_source: TaskSource,
                  ) -> None:
         super().__init__("task_queue",
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.task_source = task_source

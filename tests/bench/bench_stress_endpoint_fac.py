@@ -67,8 +67,7 @@ class BenchStressEndpointFac(SNRTestCase):
             "test",
             self.get_config([
                 stressor_fac,
-                TimeoutLoopFactory(
-                    seconds=0.010),
+                TimeoutLoopFactory(seconds=0.010),
                 StopwatchEndpointFactory(times,
                                          [TaskType.terminate]),
             ], Mode.DEBUG))

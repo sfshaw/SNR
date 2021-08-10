@@ -9,7 +9,6 @@ T = TypeVar("T")
 
 
 class AbstractProfiler(ABC):
-    settings: Settings
 
     @abstractmethod
     def time(self,

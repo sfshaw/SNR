@@ -10,17 +10,19 @@ from typing import List, Optional
 from snr.interfaces import *
 from snr.type_defs import *
 
-from ..core.contexts import threaded_profiler
+from ..core.contexts import local_profiler
 
 
 class Config(AbstractConfig):
+
+    factories: ComponentsByRole
+
     def __init__(self,
                  mode: Mode = Mode.DEPLOYED,
                  factories: ComponentsByRole = {},
                  ) -> None:
         self.mode = mode
         self.factories = factories
-        self.settings = Settings()
         if not factories:
             raise Exception("No factories provided")
 
@@ -30,5 +32,5 @@ class Config(AbstractConfig):
 
     def get_profiler(self) -> Optional[AbstractProfiler]:
         if self.mode in [Mode.DEBUG]:
-            return threaded_profiler.ThreadedProfiler(self.settings)
+            return local_profiler.LocalProfiler()
         return None

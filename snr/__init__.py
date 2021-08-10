@@ -13,7 +13,6 @@ __all__ = [
     "tasks",
     "Mode",
     "ComponentName",
-    "Settings",
 
     "Page",
     "TaskType",

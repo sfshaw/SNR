@@ -1,15 +1,18 @@
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
-from snr.interfaces.abstract_component import AbstractComponent
 from snr.type_defs import *
 from snr.type_defs.task import *
 
+from .abstract_component import AbstractComponent
+from .abstract_config import AbstractConfig
 from .abstract_context import AbstractContext
-from abc import ABC, abstractmethod
 
 
 class AbstractNode(AbstractContext, ABC):
+
     role: Role
+    config: AbstractConfig
     mode: Mode
     components: Dict[ComponentName, AbstractComponent]
 

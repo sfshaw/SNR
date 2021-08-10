@@ -1,6 +1,7 @@
 import functools
 import logging
 import multiprocessing as mp
+from multiprocessing import synchronize
 import operator
 import time
 from typing import Any, Dict, List, Optional, Tuple
@@ -18,6 +19,13 @@ SLEEP_TIME_S: float = 0
 
 
 class Node(RootContext, AbstractNode):
+
+    __task_que: AbstractTaskQueue
+    __datastore: Dict[DataKey, Page]
+
+    __terminate_flag: synchronize.Event
+    __is_terminated: synchronize.Event
+
     def __init__(self,
                  role: Role,
                  config: AbstractConfig,
@@ -27,12 +35,12 @@ class Node(RootContext, AbstractNode):
         self.info("Initializing in mode %s", config.mode)
         self.role = role
         self.mode = config.mode
-        self.profiler_getter: ProfilerGetter = config.get_profiler
-        self.__task_que: AbstractTaskQueue = TaskQueImpl(self,
-                                                         self.get_new_tasks)
-        self.__datastore: Dict[DataKey, Page] = {}
+        self.config = config
+        self.__task_que = TaskQueImpl(self,
+                                      self.get_new_tasks)
+        self.__datastore = {}
         core_endpoint = NodeCoreFactory().get(self)
-        self.components: Dict[ComponentName, AbstractComponent] = {
+        self.components = {
             core_endpoint.name: core_endpoint,
         }
         for factory in config.get(role):
@@ -46,7 +54,7 @@ class Node(RootContext, AbstractNode):
 
     def loop(self) -> None:
         try:
-            self.profiler = self.profiler_getter()
+            self.profiler = self.config.get_profiler()
             for component in self.components.values():
                 component.begin()
 
@@ -91,12 +99,15 @@ class Node(RootContext, AbstractNode):
         handlers = self.get_task_handlers(t)
         self.dbg("Got %s handlers for %s task",
                  len(handlers), t.id())
+        empty_list: List[Task] = list()
+        results = [self.handle_task(h, t, k)
+                   for (h, k) in handlers]
         new_tasks: List[Task] = functools.reduce(
             operator.iconcat,
-            filter(None,
-                   [self.handle_task(h, t, k)
-                    for (h, k) in handlers]),
-            list())
+            [some_tasks
+             for some_tasks in results
+             if some_tasks],
+            empty_list)
         self.dbg("Task execution resulted in %s new tasks",
                  len(new_tasks))
         if new_tasks:
@@ -105,8 +116,14 @@ class Node(RootContext, AbstractNode):
     def get_task_handlers(self,
                           task: Task,
                           ) -> List[Tuple[TaskHandler, TaskId]]:
-        return list(filter(None, map(lambda e: e.get_task_handler(task),
-                                     self.components.values())))
+        maybe_handlers: List[Optional[Tuple[TaskHandler, TaskId]]] = \
+            [components.get_task_handler(task)
+             for components in self.components.values()]
+        handlers: List[Tuple[TaskHandler, TaskId]] = \
+            [handler_tuple
+             for handler_tuple in maybe_handlers
+             if handler_tuple]
+        return handlers
 
     def set_terminate_flag(self, reason: str) -> None:
         self.info("Setting terminate flag for: %s", reason)

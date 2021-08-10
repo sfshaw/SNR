@@ -1,5 +1,5 @@
 import logging
-import select
+import select as std_select
 import socket
 from typing import Any, List, Optional, Tuple
 
@@ -12,22 +12,25 @@ from . import sockets_header
 
 class SocketsWrapper(Context, AbstractConnection):
 
+    connection: socket.socket
+    something_else: Any
+    select: std_select.poll
+
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
                  parent: AbstractContext,
                  ) -> None:
         super().__init__("sockets_wrapper",
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.connection = connection[0]
         self.something_else = connection[1]
-        self.select = select.poll()
+        self.select = std_select.poll()
         self.log.setLevel(logging.WARNING)
 
     def open(self) -> None:
         self.select.register(self.connection.fileno(),
-                             select.POLLIN)
+                             std_select.POLLIN)
 
     def is_closed(self) -> bool:
         return self.connection is None
@@ -46,7 +49,7 @@ class SocketsWrapper(Context, AbstractConnection):
         result: List[Tuple[int, int]] = self.select.poll(timeout_s * 1000)
         ready = ((len(result) > 0) and
                  (result[0] == (self.connection.fileno(),
-                                select.POLLIN)))
+                                std_select.POLLIN)))
         if ready:
             self.dbg("Ran poll on %s: %s => ready",
                      self.connection.fileno(),

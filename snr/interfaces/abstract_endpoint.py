@@ -4,10 +4,13 @@ from typing import Any, Optional
 from snr.type_defs import *
 
 from .abstract_component import AbstractComponent
+from .abstract_factory import AbstractFactory
 from .abstract_node import AbstractNode
 
 
 class AbstractEndpoint(AbstractComponent, ABC):
+
+    factory: AbstractFactory
     parent: AbstractNode
 
     @abstractmethod

@@ -7,8 +7,6 @@ from snr.type_defs import *
 
 from ..core_utils import Consumer, MovingAvgFilter, Timer
 
-SLEEP_TIME_S = 0.00005
-PROFILING_AVG_WINDOW_LEN = 32
 
 ProfilingResult = Tuple[str, float]
 ProfileingData = Tuple[int, MovingAvgFilter]
@@ -17,21 +15,25 @@ T = TypeVar("T")
 
 
 class ThreadedProfiler(Consumer[ProfilingResult], AbstractProfiler):
-    def __init__(self, settings: Settings) -> None:
+
+    SLEEP_TIME_S = 0.00005
+    PROFILING_AVG_WINDOW_LEN = 32
+
+    time_dict: Dict[str, ProfileingData]
+    timer: TimerProtocol
+
+    def __init__(self) -> None:
         super().__init__("profiler",
                          self.store_task,
-                         SLEEP_TIME_S,
-                         )
+                         ThreadedProfiler.SLEEP_TIME_S)
         self.log.setLevel(logging.WARNING)
-        self.settings = settings
-        self.time_dict: Dict[str, ProfileingData] = {}
-        self.moving_avg_len = PROFILING_AVG_WINDOW_LEN
+        self.time_dict = {}
         self.timer = Timer()
 
     def time(self,
              name: str,
              handler: Callable[[Any], T],
-             *args: Any
+             *args: Any,
              ) -> T:
         timer = Timer()
         result = handler(*args)
@@ -61,7 +63,10 @@ class ThreadedProfiler(Consumer[ProfilingResult], AbstractProfiler):
 
     def init_task_type(self, task_type: str) -> ProfileingData:
         return (0,
-                MovingAvgFilter(collections.deque(maxlen=self.moving_avg_len)))
+                MovingAvgFilter(
+                    collections.deque(
+                        maxlen=ThreadedProfiler.PROFILING_AVG_WINDOW_LEN)
+                ))
 
     def dump(self) -> str:
 

@@ -2,6 +2,7 @@ import logging
 from typing import Optional, Union
 
 from snr.interfaces import *
+from snr.interfaces.abstract_context import LOG_LEVELS
 from snr.type_defs import *
 
 from ..core_utils import Timer
@@ -11,22 +12,19 @@ LOG_FORMAT = "[%(name)s:\t%(levelname)s]\t%(message)s\t"
 
 
 class RootContext(Context):
+
     def __init__(self,
                  name: str,
                  mode: Union[Mode, LogLevel],
                  profiler: Optional[AbstractProfiler] = None,
-                 settings: Settings = Settings(),
-
                  ) -> None:
-        self.profiler = profiler
         logging.basicConfig(format=LOG_FORMAT)
-        self.log = logging.getLogger()
+        super().__init__(name, profiler, Timer())
         if isinstance(mode, Mode):
-            level = settings.log_level[mode]
+            level = LOG_LEVELS[mode]
         else:
             level = mode
         self.log.setLevel(level)
-        super().__init__(name, settings, self.profiler, Timer())
 
     def terminate_context(self) -> None:
         if self.profiler:

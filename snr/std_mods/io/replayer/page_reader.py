@@ -8,18 +8,20 @@ from snr.type_defs import *
 
 class PageReader(Context):
 
+    filename: str
+    file: Optional[TextIO]
+
     def __init__(self,
                  parent: AbstractContext,
-                 name: str,
+                 name: ComponentName,
                  filename: str,
                  ) -> None:
         super().__init__(name,
-                         parent.settings,
                          parent.profiler,
                          parent.timer)
         self.log.setLevel(logging.WARNING)
         self.filename = filename
-        self.file: Optional[TextIO] = None
+        self.file = None
         try:
             self.file = open(self.filename)
             self.dbg(f"File {self.filename} opened")

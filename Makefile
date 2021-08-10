@@ -74,7 +74,7 @@ ut: unittest
 unittest: 
 	$(PYTHON) -m unittest -q
 
-BENCHMARK_TEST_MODULES = tests.bench.bench_node_startup tests.bench.bench_stress
+BENCHMARK_TEST_MODULES = tests.bench.bench_node_startup tests.bench.bench_stress_endpoint_fac tests.bench.bench_stress_loop_fac
 
 .PHONY: bench
 b: bench

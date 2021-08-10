@@ -8,8 +8,8 @@ from .abstract_profiler import AbstractProfiler
 
 
 class AbstractConfig(ABC):
+
     mode: Mode
-    settings: Settings
 
     @abstractmethod
     def get(self, role: str) -> List[AbstractFactory]:

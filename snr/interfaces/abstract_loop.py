@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from snr.type_defs import *
 
 from .abstract_component import AbstractComponent
+from .abstract_factory import AbstractFactory
 from .abstract_node import AbstractNode
 
 
@@ -33,8 +34,10 @@ class AbstractLoop(AbstractComponent, ABC):
     The endpoint has its loop handler function run according to its
     tick_rate (Hz).
     """
-
+    factor: AbstractFactory
     parent: AbstractNode
+    task_handlers: TaskHandlerMap
+    delay_s: float
 
     @abstractmethod
     def setup(self) -> None:

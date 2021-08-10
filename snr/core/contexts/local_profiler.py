@@ -8,6 +8,7 @@ from snr.type_defs import *
 from ..core_utils import MovingAvgFilter, Timer
 
 SLEEP_TIME_S = 0.00005
+PROFILING_AVG_WINDOW_LEN = 32
 
 ProfilingResult = Tuple[str, float]
 ProfileingData = Tuple[int, MovingAvgFilter]
@@ -16,12 +17,14 @@ T = TypeVar("T")
 
 
 class LocalProfiler(AbstractProfiler):
-    def __init__(self, settings: Settings) -> None:
+
+    time_dict: Dict[str, ProfileingData]
+    timer: TimerProtocol
+
+    def __init__(self) -> None:
         self.log = logging.getLogger("local_profiler")
         self.log.setLevel(logging.WARNING)
-        self.settings = settings
-        self.time_dict: Dict[str, ProfileingData] = {}
-        self.moving_avg_len = settings.PROFILING_AVG_WINDOW_LEN
+        self.time_dict = {}
         self.timer = Timer()
 
     def time(self,
@@ -50,8 +53,9 @@ class LocalProfiler(AbstractProfiler):
                        task_id, data[1].avg())
 
     def init_task_type(self, task_type: str) -> ProfileingData:
-        return (0,
-                MovingAvgFilter(collections.deque(maxlen=self.moving_avg_len)))
+        return (0, MovingAvgFilter(
+            collections.deque(maxlen=PROFILING_AVG_WINDOW_LEN))
+        )
 
     def dump(self) -> str:
 
