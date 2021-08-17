@@ -24,7 +24,7 @@ setup(
         'dataclasses_json>=0.5.2',                  # Serialization
         # 'numpy>=1.20.0',                            # Kalman filter, CV
         # 'pygame>=2.0.0'                             # Controller
-        'pyserial>=3.5',                            # Serial connection
+        # 'pyserial>=3.5',                            # Serial connection
         # 'pysimplegui=4.29.0',                       # GUI
     ],
     extras_require={
