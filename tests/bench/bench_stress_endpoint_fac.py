@@ -78,7 +78,7 @@ class BenchStressEndpointFac(SNRTestCase):
 
     def test_stress_endpoint(self):
         time_target_s: float = 2.000
-        stressor_fac = StressorEndpointFactory(max_endpoints=10000,
+        stressor_fac = StressorEndpointFactory(max_endpoints=1000,
                                                time_limit_s=time_target_s)
         times: List[float] = []
         timer = Timer()
@@ -86,8 +86,7 @@ class BenchStressEndpointFac(SNRTestCase):
             "test",
             self.get_config([
                 stressor_fac,
-                TimeoutLoopFactory(
-                    seconds=time_target_s),
+                TimeoutLoopFactory(seconds=time_target_s),
                 StopwatchEndpointFactory(times,
                                          [TaskType.terminate]),
             ], Mode.DEBUG))
