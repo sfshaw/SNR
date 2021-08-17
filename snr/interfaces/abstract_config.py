@@ -12,7 +12,7 @@ class AbstractConfig(ABC):
     mode: Mode
 
     @abstractmethod
-    def get(self, role: str) -> List[AbstractFactory]:
+    def get(self, role: Role) -> List[AbstractFactory]:
         ...
 
     @abstractmethod
