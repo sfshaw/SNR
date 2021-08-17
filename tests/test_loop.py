@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, List
 
 from snr import *
 
@@ -129,7 +129,7 @@ class TestLoop(SNRTestCase):
                                    AbstractLoop))  # type: ignore
 
     def test_loop_methods(self):
-        expectations: OrderedExpectations = [
+        expectations: List[str] = [
             "setup",
             "loop",
             "halt",
