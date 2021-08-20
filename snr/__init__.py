@@ -3,9 +3,8 @@ framework, including implementing components and `snr.core.Factories and
 running `snr.core.node.Node`s
 '''
 from snr.core import *
-from snr.interfaces import *
+from snr.prelude import *
 from snr.std_mods import *
-from snr.type_defs import *
 from snr.utils import *
 
 __all__ = [
@@ -58,7 +57,7 @@ __all__ = [
     "LocalConsole",
 
     "MovingAvgEndpointFactory",
-    "KalmanFilterFactory",
+    # "KalmanFilterFactory",
 
     "PipeLoopFactory",
 
