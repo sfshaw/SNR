@@ -2,8 +2,7 @@ import logging
 from typing import Any, List
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 NAME_PREFIX: str = "list_replayer_loop_"
 

@@ -4,9 +4,8 @@ import unittest
 from typing import Any, List, Mapping, Optional, Tuple
 
 from snr.core import *
-from snr.interfaces import *
+from snr.prelude import *
 from snr.std_mods import *
-from snr.type_defs import *
 
 from .expector import Expector
 from .expector_protocol import ExpectorProtocol
@@ -39,7 +38,7 @@ class SNRTestCase(unittest.TestCase):
         return OrderedExpector(expectations, self)
 
     def get_config(self,
-                   factories: List[AbstractFactory] = [],
+                   factories: List[AbstractFactory[Any]] = [],
                    mode: Mode = Mode.TEST
                    ) -> Config:
         return Config(mode, {"test": factories})
@@ -48,7 +47,7 @@ class SNRTestCase(unittest.TestCase):
         return RootContext("test_context", Mode.TEST)
 
     def run_test_node(self,
-                      factories: List[AbstractFactory],
+                      factories: List[AbstractFactory[Any]],
                       mode: Mode = Mode.TEST,
                       ) -> None:
         config = self.get_config(factories, mode)

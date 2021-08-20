@@ -1,7 +1,7 @@
 import unittest
 from typing import Any, List
 
-from snr.type_defs import *
+from snr.prelude import *
 from typing_extensions import Protocol, runtime_checkable
 
 

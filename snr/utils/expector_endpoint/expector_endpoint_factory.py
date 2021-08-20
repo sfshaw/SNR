@@ -1,6 +1,5 @@
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..expector_protocol import ExpectorProtocol
 from . import expector_endpoint

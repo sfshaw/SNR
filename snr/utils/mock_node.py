@@ -2,8 +2,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class MockTimer(TimerProtocol):
@@ -57,21 +56,22 @@ class MockNode(RootContext, AbstractNode):
         return True
 
     def add_component(self,
-                      factory: AbstractFactory,
+                      factory: AbstractFactory[Any],
                       ) -> Optional[str]:
         pass
 
     def schedule(self, t: SomeTasks) -> None:
         pass
 
-    def store_page(self, page: Page) -> None:
+    def store_data(self,
+                   key: DataKey,
+                   data: Any,
+                   process: bool = True,
+                   ) -> None:
         pass
 
     def synchronous_store(self, page: Page) -> None:
         pass
-
-    def task_store_page(self, page: Page) -> Task:
-        return tasks.store_page(page)
 
     def page(self, key: DataKey, data: Any, process: bool = True) -> Page:
         return Page(key, data, self.name,  0, process=process)

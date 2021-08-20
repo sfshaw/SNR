@@ -2,8 +2,7 @@ import logging
 from typing import Dict, List, Mapping
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..expector_protocol import ExpectorProtocol
 
