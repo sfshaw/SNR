@@ -2,8 +2,7 @@ import logging
 import threading
 from typing import Any, Callable, Optional, TypeVar
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class Context(AbstractContext):

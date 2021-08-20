@@ -1,8 +1,8 @@
 
 import logging
+from typing import Any, List
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .. import tasks
 from ..endpoints import Endpoint, EndpointFactory
@@ -28,7 +28,7 @@ class NodeCoreEndpoint(Endpoint):
         self.log.setLevel(logging.WARNING)
         self.task_handlers = {
             TaskType.terminate: self.task_handler_terminate,
-            TaskType.store_page: self.task_handler_store_page,
+            TaskType.store_data: self.task_handler_store_data,
             TaskType.reload: self.task_handler_reload,
             (TaskType.event, tasks.ADD_COMPONENT_TASK_NAME):
             self.task_handler_add_component,
@@ -45,20 +45,19 @@ class NodeCoreEndpoint(Endpoint):
     def terminate(self) -> None:
         pass
 
-    def task_source(self) -> SomeTasks:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
-    def task_handler_store_page(self, t: Task, key: TaskId) -> SomeTasks:
+    def task_handler_store_data(self, t: Task, _key: TaskId) -> SomeTasks:
         # TODO: Solidify queueing Page stores in the task queue or in a...
         #  separate datastore queue (the advantage of which is the ability
         #  to flush data through, independant of tasks)
-        page = t.val_list[0]
-        if isinstance(page, Page):
-            self.parent.synchronous_store(page)
-            if page.process:
-                return tasks.process_data(page.key)
-        else:
-            self.err("Store page task value was not a page: %s", page)
+        data = t.val_list[0]
+        process = t.val_list[1]
+        page = self.page(t.name, data, process)
+        self.parent.synchronous_store(page)
+        if page.process:
+            return Task(TaskType.process_data, page.key)
         return None
 
     def task_handler_terminate(self, t: Task, key: TaskId) -> SomeTasks:
@@ -84,7 +83,7 @@ class NodeCoreEndpoint(Endpoint):
     def task_handler_add_component(self, task: Task, key: TaskId) -> SomeTasks:
         assert (isinstance(task.val_list[0], AbstractFactory) and
                 isinstance(task.val_list[1], bool))
-        factory: AbstractFactory = task.val_list[0]
+        factory: AbstractFactory[Any] = task.val_list[0]
         start_component: bool = task.val_list[1]
         new_component = factory.get(self.parent)
         if new_component:

@@ -2,8 +2,7 @@ import collections
 import logging
 from typing import Any, Callable, Deque, Dict, Tuple, TypeVar
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..core_utils import Consumer, MovingAvgFilter, Timer
 

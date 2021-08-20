@@ -3,8 +3,7 @@ import logging
 import threading
 import time
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..contexts import Context
 from .loop_factory import LoopFactory

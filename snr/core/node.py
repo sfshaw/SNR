@@ -1,28 +1,26 @@
 import functools
 import logging
 import multiprocessing as mp
-from multiprocessing import synchronize
 import operator
-import time
+from multiprocessing import synchronize
 from typing import Any, Dict, List, Optional, Tuple
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from . import tasks
 from .contexts import RootContext
 from .deque_task_queue import DequeTaskQueue as TaskQueImpl
 from .node_core.node_core_factory import NodeCoreFactory
 
-# SLEEP_TIME_S: float = 0.000001
-SLEEP_TIME_S: float = 0
-
 
 class Node(RootContext, AbstractNode):
 
-    __task_que: AbstractTaskQueue
-    __datastore: Dict[DataKey, Page]
-
+    role: Role
+    config: AbstractConfig
+    profiler: Optional[AbstractProfiler]
+    components: Dict[ComponentName, AbstractComponent]
+    __task_queue: AbstractTaskQueue
+    __datastore: DataDict
     __terminate_flag: synchronize.Event
     __is_terminated: synchronize.Event
 
@@ -36,9 +34,11 @@ class Node(RootContext, AbstractNode):
         self.role = role
         self.mode = config.mode
         self.config = config
-        self.__task_que = TaskQueImpl(self,
-                                      self.get_new_tasks)
+        self.__task_queue = TaskQueImpl(self,
+                                        self.get_new_tasks)
         self.__datastore = {}
+        self.__terminate_flag = mp.Event()
+        self.__is_terminated = mp.Event()
         core_endpoint = NodeCoreFactory().get(self)
         self.components = {
             core_endpoint.name: core_endpoint,
@@ -59,17 +59,14 @@ class Node(RootContext, AbstractNode):
                 component.begin()
 
             while not self.__terminate_flag.is_set():
-                t: Optional[Task] = self.__task_que.get_next()
+                t: Optional[Task] = self.__task_queue.get_next()
                 if t:
                     self.execute_task(t)
-                else:
-                    if SLEEP_TIME_S > 0:
-                        time.sleep(SLEEP_TIME_S)
         finally:
             self.dbg("Node exiting main loop")
             self.terminate()
 
-    def get_new_tasks(self) -> SomeTasks:
+    def get_new_tasks(self) -> List[Task]:
         new_tasks: List[Task] = []
         for component in self.components.values():
             t: SomeTasks = component.task_source()
@@ -111,7 +108,7 @@ class Node(RootContext, AbstractNode):
         self.dbg("Task execution resulted in %s new tasks",
                  len(new_tasks))
         if new_tasks:
-            self.__task_que.schedule(new_tasks)
+            self.__task_queue.schedule(new_tasks)
 
     def get_task_handlers(self,
                           task: Task,
@@ -159,7 +156,7 @@ class Node(RootContext, AbstractNode):
         return self.__is_terminated.is_set()
 
     def schedule(self, t: SomeTasks) -> None:
-        self.__task_que.schedule(t)
+        self.__task_queue.schedule(t)
 
     def page(self,
              key: DataKey,
@@ -174,9 +171,6 @@ class Node(RootContext, AbstractNode):
             "Synchronous store called from outside main thread.")
         self.__datastore[page.key] = page
         self.dbg("Page stored: (%s)", page.key)
-
-    def task_store_page(self, page: Page) -> Task:
-        return tasks.store_page(page)
 
     def get_page(self, key: DataKey) -> Optional[Page]:
         return self.__datastore.get(key)

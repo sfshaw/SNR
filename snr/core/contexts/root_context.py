@@ -1,9 +1,8 @@
 import logging
 from typing import Optional, Union
 
-from snr.interfaces import *
-from snr.interfaces.abstract_context import LOG_LEVELS
-from snr.type_defs import *
+from snr.prelude import *
+from snr.prelude.abstract_context import LOG_LEVELS
 
 from ..core_utils import Timer
 from .context import Context

@@ -1,8 +1,7 @@
 import sys
 from typing import List
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..config import Config
 from .synchronous_runner import SynchronousRunner

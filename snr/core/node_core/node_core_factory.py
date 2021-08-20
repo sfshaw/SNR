@@ -1,5 +1,4 @@
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..endpoints import EndpointFactory
 from . import node_core_endpoint

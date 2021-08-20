@@ -2,8 +2,7 @@ import logging
 import queue as que
 from typing import Optional
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .contexts import Context
 

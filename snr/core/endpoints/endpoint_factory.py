@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
 from types import ModuleType
-from typing import Optional
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
-class EndpointFactory(AbstractFactory, ABC):
+class EndpointFactory(AbstractFactory[AbstractEndpoint], ABC):
     def __init__(self,
                  reload_targets: ReloadTargets = [],
                  ) -> None:
@@ -15,5 +13,5 @@ class EndpointFactory(AbstractFactory, ABC):
         self.reload_targets = reload_targets
 
     @abstractmethod
-    def get(self, parent: AbstractNode) -> Optional[AbstractEndpoint]:
+    def get(self, parent: AbstractNode) -> AbstractEndpoint:
         ...

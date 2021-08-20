@@ -1,7 +1,6 @@
 import threading
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..node import Node
 
@@ -15,8 +14,7 @@ class SynchronousRunner(AbstractRunner):
         self.config = config
 
     def run(self) -> None:
-        node: AbstractNode = Node(self.role,
-                                  self.config)
+        node: AbstractNode = Node(self.role, self.config)
         try:
             node.loop()  # Blocking loop
         except KeyboardInterrupt:

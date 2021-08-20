@@ -1,11 +1,16 @@
-from snr.interfaces import *
-from snr.type_defs import *
+from typing import List
+
+from snr.prelude import *
 
 from ..contexts import Context
 from .endpoint_factory import EndpointFactory
 
 
 class Endpoint(Context, AbstractEndpoint):
+
+    factory: EndpointFactory
+    parent: AbstractNode
+    task_handlers: TaskHandlerMap
 
     def __init__(self,
                  factory: EndpointFactory,
@@ -18,11 +23,11 @@ class Endpoint(Context, AbstractEndpoint):
         self.factory = factory
         self.parent = parent
 
-    def task_source(self) -> SomeTasks:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def set_terminate_flag(self) -> None:
         pass
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> ComponentName:
         return self.name
