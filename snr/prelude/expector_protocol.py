@@ -1,7 +1,6 @@
 import unittest
 from typing import Any, Dict, Iterable
 
-from snr.type_defs import *
 from typing_extensions import Protocol, runtime_checkable
 
 Expectations = Dict[Any, int]

@@ -1,38 +1,24 @@
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Protocol, Tuple
 
-from snr.type_defs import *
-from snr.type_defs.task import *
-
-from .abstract_component import AbstractComponent
-from .abstract_config import AbstractConfig
-from .abstract_context import AbstractContext
+from .task import SomeTasks, Task, TaskHandler, TaskId
+from .page import Page, DataKey
 
 
-class AbstractNode(AbstractContext, ABC):
+class NodeProtocol(Protocol):
 
-    role: Role
-    config: AbstractConfig
-    mode: Mode
-    components: Dict[ComponentName, AbstractComponent]
-
-    @abstractmethod
     def loop(self) -> None:
         ...
 
-    @abstractmethod
     def get_new_tasks(self) -> SomeTasks:
         """Retrieve tasks from endpoints and queue them.
         """
         ...
 
-    @abstractmethod
     def get_task_handlers(self,
                           task: Task,
                           ) -> List[Tuple[TaskHandler, TaskId]]:
         ...
 
-    @abstractmethod
     def handle_task(self,
                     handler: TaskHandler,
                     task: Task,
@@ -40,15 +26,12 @@ class AbstractNode(AbstractContext, ABC):
                     ) -> Optional[List[Task]]:
         ...
 
-    @abstractmethod
     def execute_task(self, t: Task) -> None:
         ...
 
-    @abstractmethod
     def set_terminate_flag(self, reason: str) -> None:
         ...
 
-    @abstractmethod
     def terminate(self) -> None:
         """Execute actions needed to deconstruct a Node.
         Terminate is executed the main thread or process of an object.
@@ -57,15 +40,12 @@ class AbstractNode(AbstractContext, ABC):
         """
         ...
 
-    @abstractmethod
     def is_terminated(self) -> bool:
         ...
 
-    @abstractmethod
     def schedule(self, t: SomeTasks) -> None:
         ...
 
-    @abstractmethod
     def page(self,
              key: DataKey,
              data: Any,
@@ -73,28 +53,7 @@ class AbstractNode(AbstractContext, ABC):
              ) -> Page:
         '''Page constructor
         '''
-        return Page(key, data,
-                    self.name,
-                    self.timer.current_s(),
-                    process)
-
-    @abstractmethod
-    def task_store_page(self, page: Page) -> Task:
-        '''Thread-safe method for scheduling a task to store a page.
-        '''
         ...
-
-    def task_store_data(self,
-                        key: DataKey,
-                        data: Any,
-                        process: bool = True,
-                        ) -> Task:
-        return self.task_store_page(self.page(key, data, process))
-
-    def store_page(self, page: Page) -> None:
-        '''Thread-safe method for scheduling a task to store a page.
-        '''
-        self.schedule(self.task_store_page(page))
 
     def store_data(self,
                    key: DataKey,
@@ -104,9 +63,8 @@ class AbstractNode(AbstractContext, ABC):
         '''Thread-safe method for constructing a page and scheduling a task to
         store it.
         '''
-        self.store_page(self.page(key, data, process))
+        ...
 
-    @abstractmethod
     def get_page(self, key: DataKey) -> Optional[Page]:
         '''Thread-safe accesor for pages.
         '''
@@ -115,12 +73,8 @@ class AbstractNode(AbstractContext, ABC):
     def get_data(self, key: DataKey) -> Optional[Any]:
         '''Thread-safe accessor for plain data, wraps `get_page()`
         '''
-        page = self.get_page(key)
-        if page:
-            return page.data
-        return None
+        ...
 
-    @abstractmethod
     def synchronous_store(self, page: Page) -> None:
         '''Only for synchronous task handlers:
          Writes directely to the Node's datastore.
@@ -130,10 +84,8 @@ class AbstractNode(AbstractContext, ABC):
         '''
         ...
 
-    @abstractmethod
     def get_time_s(self) -> float:
         ...
 
-    @abstractmethod
     def dump_data(self) -> str:
         ...

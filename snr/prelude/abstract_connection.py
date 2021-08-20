@@ -1,7 +1,7 @@
+from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from snr.type_defs import *
-from abc import ABC, abstractmethod
+from .serializable import JsonData
 
 
 class AbstractConnection(ABC):

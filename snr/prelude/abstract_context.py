@@ -2,7 +2,8 @@ import logging
 from abc import ABC
 from typing import Dict, Optional
 
-from snr.type_defs import *
+from .names import ComponentName
+from .mode import Mode
 
 from .abstract_profiler import AbstractProfiler
 from .timer_protocol import TimerProtocol

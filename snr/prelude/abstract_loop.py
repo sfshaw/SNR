@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-
-from snr.type_defs import *
+from typing import Any
 
 from .abstract_component import AbstractComponent
 from .abstract_factory import AbstractFactory
 from .abstract_node import AbstractNode
+from .page import DataKey
+from .task import SomeTasks, TaskHandlerMap
 
 
 class AbstractLoop(AbstractComponent, ABC):
@@ -34,7 +35,7 @@ class AbstractLoop(AbstractComponent, ABC):
     The endpoint has its loop handler function run according to its
     tick_rate (Hz).
     """
-    factor: AbstractFactory
+    factory: AbstractFactory['AbstractLoop']
     parent: AbstractNode
     task_handlers: TaskHandlerMap
     delay_s: float
@@ -66,5 +67,9 @@ class AbstractLoop(AbstractComponent, ABC):
     def schedule(self, t: SomeTasks) -> None:
         self.parent.schedule(t)
 
-    def store_page(self, page: Page) -> None:
-        self.parent.store_page(page)
+    def store_data(self,
+                   key: DataKey,
+                   data: Any,
+                   process: bool = True,
+                   ) -> None:
+        self.parent.store_data(key, data, process)

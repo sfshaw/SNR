@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
-from snr.type_defs import *
-
 ProfilingResult = Tuple[str, float]
 
 T = TypeVar("T")

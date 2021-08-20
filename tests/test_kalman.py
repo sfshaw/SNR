@@ -13,7 +13,7 @@ class TestKalman(SNRTestCase):
                 f.write("4,5,6,\n")
 
             with self.expector({
-                (TaskType.store_page, "raw_data"): 2,
+                (TaskType.store_data, "raw_data"): 2,
             }) as expector:
 
                 self.run_test_node([
@@ -28,8 +28,8 @@ class TestKalman(SNRTestCase):
             intermediate_file.assertExists()
 
             with self.expector({
-                (TaskType.store_page, "raw_data"): 2,
-                (TaskType.store_page, "filtered_data"): 2,
+                (TaskType.store_data, "raw_data"): 2,
+                (TaskType.store_data, "filtered_data"): 2,
             }) as expector:
 
                 self.run_test_node([
