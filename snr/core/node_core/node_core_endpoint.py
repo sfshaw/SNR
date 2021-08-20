@@ -28,7 +28,7 @@ class NodeCoreEndpoint(Endpoint):
         self.log.setLevel(logging.WARNING)
         self.task_handlers = {
             TaskType.terminate: self.task_handler_terminate,
-            TaskType.store_data: self.task_handler_store_data,
+            TaskType.store_page: self.task_handler_store_page,
             TaskType.reload: self.task_handler_reload,
             (TaskType.event, tasks.ADD_COMPONENT_TASK_NAME):
             self.task_handler_add_component,
@@ -48,13 +48,9 @@ class NodeCoreEndpoint(Endpoint):
     def task_source(self) -> List[Task]:
         return []
 
-    def task_handler_store_data(self, t: Task, _key: TaskId) -> SomeTasks:
-        # TODO: Solidify queueing Page stores in the task queue or in a...
-        #  separate datastore queue (the advantage of which is the ability
-        #  to flush data through, independant of tasks)
-        data = t.val_list[0]
-        process = t.val_list[1]
-        page = self.page(t.name, data, process)
+    def task_handler_store_page(self, t: Task, _key: TaskId) -> SomeTasks:
+        assert isinstance(t.val_list[0], Page)
+        page: Page = t.val_list[0]
         self.parent.synchronous_store(page)
         if page.process:
             return Task(TaskType.process_data, page.key)

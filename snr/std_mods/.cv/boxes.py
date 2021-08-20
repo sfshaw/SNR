@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from snr.type_defs import *
+from snr.prelude import *
 
 Rect = Tuple[int, int, int, int]
 

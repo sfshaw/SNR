@@ -24,7 +24,7 @@ class CommandProcessor(Endpoint):
                          "command_processor")
         self.log.setLevel(logging.INFO)
         self.task_handlers = {
-            (TaskType.store_data, remote_console.COMMAND_DATA_NAME):
+            (TaskType.store_page, remote_console.COMMAND_DATA_NAME):
             self.process_command}
         self.commands: CommandDict = {
             "exit": ("Terminate the node and console",
@@ -41,8 +41,8 @@ class CommandProcessor(Endpoint):
                      self.cmd_help),
         }
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def process_command(self, task: Task, key: TaskId) -> SomeTasks:
         command_page: Page = task.val_list[0]
@@ -57,8 +57,8 @@ class CommandProcessor(Endpoint):
             else:
                 response = f"Invalid command {args[0]}"
 
-        return tasks.store_data(remote_console.COMMAND_ACK_DATA_NAME,
-                                response)
+        return tasks.store_page(self.page(remote_console.COMMAND_ACK_DATA_NAME,
+                                response))
 
     def cmd_schedule_task(self, args: List[str]) -> str:
         type = TaskType(args[0])

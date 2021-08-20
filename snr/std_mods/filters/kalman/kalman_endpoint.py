@@ -1,13 +1,13 @@
 # from snr.core import *
-# from snr.interfaces import *
-# from snr.type_defs import *
+# from snr.prelude import *
+# from snr.prelude import *
 
 
 # class KalmanEndpoint(Endpoint):
 #     def __init__(self,
 #                  factory: EndpointFactory,
 #                  parent: AbstractNode,
-#                  name: ComponentName,
+#                  name: str,
 #                  input_data_key: DataKey,
 #                  output_data_key: DataKey
 #                  ) -> None:

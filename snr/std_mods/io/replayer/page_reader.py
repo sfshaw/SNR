@@ -12,7 +12,7 @@ class PageReader(Context):
 
     def __init__(self,
                  parent: AbstractContext,
-                 name: ComponentName,
+                 name: str,
                  filename: str,
                  ) -> None:
         super().__init__(name,

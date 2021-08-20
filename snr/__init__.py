@@ -11,7 +11,7 @@ __all__ = [
 
     "tasks",
     "Mode",
-    "ComponentName",
+    "str",
 
     "Page",
     "TaskType",
@@ -73,6 +73,7 @@ __all__ = [
 
     "SNRTestCase",
 
+    "Expectations",
     "ExpectorProtocol",
     "Expector",
     "MPExpector",

@@ -7,6 +7,6 @@ Role = str
 '''
 # TODO: Suprress inherited docstrings from str
 
-ComponentName = str
+str = str
 '''The name of components such as endpoints and loops
 '''

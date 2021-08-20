@@ -8,7 +8,7 @@ class PingTestEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent_node: AbstractNode,
-                 name: ComponentName):
+                 name: str):
         super().__init__(factory,
                          parent_node,
                          name)
@@ -61,7 +61,7 @@ class TestDatastorePing(SNRTestCase):
     def test_dds_ping(self):
         expectations: TaskExpectations = {
             (TaskType.event, "ping_request"): 1,
-            (TaskType.store_data, "ping"): 1,
+            (TaskType.store_page, "ping"): 1,
             (TaskType.process_data, "ping"): 1,
             TaskType.terminate: 1,
         }

@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 from .abstract_component import AbstractComponent
 from .abstract_factory import AbstractFactory
 from .abstract_node import AbstractNode
 from .page import DataKey, Page
-from .task import SomeTasks
+from .task import SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId
 
 
 class AbstractEndpoint(AbstractComponent, ABC):

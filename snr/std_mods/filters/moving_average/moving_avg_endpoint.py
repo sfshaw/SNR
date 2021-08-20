@@ -8,7 +8,7 @@ class MovingAvgEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  input: DataKey,
                  output: DataKey,
                  filter: MovingAvgFilter,
@@ -18,7 +18,7 @@ class MovingAvgEndpoint(Endpoint):
         self.input = input
         self.output = output
         self.task_handlers = {
-            (TaskType.store_data, self.input): self.update_filter,
+            (TaskType.store_page, self.input): self.update_filter,
         }
         self.filter = filter
 
@@ -30,7 +30,7 @@ class MovingAvgEndpoint(Endpoint):
             self.warn("Invalid data from %s", task)
             return None
         self.filter.update(task.val_list[0].data)
-        return tasks.store_data(self.output, self.filter.avg())
+        return tasks.store_page(self.page(self.output, self.filter.avg()))
 
     def begin(self) -> None:
         pass

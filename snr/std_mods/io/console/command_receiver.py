@@ -10,7 +10,7 @@ class CommandReceiver(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  port: int
                  ) -> None:
         super().__init__(factory,

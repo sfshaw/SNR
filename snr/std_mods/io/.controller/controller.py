@@ -8,7 +8,7 @@
 
 # import pygame
 # from snr.core import *
-# from snr.interfaces import *
+# from snr.prelude import *
 
 
 # class Controller(ThreadLoop):

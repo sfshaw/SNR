@@ -9,8 +9,6 @@ from .contexts import Context
 
 class DequeTaskQueue(Context, AbstractTaskQueue):
 
-    queue: deque[Task]
-
     def __init__(self,
                  parent: AbstractContext,
                  task_source: TaskSource,
@@ -19,7 +17,7 @@ class DequeTaskQueue(Context, AbstractTaskQueue):
                          parent.profiler,
                          parent.timer)
         self.task_source = task_source
-        self.queue = deque()
+        self.queue: deque[Task] = deque()
         self.log.setLevel(logging.WARNING)
 
     def schedule_task(self, task: Task) -> None:  # type: ignore

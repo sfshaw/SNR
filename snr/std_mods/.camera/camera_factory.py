@@ -1,7 +1,7 @@
 # from typing import Optional
 
 # from snr.core import *
-# from snr.interfaces import *
+# from snr.prelude import *
 
 # from . import video_receiver, video_source
 # from .camera_config import CameraConfig

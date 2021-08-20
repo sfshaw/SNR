@@ -5,7 +5,7 @@ from .abstract_component import AbstractComponent
 from .abstract_config import AbstractConfig
 from .abstract_context import AbstractContext
 from .mode import Mode
-from .names import ComponentName, Role
+from .names import str, Role
 from .page import DataKey, Page
 from .task import SomeTasks, Task, TaskHandler, TaskId, TaskType
 
@@ -15,7 +15,7 @@ class AbstractNode(AbstractContext, ABC):
     role: Role
     config: AbstractConfig
     mode: Mode
-    components: Dict[ComponentName, AbstractComponent]
+    components: Dict[str, AbstractComponent]
 
     @abstractmethod
     def loop(self) -> None:
@@ -79,6 +79,9 @@ class AbstractNode(AbstractContext, ABC):
                     self.timer.current_s(),
                     process)
 
+    def store_page(self, page: Page) -> None:
+        self.schedule(Task(TaskType.store_page, page.key, [page]))
+
     def store_data(self,
                    key: DataKey,
                    data: Any,
@@ -87,9 +90,7 @@ class AbstractNode(AbstractContext, ABC):
         '''Thread-safe method for constructing a page and scheduling a task to
         store it.
         '''
-        self.schedule(Task(TaskType.store_data,
-                           key,
-                           [data, process]))
+        self.store_page(self.page(key, data, process))
 
     @abstractmethod
     def get_page(self, key: DataKey) -> Optional[Page]:

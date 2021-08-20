@@ -1,3 +1,5 @@
+from typing import List
+
 from snr.core import *
 from snr.prelude import *
 
@@ -14,8 +16,8 @@ class DummyEndpoint(Endpoint):
                          name)
         self.task_handlers = task_handlers
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def begin(self) -> None:
         pass

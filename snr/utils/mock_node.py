@@ -20,7 +20,7 @@ class MockNode(RootContext, AbstractNode):
         super().__init__("mock_node", logging.WARNING)
         self.role: Role = "test"
         self.mode = Mode.TEST
-        self.components: Dict[ComponentName, AbstractComponent] = {}
+        self.components: Dict[str, AbstractComponent] = {}
         self.timer = MockTimer()
 
     def loop(self) -> None:

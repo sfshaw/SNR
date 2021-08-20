@@ -15,7 +15,7 @@ class TestReplayer(SNRTestCase):
         data_keys = [f"raw_data{i}" for i in range(1, num_data_points + 1)]
         expectations: List[TaskId] = []
         for key in data_keys:
-            expectations.append((TaskType.store_data, key))
+            expectations.append((TaskType.store_page, key))
 
         expected_pages = [Page(key, key, "test_node", time_step_s * (i + 1))
                           for i, key in enumerate(data_keys)]
@@ -35,7 +35,7 @@ class TestReplayer(SNRTestCase):
             self.run_test_node([
                 ReplayerLoopFactory(input.path),
                 RecorderEndpointFactory(output.path, data_keys),
-                StopwatchEndpointFactory(times, [TaskType.store_data]),
+                StopwatchEndpointFactory(times, [TaskType.store_page]),
                 ExpectorEndpointFactory(ordered_expector,
                                         name="data_expector"),
                 ExpectorEndpointFactory(self.expector({(TaskType.process_data,

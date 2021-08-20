@@ -22,7 +22,7 @@ class TaskType(Enum):
     event = 'event'
     '''A generic event
     '''
-    store_data = 'store_page'
+    store_page = 'store_page'
     '''Triggered to write a page to the datastore
     '''
     process_data = 'process_data'

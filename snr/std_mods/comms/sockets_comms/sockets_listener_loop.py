@@ -16,7 +16,7 @@ class SocketsListenerLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  port: int,
                  data_keys: List[DataKey],
                  existing_socket: Optional[socket.socket] = None,

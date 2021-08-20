@@ -2,7 +2,7 @@
 # from typing import Any, Callable, List, Tuple
 
 # import numpy as np
-# from snr.type_defs import *
+# from snr.prelude import *
 
 # SymbolicParamGetter = Callable[[float], np.ndarray]
 

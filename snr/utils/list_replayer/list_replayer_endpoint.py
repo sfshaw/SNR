@@ -37,7 +37,7 @@ class ListReplayerEndpoint(Endpoint):
             try:
                 item = next(self.iter)
                 self.dbg("Read line: %s", item)
-                return self.parent.task_store_data(self.data_name, item)
+                return tasks.store_page(self.page(self.data_name, item))
             except StopIteration:
                 self.dbg("Replayer Done")
                 self.done = True

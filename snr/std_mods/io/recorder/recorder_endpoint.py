@@ -9,7 +9,7 @@ class RecorderEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  filename: str,
                  data_keys: List[DataKey]):
         super().__init__(factory, parent, name)
@@ -19,12 +19,12 @@ class RecorderEndpoint(Endpoint):
         self.filename = filename
         self.file = open(filename, "w")
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def task_handler(self, t: Task, k: TaskId) -> SomeTasks:
         self.dbg("Recording task: %s", [t])
-        if ((t.type is TaskType.store_data) and
+        if ((t.type is TaskType.store_page) and
                 (t.name in self.data_keys)):
             page = t.val_list[0]
             if isinstance(page, Page):
@@ -44,7 +44,7 @@ class RecorderEndpoint(Endpoint):
                      ) -> TaskHandlerMap:
         handlers: Dict[TaskId, TaskHandler] = {}
         for key in data_keys:
-            handlers[(TaskType.store_data, key)] = self.task_handler
+            handlers[(TaskType.store_page, key)] = self.task_handler
         return handlers
 
     def begin(self) -> None:

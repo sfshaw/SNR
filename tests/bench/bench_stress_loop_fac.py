@@ -14,7 +14,7 @@ class StressorLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  enabled: bool,
                  ) -> None:
         super().__init__(factory, parent, name)

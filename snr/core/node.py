@@ -11,6 +11,7 @@ from . import tasks
 from .contexts import RootContext
 from .deque_task_queue import DequeTaskQueue as TaskQueImpl
 from .node_core.node_core_factory import NodeCoreFactory
+from .node_core.node_core_endpoint import NodeCoreEndpoint
 
 
 class Node(RootContext, AbstractNode):
@@ -18,7 +19,7 @@ class Node(RootContext, AbstractNode):
     role: Role
     config: AbstractConfig
     profiler: Optional[AbstractProfiler]
-    components: Dict[ComponentName, AbstractComponent]
+    components: Dict[str, AbstractComponent]
     __task_queue: AbstractTaskQueue
     __datastore: DataDict
     __terminate_flag: synchronize.Event
@@ -39,7 +40,7 @@ class Node(RootContext, AbstractNode):
         self.__datastore = {}
         self.__terminate_flag = mp.Event()
         self.__is_terminated = mp.Event()
-        core_endpoint = NodeCoreFactory().get(self)
+        core_endpoint: NodeCoreEndpoint = NodeCoreFactory().get(self)
         self.components = {
             core_endpoint.name: core_endpoint,
         }

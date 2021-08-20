@@ -10,12 +10,11 @@ class Endpoint(Context, AbstractEndpoint):
 
     factory: EndpointFactory
     parent: AbstractNode
-    task_handlers: TaskHandlerMap
 
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  ) -> None:
         super().__init__(name,
                          parent.profiler,
@@ -29,5 +28,5 @@ class Endpoint(Context, AbstractEndpoint):
     def set_terminate_flag(self) -> None:
         pass
 
-    def __repr__(self) -> ComponentName:
+    def __repr__(self) -> str:
         return self.name

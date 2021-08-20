@@ -12,13 +12,13 @@ def event(name: str, val_list: List[Any] = []) -> Task:
                 val_list=val_list)
 
 
-def store_data(key: DataKey, data: Any, process: bool = True) -> Task:
-    return Task(TaskType.store_data,
-                key,
-                val_list=[data, process])
+def store_page(page: Page) -> Task:
+    return Task(TaskType.store_page,
+                page.key,
+                val_list=[page])
 
 
-def reload_component(name: ComponentName) -> Task:
+def reload_component(name: str) -> Task:
     return Task(TaskType.reload, name)
 
 

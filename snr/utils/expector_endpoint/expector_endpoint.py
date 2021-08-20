@@ -13,7 +13,7 @@ class ExpectorEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  expector: ExpectorProtocol,
                  exit_when_satisfied: bool,
                  ) -> None:
@@ -26,8 +26,8 @@ class ExpectorEndpoint(Endpoint):
         self.expector = expector
         self.exit_when_satisfied = exit_when_satisfied
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def begin(self) -> None:
         pass

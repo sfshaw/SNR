@@ -3,12 +3,12 @@ from snr.prelude import *
 
 from . import dummy_endpoint
 
-DEFAULT_NAME: ComponentName = "dummy_endpoint"
+DEFAULT_NAME: str = "dummy_endpoint"
 
 
 class DummyEndpointFactory(EndpointFactory):
     def __init__(self,
-                 name: ComponentName = DEFAULT_NAME,
+                 name: str = DEFAULT_NAME,
                  task_handlers: TaskHandlerMap = {}
                  ) -> None:
         super().__init__(dummy_endpoint)

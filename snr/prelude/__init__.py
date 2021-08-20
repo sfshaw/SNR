@@ -19,14 +19,15 @@ from .abstract_node import AbstractNode
 from .abstract_profiler import AbstractProfiler, ProfilerGetter
 from .abstract_runner import AbstractRunner
 from .abstract_task_queue import AbstractTaskQueue
-from .timer_protocol import TimerProtocol
+from .expector_protocol import Expectations
 from .mode import LogLevel, Mode
 from .modules import ReloadTargets
-from .names import ComponentName, Role
+from .names import Role, str
 from .page import DataDict, DataKey, Page  # Data pages
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
                    TaskName, TaskPriority, TaskScheduler, TaskSource, TaskType)
+from .timer_protocol import TimerProtocol
 
 __all__ = [
     "DataDict",
@@ -35,7 +36,7 @@ __all__ = [
     "ReloadTargets",
     "DataKey",
     "Page",
-    "ComponentName",
+    "str",
     "Role",
     "JsonData",
     "Serializable",
@@ -64,4 +65,5 @@ __all__ = [
     "AbstractRunner",
     "AbstractTaskQueue",
     "TimerProtocol",
+    "Expectations",
 ]

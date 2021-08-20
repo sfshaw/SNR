@@ -8,7 +8,7 @@ from . import expector_endpoint
 class ExpectorEndpointFactory(EndpointFactory):
     def __init__(self,
                  expector: ExpectorProtocol,
-                 name: ComponentName = "expector",
+                 name: str = "expector",
                  exit_when_satisfied: bool = False
                  ) -> None:
         super().__init__()
