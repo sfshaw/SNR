@@ -1,6 +1,6 @@
 import logging
 import unittest
-from typing import List, Optional
+from typing import List
 
 from snr import *
 
@@ -8,21 +8,26 @@ STRESS_TASK_NAME: TaskName = "stress"
 
 
 class StressorEndpoint(Endpoint):
+    enabled: bool
+
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
                  name: ComponentName,
+                 endabled: bool,
                  ) -> None:
         super().__init__(factory, parent, name)
         self.task_handlers = {
             (TaskType.event, STRESS_TASK_NAME): self.replicate,
         }
+        self.enabled = endabled
 
     def replicate(self, task: Task, key: TaskId) -> SomeTasks:
         return tasks.add_component(self.factory)
 
     def begin(self) -> None:
-        self.schedule(tasks.event(STRESS_TASK_NAME))
+        if self.enabled:
+            self.schedule(tasks.event(STRESS_TASK_NAME))
 
     def halt(self) -> None:
         pass
@@ -42,14 +47,13 @@ class StressorEndpointFactory(EndpointFactory):
         self.calls = 0
         self.num_children = 0
 
-    def get(self, parent: AbstractNode) -> Optional[Endpoint]:
+    def get(self, parent: AbstractNode) -> StressorEndpoint:
         self.calls += 1
-        if self.is_limited(parent):
-            return None
         self.num_children += 1
         return StressorEndpoint(self,
                                 parent,
-                                f"stressor_endpoint_{self.num_children}")
+                                f"stressor_endpoint_{self.num_children}",
+                                not self.is_limited(parent))
 
     def is_limited(self, parent: AbstractNode) -> bool:
         return (self.num_children >= self.max_endpoints or
