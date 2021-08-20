@@ -4,8 +4,7 @@ import socket
 from typing import List, Optional
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .sockets_loop_factory import SocketsLoopFactory
 

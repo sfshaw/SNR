@@ -2,8 +2,7 @@ import logging
 from typing import Callable, Dict, List, Tuple
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from . import remote_console
 

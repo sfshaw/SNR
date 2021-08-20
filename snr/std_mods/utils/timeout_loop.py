@@ -1,8 +1,7 @@
 import time
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class TimeoutLoop(ThreadLoop):

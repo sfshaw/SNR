@@ -4,8 +4,7 @@ import socket
 from typing import Any, List, Optional, Tuple
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from . import sockets_header
 
