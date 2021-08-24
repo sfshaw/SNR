@@ -1,5 +1,3 @@
-import logging
-
 from snr.core import *
 from snr.prelude import *
 
@@ -14,7 +12,6 @@ class MovingAvgEndpoint(Endpoint):
                  filter: MovingAvgFilter,
                  ) -> None:
         super().__init__(factory, parent, name)
-        self.log.setLevel(logging.WARNING)
         self.input = input
         self.output = output
         self.task_handlers = {
