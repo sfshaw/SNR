@@ -10,7 +10,7 @@ from . import moving_avg_endpoint
 DEFAULT_FILTER_LENGTH: int = 3
 
 
-class MovingAvgEndpointFactory(EndpointFactory):
+class MovingAvgFilterFactory(EndpointFactory):
     def __init__(self,
                  input: DataKey,
                  output: DataKey,

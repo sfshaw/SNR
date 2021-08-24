@@ -9,7 +9,7 @@ from snr.std_mods.comms import (CommsLoop, SocketsListenerFactory,
 
 from .comms.pipe.pipe_loop_factory import PipeLoopFactory
 # from .filters import KalmanFilterFactory
-from .filters import MovingAvgEndpointFactory
+from .filters import MovingAvgFilterFactory
 from .io.console import LocalConsole, RemoteConsole
 from .io.console.command_processor_factory import CommandProcessorFactory
 from .io.console.command_receiver_factory import CommandReceiverFactory
@@ -27,7 +27,7 @@ __all__ = [
     "SocketsLoopFactory",
     "SocketsWrapper",
     "PipeLoopFactory",
-    "MovingAvgEndpointFactory",
+    "MovingAvgFilterFactory",
     "CommandProcessorFactory",
     "CommandReceiverFactory",
     "LocalConsole",

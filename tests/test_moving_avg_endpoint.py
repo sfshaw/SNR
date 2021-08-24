@@ -23,6 +23,6 @@ class TestMovingAvgEndpoint(SNRTestCase):
                         4,
                     ],
                     input_data),
-                MovingAvgEndpointFactory(input_data, output_data, 2),
+                MovingAvgFilterFactory(input_data, output_data, 2),
                 ExpectorEndpointFactory(expector, exit_when_satisfied=True)
             ])

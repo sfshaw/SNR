@@ -56,7 +56,7 @@ __all__ = [
     "RemoteConsole",
     "LocalConsole",
 
-    "MovingAvgEndpointFactory",
+    "MovingAvgFilterFactory",
     # "KalmanFilterFactory",
 
     "PipeLoopFactory",
