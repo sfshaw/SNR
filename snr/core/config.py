@@ -7,14 +7,14 @@ can be defined in one place.
 
 from typing import List, Optional
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
-from ..core.contexts import local_profiler
+from .contexts import local_profiler
 
 
 class Config(AbstractConfig):
 
+    mode: Mode
     factories: ComponentsByRole
 
     def __init__(self,
@@ -26,7 +26,7 @@ class Config(AbstractConfig):
         if not factories:
             raise Exception("No factories provided")
 
-    def get(self, role: str) -> List[AbstractFactory]:
+    def get(self, role: str) -> List[AbstractFactory[AbstractComponent]]:
         factories = self.factories[role]
         return factories
 

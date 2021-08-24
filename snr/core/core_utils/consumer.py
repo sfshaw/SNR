@@ -4,8 +4,6 @@ import threading
 import time
 from typing import Callable, Generic, Optional, TypeVar
 
-from snr.type_defs import *
-
 CONSUMER_THREAD_NAME_SUFFIX = "_consumer_thread"
 
 

@@ -2,9 +2,8 @@ import socket
 from typing import List, Optional, Tuple, Union
 
 from snr.core import *
-from snr.interfaces import *
+from snr.prelude import *
 from snr.std_mods.comms.sockets_base import sockets_wrapper
-from snr.type_defs import *
 
 from . import sockets_listener_loop
 
@@ -13,7 +12,7 @@ class SocketsListenerFactory(LoopFactory):
     def __init__(self,
                  connection_or_port: Union[Tuple[socket.socket, int], int],
                  data_keys: List[DataKey] = [],
-                 loop_name: ComponentName = "sockets_listener_loop",
+                 loop_name: str = "sockets_listener_loop",
                  ) -> None:
         super().__init__([
             sockets_listener_loop,

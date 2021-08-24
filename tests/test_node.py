@@ -65,7 +65,7 @@ class TestNode(SNRTestCase):
             self.assertEqual(0, len(handlers))
 
             handlers = node.get_task_handlers(
-                tasks.process_data("by_type"))
+                Task(TaskType.process_data, "by_type"))
             self.assertEqual(2, len(handlers))
 
             node.set_terminate_flag("test done")

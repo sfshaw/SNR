@@ -1,6 +1,5 @@
 from snr import *
 from snr.std_mods.utils.timeout_loop_factory import FAST_TEST_TIMEOUT_MS
-from snr.type_defs.task import *
 
 
 class TestExpectorEndpoint(SNRTestCase):

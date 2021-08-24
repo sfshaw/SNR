@@ -2,15 +2,14 @@ import logging
 from typing import Dict, List
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class RecorderEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  filename: str,
                  data_keys: List[DataKey]):
         super().__init__(factory, parent, name)
@@ -20,8 +19,8 @@ class RecorderEndpoint(Endpoint):
         self.filename = filename
         self.file = open(filename, "w")
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def task_handler(self, t: Task, k: TaskId) -> SomeTasks:
         self.dbg("Recording task: %s", [t])

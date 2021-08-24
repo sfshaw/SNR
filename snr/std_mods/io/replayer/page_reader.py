@@ -2,8 +2,7 @@ import logging
 from typing import Any, Optional, TextIO
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class PageReader(Context):
@@ -13,7 +12,7 @@ class PageReader(Context):
 
     def __init__(self,
                  parent: AbstractContext,
-                 name: ComponentName,
+                 name: str,
                  filename: str,
                  ) -> None:
         super().__init__(name,

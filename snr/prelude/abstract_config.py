@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Any, List, Optional
 
-from snr.type_defs import *
+from .mode import Mode
 
 from .abstract_factory import AbstractFactory
 from .abstract_profiler import AbstractProfiler
@@ -12,7 +12,7 @@ class AbstractConfig(ABC):
     mode: Mode
 
     @abstractmethod
-    def get(self, role: Role) -> List[AbstractFactory]:
+    def get(self, role: str) -> List[AbstractFactory[Any]]:
         ...
 
     @abstractmethod

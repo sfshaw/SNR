@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class SocketsConfig:

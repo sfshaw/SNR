@@ -1,10 +1,10 @@
-from abc import ABC
 import logging
 import threading
 import time
+from abc import ABC
+from typing import List
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..contexts import Context
 from .loop_factory import LoopFactory
@@ -30,7 +30,7 @@ class ThreadLoop(Context, AbstractLoop, ABC):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  max_tick_rate_hz: float = DEFAULT_TICK_RATE,
                  ) -> None:
         super().__init__(name,
@@ -46,8 +46,8 @@ class ThreadLoop(Context, AbstractLoop, ABC):
         self.__thread = threading.Thread(target=self.threaded_method,
                                          name=self.name + "_thread")
 
-    def task_source(self) -> SomeTasks:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def set_delay(self, max_tick_rate_hz: float):
         if max_tick_rate_hz == 0:

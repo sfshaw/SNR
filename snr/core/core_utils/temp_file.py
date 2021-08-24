@@ -2,8 +2,6 @@ import os
 import unittest
 from typing import IO, Any
 
-from snr.type_defs import *
-
 TEMP_PATH = "temp/"
 
 

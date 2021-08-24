@@ -1,4 +1,4 @@
-from snr.type_defs import *
+
 from typing_extensions import Protocol, runtime_checkable
 
 

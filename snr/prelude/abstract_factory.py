@@ -1,16 +1,18 @@
 import importlib
 from abc import ABC, abstractmethod
 from types import ModuleType
-from typing import Any, Dict, List
+from typing import Any, Dict, Generic, List, TypeVar
 
-from snr.type_defs import *
+from .names import Role
+
+T = TypeVar('T')
 
 
-class AbstractFactory(ABC):
+class AbstractFactory(ABC, Generic[T]):
     reload_targets: List[ModuleType]
 
     @abstractmethod
-    def get(self, parent: Any) -> Any:
+    def get(self, parent: Any) -> T:
         ...
 
     def reload(self) -> None:
@@ -21,4 +23,4 @@ class AbstractFactory(ABC):
         return self.__class__.__name__
 
 
-ComponentsByRole = Dict[Role, List[AbstractFactory]]
+ComponentsByRole = Dict[Role, List[AbstractFactory[Any]]]

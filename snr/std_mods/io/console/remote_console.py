@@ -6,7 +6,7 @@ import threading
 from typing import List, Optional, Tuple
 
 from snr.core import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ...comms import SocketsWrapper
 

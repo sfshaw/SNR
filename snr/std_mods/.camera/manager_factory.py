@@ -1,6 +1,6 @@
 # from typing import Dict, List
 # from snr.core import *
-# from snr.interfaces import *
+# from snr.prelude import *
 
 # from snr.std_mods.camera import manager
 # from snr.std_mods.camera.camera_config import ManagerRole

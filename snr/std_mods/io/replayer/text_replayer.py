@@ -3,8 +3,7 @@ import threading
 from typing import Optional
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .text_reader import TextReader
 

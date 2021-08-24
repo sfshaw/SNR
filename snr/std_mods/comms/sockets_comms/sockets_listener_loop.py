@@ -4,8 +4,7 @@ import socket
 from typing import List, Optional
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .sockets_loop_factory import SocketsLoopFactory
 
@@ -17,7 +16,7 @@ class SocketsListenerLoop(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  port: int,
                  data_keys: List[DataKey],
                  existing_socket: Optional[socket.socket] = None,

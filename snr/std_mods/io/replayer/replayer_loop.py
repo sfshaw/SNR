@@ -2,8 +2,7 @@ import logging
 from typing import Optional
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .page_reader import PageReader
 
@@ -35,7 +34,7 @@ class ReplayerLoop(ThreadLoop):
             while (page
                    and (self.timer.current_s() - self.delay_s >=
                         page.created_at_s)):
-                self.store_page(page)
+                self.parent.store_page(page)
                 page = self.reader.read()
             if page:
                 self.next_page = page

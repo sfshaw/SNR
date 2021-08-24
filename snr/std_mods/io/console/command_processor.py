@@ -2,8 +2,7 @@ import logging
 from typing import Callable, Dict, List, Tuple
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from . import remote_console
 
@@ -42,8 +41,8 @@ class CommandProcessor(Endpoint):
                      self.cmd_help),
         }
 
-    def task_source(self) -> None:
-        return None
+    def task_source(self) -> List[Task]:
+        return []
 
     def process_command(self, task: Task, key: TaskId) -> SomeTasks:
         command_page: Page = task.val_list[0]
@@ -58,9 +57,8 @@ class CommandProcessor(Endpoint):
             else:
                 response = f"Invalid command {args[0]}"
 
-        return tasks.store_page(self.parent.page(
-            remote_console.COMMAND_ACK_DATA_NAME,
-            response))
+        return tasks.store_page(self.page(remote_console.COMMAND_ACK_DATA_NAME,
+                                response))
 
     def cmd_schedule_task(self, args: List[str]) -> str:
         type = TaskType(args[0])

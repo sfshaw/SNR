@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
-from snr.type_defs import *
-from snr.type_defs.task import *
-
 from .abstract_component import AbstractComponent
 from .abstract_config import AbstractConfig
 from .abstract_context import AbstractContext
+from .mode import Mode
+from .names import str, Role
+from .page import DataKey, Page
+from .task import SomeTasks, Task, TaskHandler, TaskId, TaskType
 
 
 class AbstractNode(AbstractContext, ABC):
@@ -14,7 +15,7 @@ class AbstractNode(AbstractContext, ABC):
     role: Role
     config: AbstractConfig
     mode: Mode
-    components: Dict[ComponentName, AbstractComponent]
+    components: Dict[str, AbstractComponent]
 
     @abstractmethod
     def loop(self) -> None:
@@ -78,23 +79,8 @@ class AbstractNode(AbstractContext, ABC):
                     self.timer.current_s(),
                     process)
 
-    @abstractmethod
-    def task_store_page(self, page: Page) -> Task:
-        '''Thread-safe method for scheduling a task to store a page.
-        '''
-        ...
-
-    def task_store_data(self,
-                        key: DataKey,
-                        data: Any,
-                        process: bool = True,
-                        ) -> Task:
-        return self.task_store_page(self.page(key, data, process))
-
     def store_page(self, page: Page) -> None:
-        '''Thread-safe method for scheduling a task to store a page.
-        '''
-        self.schedule(self.task_store_page(page))
+        self.schedule(Task(TaskType.store_page, page.key, [page]))
 
     def store_data(self,
                    key: DataKey,

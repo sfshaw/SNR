@@ -8,7 +8,7 @@ These features are implemented in the concrete implementations of `Runner`s.
 
 from abc import ABC
 
-from snr.type_defs import *
+from .names import Role
 
 from .abstract_config import AbstractConfig
 

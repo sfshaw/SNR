@@ -46,7 +46,6 @@ TaskId = Union[TaskType, Tuple[TaskType, TaskName]]
 class Task(dataclasses_json.DataClassJsonMixin):
     type: TaskType
     name: TaskName
-    priority: TaskPriority = TaskPriority.normal
     val_list: List[Any] = dataclasses.field(default_factory=list)
 
     def id(self) -> TaskId:
@@ -71,16 +70,16 @@ class Task(dataclasses_json.DataClassJsonMixin):
         return (
             (self.__class__ == other.__class__) and
             (self.name == other.task_type) and
-            (self.priority == other.priority) and
+            # (self.priority == other.priority) and
             (self.val_list == other.val_list))
 
     def __repr__(self):
-        return "Task({}): type: {}, priority: {}, val_list: {}".format(
-            self.name, self.type, self.priority, self.val_list)
+        return "Task({}): type: {}, val_list: {}".format(
+            self.name, self.type, self.val_list)
 
 
 SomeTasks = Union[None, Task, List[Task]]
 TaskHandler = Callable[[Task, TaskId], SomeTasks]
 TaskHandlerMap = Mapping[TaskId, TaskHandler]
-TaskSource = Callable[[], SomeTasks]
+TaskSource = Callable[[], List[Task]]
 TaskScheduler = Callable[[Task], None]

@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from snr.type_defs import *
-
 from .abstract_config import AbstractConfig
+from .names import Role
 
 
 class AbstractMultiRunner(ABC):

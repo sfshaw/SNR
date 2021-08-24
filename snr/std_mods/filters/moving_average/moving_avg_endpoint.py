@@ -1,15 +1,14 @@
 import logging
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class MovingAvgEndpoint(Endpoint):
     def __init__(self,
                  factory: EndpointFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  input: DataKey,
                  output: DataKey,
                  filter: MovingAvgFilter,
@@ -31,8 +30,7 @@ class MovingAvgEndpoint(Endpoint):
             self.warn("Invalid data from %s", task)
             return None
         self.filter.update(task.val_list[0].data)
-        return tasks.store_page(self.parent.page(self.output,
-                                                 self.filter.avg()))
+        return tasks.store_page(self.page(self.output, self.filter.avg()))
 
     def begin(self) -> None:
         pass

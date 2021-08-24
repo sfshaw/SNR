@@ -1,6 +1,5 @@
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..expector_protocol import ExpectorProtocol
 from . import expector_endpoint
@@ -9,7 +8,7 @@ from . import expector_endpoint
 class ExpectorEndpointFactory(EndpointFactory):
     def __init__(self,
                  expector: ExpectorProtocol,
-                 name: ComponentName = "expector",
+                 name: str = "expector",
                  exit_when_satisfied: bool = False
                  ) -> None:
         super().__init__()

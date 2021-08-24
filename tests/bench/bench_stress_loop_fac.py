@@ -1,6 +1,6 @@
 import logging
 import unittest
-from typing import List, Optional
+from typing import List
 
 from snr import *
 
@@ -8,10 +8,14 @@ STRESS_TASK_NAME: TaskName = "stress"
 
 
 class StressorLoop(ThreadLoop):
+
+    enabled: bool
+
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
+                 enabled: bool,
                  ) -> None:
         super().__init__(factory, parent, name)
 
@@ -19,7 +23,8 @@ class StressorLoop(ThreadLoop):
         pass
 
     def loop(self) -> None:
-        self.schedule(tasks.add_component(self.factory))
+        if self.enabled:
+            self.schedule(tasks.add_component(self.factory))
 
     def halt(self) -> None:
         pass
@@ -39,14 +44,13 @@ class StressorLoopFactory(LoopFactory):
         self.calls = 0
         self.num_children = 0
 
-    def get(self, parent: AbstractNode) -> Optional[ThreadLoop]:
+    def get(self, parent: AbstractNode) -> ThreadLoop:
         self.calls += 1
-        if self.is_limited(parent):
-            return None
         self.num_children += 1
         return StressorLoop(self,
                             parent,
-                            f"stressor_endpoint_{self.num_children}")
+                            f"stressor_endpoint_{self.num_children}",
+                            not self.is_limited(parent))
 
     def is_limited(self, parent: AbstractNode) -> bool:
         return (self.num_children >= self.max_loops or

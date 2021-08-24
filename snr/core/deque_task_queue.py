@@ -1,9 +1,8 @@
-from collections import deque
 import logging
+from collections import deque
 from typing import Optional
 
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from .contexts import Context
 
@@ -24,28 +23,21 @@ class DequeTaskQueue(Context, AbstractTaskQueue):
     def schedule_task(self, task: Task) -> None:  # type: ignore
         # Handle normal tasks
         self.dbg("Scheduling task %s", task)
-        # Ignore Priority
-        if self.is_high_priority(task):
-            self.queue.appendleft(task)
-        else:
-            self.queue.appendleft(task)
+        self.queue.appendleft(task)
 
     def get_next(self) -> Optional[Task]:
         """Take the next task off the queue
         """
         if self.is_empty():
-            new_tasks = self.get_new_tasks()
-            if new_tasks:
-                self.schedule(new_tasks)
+            new_tasks = self.task_source()
+            for t in new_tasks:
+                self.schedule_task(t)
             else:
                 return None
         next = self.queue.popleft()
         self.dbg("Next task: %s", next)
         self.dbg("%s tasks left in queue", len(self.queue))
         return next
-
-    def is_high_priority(self, task: Task) -> bool:
-        return task.priority == TaskPriority.high
 
     def get_new_tasks(self) -> SomeTasks:
         return self.task_source()

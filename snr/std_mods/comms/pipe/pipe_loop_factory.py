@@ -1,8 +1,7 @@
 from typing import List
 from multiprocessing import connection
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 from ..comms_base import comms_loop
 from . import pipe_wrapper

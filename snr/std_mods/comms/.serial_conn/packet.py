@@ -3,7 +3,7 @@
 
 # import struct
 
-# from snr.type_defs import *
+# from snr.prelude import *
 
 
 # # encoding scheme

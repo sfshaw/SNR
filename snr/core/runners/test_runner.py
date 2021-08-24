@@ -1,4 +1,4 @@
-from snr.interfaces import *
+from snr.prelude import *
 
 from .synchronous_runner import SynchronousRunner
 

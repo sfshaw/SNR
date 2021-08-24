@@ -2,8 +2,6 @@ import logging
 import unittest
 from typing import Any, Dict, Generic, List, Mapping, TypeVar
 
-from snr.type_defs import *
-
 from .expector_protocol import ExpectorProtocol
 
 T = TypeVar('T')

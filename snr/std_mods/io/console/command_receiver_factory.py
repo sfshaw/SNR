@@ -1,5 +1,5 @@
 from snr.core import *
-from snr.interfaces import *
+from snr.prelude import *
 
 from ...comms.sockets_comms import sockets_listener_factory
 from . import command_processor_factory, remote_console

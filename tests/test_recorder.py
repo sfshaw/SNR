@@ -21,7 +21,7 @@ class TestRecorder(SNRTestCase):
                 recorder.log.setLevel(logging.WARNING)
 
                 self.assertIsNone(recorder.task_handler(
-                    tasks.process_data("boring_data"),
+                    Task(TaskType.process_data, "boring_data"),
                     (TaskType.process_data,
                      "totally invalid")))
 
@@ -30,7 +30,7 @@ class TestRecorder(SNRTestCase):
                     (TaskType.process_data, "totally invalid")))
 
                 self.assertIsNone(recorder.task_handler(
-                    tasks.process_data("data_key"),
+                    Task(TaskType.process_data, "data_key"),
                     (TaskType.process_data, "data_key")))
             finally:
                 if recorder:
@@ -38,12 +38,11 @@ class TestRecorder(SNRTestCase):
                     recorder.terminate()
 
     def test_recorder_encoding(self):
-        with self.expector({(
-            TaskType.process_data, "raw_data"): 1,
+        with self.expector({
+            (TaskType.process_data, "raw_data"): 1,
         }) as expector:
 
-            with self.temp_file() as input, \
-                    self.temp_file() as output:
+            with self.temp_file() as input, self.temp_file() as output:
 
                 with input.open() as f:
                     f.write("test_data\n")

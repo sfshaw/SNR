@@ -3,15 +3,14 @@ import socket
 import sys
 
 from snr.core import *
-from snr.interfaces import *
-from snr.type_defs import *
+from snr.prelude import *
 
 
 class CommandReceiver(ThreadLoop):
     def __init__(self,
                  factory: LoopFactory,
                  parent: AbstractNode,
-                 name: ComponentName,
+                 name: str,
                  port: int
                  ) -> None:
         super().__init__(factory,
