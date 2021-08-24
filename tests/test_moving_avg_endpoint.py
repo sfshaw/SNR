@@ -15,14 +15,7 @@ class TestMovingAvgEndpoint(SNRTestCase):
         }
         with self.expector(expectations) as expector:
             self.run_test_node([
-                ListReplayerFactory(
-                    [
-                        0,
-                        1,
-                        2,
-                        4,
-                    ],
-                    input_data),
+                ListReplayerFactory([0, 1, 2, 4], input_data),
                 MovingAvgFilterFactory(input_data, output_data, 2),
                 ExpectorEndpointFactory(expector, exit_when_satisfied=True)
             ])
