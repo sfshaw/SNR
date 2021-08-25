@@ -22,7 +22,7 @@ from .abstract_task_queue import AbstractTaskQueue
 from .expector_protocol import Expectations
 from .mode import LogLevel, Mode
 from .modules import ReloadTargets
-from .names import Role, str
+from .names import Role
 from .page import DataDict, DataKey, Page  # Data pages
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
@@ -36,7 +36,6 @@ __all__ = [
     "ReloadTargets",
     "DataKey",
     "Page",
-    "str",
     "Role",
     "JsonData",
     "Serializable",

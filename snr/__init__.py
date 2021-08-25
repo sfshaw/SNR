@@ -11,7 +11,6 @@ __all__ = [
 
     "tasks",
     "Mode",
-    "str",
 
     "DataKey",
     "Page",
