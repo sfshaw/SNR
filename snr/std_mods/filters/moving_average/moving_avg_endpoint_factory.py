@@ -11,16 +11,19 @@ DEFAULT_FILTER_LENGTH: int = 3
 
 
 class MovingAvgFilterFactory(EndpointFactory):
+
+    backing_deque: Deque[float]
+
     def __init__(self,
                  input: DataKey,
                  output: DataKey,
-                 length: int,
+                 filter_length: int,
                  endpoint_name: str = "moving_avg_filter",
                  ) -> None:
         super().__init__([moving_avg_endpoint, moving_avg_filter])
         self.input = input
         self.output = output
-        self.backing_deque: Deque[float] = collections.deque(maxlen=length)
+        self.backing_deque = collections.deque(maxlen=filter_length)
         self.endpoint_name = endpoint_name
 
     def get(self,
