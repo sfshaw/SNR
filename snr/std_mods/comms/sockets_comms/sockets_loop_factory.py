@@ -16,13 +16,16 @@ from snr.std_mods.comms.sockets_base import sockets_wrapper
 
 class SocketsLoopFactory(LoopFactory):
 
+    connection: Union[Tuple[socket.socket, Any],
+                      AbstractConnection]
+    data_keys: List[DataKey]
+
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
-                 data_keys: List[str],
+                 data_keys: List[DataKey],
                  ) -> None:
         super().__init__(sockets_wrapper)
-        self.connection: Union[Tuple[socket.socket, Any],
-                               AbstractConnection] = connection
+        self.connection = connection
         self.data_keys = data_keys
 
     def get(self, parent: AbstractNode) -> ThreadLoop:
