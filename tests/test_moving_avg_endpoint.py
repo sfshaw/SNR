@@ -13,9 +13,13 @@ class TestMovingAvgEndpoint(SNRTestCase):
             (TaskType.store_page, output_data): 4,
             (TaskType.process_data, output_data): 4,
         }
+
         with self.expector(expectations) as expector:
             self.run_test_node([
                 ListReplayerFactory([0, 1, 2, 4], input_data),
-                MovingAvgFilterFactory(input_data, output_data, 2),
-                ExpectorEndpointFactory(expector, exit_when_satisfied=True)
+                MovingAvgFilterFactory(input_data,
+                                       output_data,
+                                       filter_length=2),
+                ExpectorEndpointFactory(expector, exit_when_satisfied=True),
+                TimeoutLoopFactory(ms=15)
             ])
