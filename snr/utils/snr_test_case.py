@@ -46,6 +46,12 @@ class SNRTestCase(unittest.TestCase):
     def get_context(self) -> AbstractContext:
         return RootContext("test_context", Mode.TEST)
 
+    def get_test_node(self,
+                      factories: List[AbstractFactory[Any]],
+                      mode: Mode = Mode.TEST,
+                      ) -> AbstractNode:
+        return Node("test", self.get_config(factories, mode))
+
     def run_test_node(self,
                       factories: List[AbstractFactory[Any]],
                       mode: Mode = Mode.TEST,
