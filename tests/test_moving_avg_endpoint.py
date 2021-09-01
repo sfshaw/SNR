@@ -9,9 +9,7 @@ class TestMovingAvgEndpoint(SNRTestCase):
 
         expectations = {
             (TaskType.store_page, input_data): 4,
-            (TaskType.process_data, input_data): 4,
             (TaskType.store_page, output_data): 4,
-            (TaskType.process_data, output_data): 4,
         }
 
         with self.expector(expectations) as expector:
