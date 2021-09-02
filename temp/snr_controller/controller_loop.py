@@ -1,15 +1,15 @@
-import snr
+from snr import *
 import pygame
 
 
-class ControllerLoop(snr.ThreadLoop):
+class ControllerLoop(ThreadLoop):
     def __init__(self,
-                 factory: snr.LoopFactory,
-                 parent: snr.Node,
+                 factory: LoopFactory,
+                 parent: AbstractNode,
                  ) -> None:
         super().__init__(factory, parent,
                          "controller_loop",
-                         max_tick_rate_hz=10)
+                         max_tick_rate_hz=5)
 
     def setup(self) -> None:
         pygame.joystick.init()
