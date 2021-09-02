@@ -13,7 +13,6 @@ class SocketsWrapper(Context, AbstractConnection):
 
     connection: socket.socket
     something_else: Any
-    select: std_select.poll
 
     def __init__(self,
                  connection: Tuple[socket.socket, Any],
