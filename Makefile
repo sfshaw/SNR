@@ -59,6 +59,10 @@ dist: build
 install: build
 	$(PY_SETUP) install --user
 
+.PHONY: pip_install
+pip_install:
+	$(PYTHON) -m pip install . --user --upgrade
+
 .PHONY: nox
 n: nox
 nox:
