@@ -2,10 +2,10 @@
 framework, including implementing components and `snr.core.Factories and
 running `snr.core.node.Node`s
 '''
-from snr.core import *
-from snr.prelude import *
-from snr.std_mods import *
-from snr.utils import *
+from .core import *
+from .prelude import *
+from .std_mods import *
+from .utils import *
 
 __all__ = [
 
@@ -21,6 +21,7 @@ __all__ = [
     "SomeTasks",
     "TaskHandlerMap",
 
+    "ComponentsByRole",
     "AbstractComponent",
     "AbstractFactory",
 
