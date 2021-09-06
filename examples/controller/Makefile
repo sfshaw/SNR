@@ -1,5 +1,10 @@
 
 PY=python3
 
-main:
-	$(PY) main.py test
+r: recv
+recv:
+	$(PY) main.py receiver
+
+c: controller
+controller:
+	sudo $(PY) main.py input_device
