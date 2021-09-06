@@ -170,6 +170,9 @@ class Node(RootContext, AbstractNode):
     def synchronous_store(self, page: Page) -> None:
         self.check_main_thread(
             "Synchronous store called from outside main thread.")
+        prev = self.__datastore.get(page.key)
+        if prev is not None:
+            self.__datastore[f"{page.key}_prev"] = prev
         self.__datastore[page.key] = page
         self.dbg("Page stored: (%s)", page.key)
 
