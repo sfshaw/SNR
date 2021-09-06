@@ -8,6 +8,7 @@ from typing import Any, Callable, List, Mapping, Optional, Tuple, Union
 import dataclasses_json
 
 from .serializable import JsonData
+from .page import Page
 
 
 class TaskPriority(Enum):
@@ -76,6 +77,12 @@ class Task(dataclasses_json.DataClassJsonMixin):
     def __repr__(self):
         return "Task({}): type: {}, val_list: {}".format(
             self.name, self.type, self.val_list)
+
+    @staticmethod
+    def store_page(page: Page) -> 'Task':
+        return Task(TaskType.store_page,
+                    page.key,
+                    val_list=[page])
 
 
 SomeTasks = Union[None, Task, List[Task]]

@@ -5,7 +5,7 @@ from .abstract_component import AbstractComponent
 from .abstract_factory import AbstractFactory
 from .abstract_node import AbstractNode
 from .page import DataKey, Page
-from .task import SomeTasks
+from .task import SomeTasks, Task
 
 
 class AbstractEndpoint(AbstractComponent, ABC):
@@ -39,6 +39,12 @@ class AbstractEndpoint(AbstractComponent, ABC):
         '''Page constructor
         '''
         return self.parent.page(key, data, process)
+
+    def store_data_task(self,
+                        key: DataKey, data: Any,
+                        process: bool = True,
+                        ) -> Task:
+        return Task.store_page(self.page(key, data, process))
 
     def store_data(self,
                    key: DataKey,

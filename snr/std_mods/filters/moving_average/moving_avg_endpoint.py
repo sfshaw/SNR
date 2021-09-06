@@ -27,7 +27,7 @@ class MovingAvgEndpoint(Endpoint):
             self.warn("Invalid data from %s", task)
             return None
         self.filter.update(task.val_list[0].data)
-        return tasks.store_page(self.page(self.output, self.filter.avg()))
+        return self.store_data_task(self.output, self.filter.avg())
 
     def begin(self) -> None:
         pass
