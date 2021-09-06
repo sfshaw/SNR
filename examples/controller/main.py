@@ -3,7 +3,7 @@ from controller_loop_factory import ControllerLoopFactory
 
 components: snr.ComponentsByRole = {
     "test": [
-        snr.TimeoutLoopFactory(seconds=2),
+        snr.TimeoutLoopFactory(seconds=20),
         ControllerLoopFactory(),
     ]
 }

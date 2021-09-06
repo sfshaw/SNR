@@ -20,12 +20,13 @@ class ControllerLoop(ThreadLoop):
                  ) -> None:
         super().__init__(factory, parent,
                          "controller_loop",
-                         max_tick_rate_hz=5)
+                         max_tick_rate_hz=20)
         self.joystick = None
         self.num_axes = 0
         self.num_buttons = 0
 
     def setup(self) -> None:
+        pygame.init()
         pygame.joystick.init()
         joysticks = [pygame.joystick.Joystick(x)
                      for x in range(pygame.joystick.get_count())]
@@ -33,11 +34,16 @@ class ControllerLoop(ThreadLoop):
         self.joystick = joysticks[0]
         self.num_axes = self.joystick.get_numaxes()
         self.num_buttons = self.joystick.get_numbuttons()
-        print(f"Using joystick: {self.joystick.get_name()}")
+        print(f"Using joystick: {self.joystick.get_name()}",
+              f"with {self.num_axes} axes",
+              f"and {self.num_buttons} buttons")
 
     def loop(self) -> None:
         assert self.joystick is not None
         event = pygame.event.get()
+        if event == pygame.QUIT:
+            self.set_terminate_flag()
+            return
         if event in ControllerLoop._JOYSTICK_EVENTS:
             raw_input: Dict[str, float] = {}
             for axis_id in range(self.num_axes):
@@ -46,11 +52,15 @@ class ControllerLoop(ThreadLoop):
             for button_id in range(self.num_buttons):
                 raw_input[f"button_{button_id}"] = \
                     self.joystick.get_button(button_id)
+            print(raw_input)
             self.store_data("raw_controller_input", raw_input)
+        else:
+            print(f"Boring event: {event}")
 
     def halt(self) -> None:
+        pygame.joystick.quit()
+        pygame.quit()
         print("Loop halted")
 
     def terminate(self) -> None:
-        pygame.joystick.quit()
         print("Loop terminated")
