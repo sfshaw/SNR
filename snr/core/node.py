@@ -21,7 +21,7 @@ class Node(RootContext, AbstractNode):
     profiler: Optional[AbstractProfiler]
     components: Dict[str, AbstractComponent]
     __task_queue: AbstractTaskQueue
-    __datastore: DataDict
+    __datastore: Dict[DataKey, Page]
     __terminate_flag: synchronize.Event
     __is_terminated: synchronize.Event
 

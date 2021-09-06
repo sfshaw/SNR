@@ -1,6 +1,6 @@
 import dataclasses
 import logging
-from typing import Any, Optional, Dict
+from typing import Any, Optional
 
 import dataclasses_json
 
@@ -63,6 +63,3 @@ class Page(dataclasses_json.DataClassJsonMixin):
             self.origin,
             self.created_at_s,
             self.process)
-
-
-DataDict = Dict[DataKey, Page]

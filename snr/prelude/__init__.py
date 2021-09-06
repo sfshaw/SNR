@@ -23,14 +23,13 @@ from .expector_protocol import Expectations
 from .mode import LogLevel, Mode
 from .modules import ReloadTargets
 from .names import Role
-from .page import DataDict, DataKey, Page  # Data pages
+from .page import DataKey, Page
 from .serializable import JsonData, Serializable  # JSON serialization protocol
 from .task import (SomeTasks, Task, TaskHandler, TaskHandlerMap, TaskId,
                    TaskName, TaskPriority, TaskScheduler, TaskSource, TaskType)
 from .timer_protocol import TimerProtocol
 
 __all__ = [
-    "DataDict",
     "LogLevel",
     "Mode",
     "ReloadTargets",
