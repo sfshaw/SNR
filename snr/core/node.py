@@ -21,7 +21,7 @@ class Node(RootContext, AbstractNode):
     profiler: Optional[AbstractProfiler]
     components: Dict[str, AbstractComponent]
     __task_queue: AbstractTaskQueue
-    __datastore: DataDict
+    __datastore: Dict[DataKey, Page]
     __terminate_flag: synchronize.Event
     __is_terminated: synchronize.Event
 
@@ -170,6 +170,9 @@ class Node(RootContext, AbstractNode):
     def synchronous_store(self, page: Page) -> None:
         self.check_main_thread(
             "Synchronous store called from outside main thread.")
+        prev = self.__datastore.get(page.key)
+        if prev is not None:
+            self.__datastore[f"{page.key}_prev"] = prev
         self.__datastore[page.key] = page
         self.dbg("Page stored: (%s)", page.key)
 

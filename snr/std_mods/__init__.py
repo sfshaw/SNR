@@ -8,6 +8,7 @@ from snr.std_mods.comms import (CommsLoop, SocketsListenerFactory,
                                 SocketsLoopFactory, SocketsWrapper)
 
 from .comms.pipe.pipe_loop_factory import PipeLoopFactory
+from .comms.sockets_comms.sockets_pair import SocketsPair
 # from .filters import KalmanFilterFactory
 from .filters import MovingAvgFilterFactory
 from .io.console import LocalConsole, RemoteConsole
@@ -20,14 +21,17 @@ from .io.replayer.text_reader import TextReader
 from .io.replayer.text_replayer_factory import TextReplayerFactory
 from .utils.stopwatch_endpoint_factory import StopwatchEndpointFactory
 from .utils.timeout_loop_factory import TimeoutLoopFactory
+from .io.printer.printer_endpoint_factory import PrinterEndpointFactory
 
 __all__ = [
     "CommsLoop",
     "SocketsListenerFactory",
     "SocketsLoopFactory",
     "SocketsWrapper",
+    "SocketsPair",
     "PipeLoopFactory",
     "MovingAvgFilterFactory",
+    # "KalmanFilterFactory",
     "CommandProcessorFactory",
     "CommandReceiverFactory",
     "LocalConsole",
@@ -37,7 +41,7 @@ __all__ = [
     "ReplayerLoopFactory",
     "TextReader",
     "TextReplayerFactory",
-    # "KalmanFilterFactory",
+    "PrinterEndpointFactory",
     "StopwatchEndpointFactory",
     "TimeoutLoopFactory",
 ]

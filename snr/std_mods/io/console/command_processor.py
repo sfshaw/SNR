@@ -57,8 +57,8 @@ class CommandProcessor(Endpoint):
             else:
                 response = f"Invalid command {args[0]}"
 
-        return tasks.store_page(self.page(remote_console.COMMAND_ACK_DATA_NAME,
-                                response))
+        return self.store_data_task(remote_console.COMMAND_ACK_DATA_NAME,
+                                    response)
 
     def cmd_schedule_task(self, args: List[str]) -> str:
         type = TaskType(args[0])

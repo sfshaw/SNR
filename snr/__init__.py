@@ -52,6 +52,7 @@ __all__ = [
 
     "SocketsLoopFactory",
     "SocketsListenerFactory",
+    "SocketsPair",
 
     "CommandReceiverFactory",
     "RemoteConsole",
@@ -69,6 +70,7 @@ __all__ = [
     "TextReplayerFactory",
     "ReplayerLoopFactory",
     "ListReplayerFactory",
+    "PrinterEndpointFactory",
 
     "StopwatchEndpointFactory",
 
